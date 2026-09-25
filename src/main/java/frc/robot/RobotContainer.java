@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AxisAssistCommand;
-import frc.robot.commands.PassToPoseCommand;
+import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
@@ -192,7 +192,7 @@ public class RobotContainer {
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new PassToPoseCommand(swerve, (RobotState.isAllianceRed()) ?
+    driverA.b().whileTrue(new AlignToShootCommand(swerve, (RobotState.isAllianceRed()) ?
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d()).repeatedly());
 

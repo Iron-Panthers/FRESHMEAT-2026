@@ -11,12 +11,12 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 
-public class PassToPoseCommand extends Command {
+public class AlignToShootCommand extends Command {
     private Drive swerve;
     private Rotation2d targetAngle;
     private Translation2d pointTarget;
 
-    public PassToPoseCommand(Drive swerve, Translation2d pointTarget) {
+    public AlignToShootCommand(Drive swerve, Translation2d pointTarget) {
         this.swerve = swerve;
         this.pointTarget = pointTarget;
     }
