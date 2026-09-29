@@ -119,8 +119,8 @@ public class RobotContainer {
           vision =
               new Vision(
                   new VisionIOPhotonvisionSim(
-                      "arducam-3", 3, driveSimulation::getSimulatedDriveTrainPose));
-          new VisionIOPhotonvisionSim("arducam-4", 4, driveSimulation::getSimulatedDriveTrainPose);
+                      "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
+          new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
 
           SimulatedArena.getInstance().resetFieldForAuto();
         }
