@@ -2,7 +2,7 @@ package frc.robot.subsystems.serializer;
 
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim;
 
-public class SerializerIOSim extends GenericRollersIOSim {
+public class SerializerIOSim extends GenericRollersIOSim implements SerializerIO {
     public SerializerIOSim() {
         super(
             SerializerConstants.SERIALIZER_CONFIG.motorID1(),
