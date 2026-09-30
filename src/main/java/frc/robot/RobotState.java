@@ -188,7 +188,7 @@ public class RobotState {
     if (RobotBase.isReal()) {
       return alliance.get() == DriverStation.Alliance.Red;
     }
-    return true;
+    return false;
   }
 
 }

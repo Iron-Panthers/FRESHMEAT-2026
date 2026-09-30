@@ -5,6 +5,8 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,6 +27,12 @@ public class AlignToPoseCommand extends Command{
 
         addRequirements(swerve);
     }
+
+    public AlignToPoseCommand(
+      Drive swerve, Pose2d targetPose, boolean endOnAccurate) {
+    this(swerve, targetPose);
+    this.endOnAccurate = endOnAccurate;
+  }
 
     @Override
     public void initialize(){
@@ -71,7 +79,7 @@ public class AlignToPoseCommand extends Command{
             && currentApproachPose
                 .getTranslation()
                 .getDistance(RobotState.getInstance().getEstimatedPose().getTranslation())
-                < 0.04 
+                < 0.04
             && Math.abs(
                 currentApproachPose
                     .getRotation()
