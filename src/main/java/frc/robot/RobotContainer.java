@@ -190,6 +190,13 @@ public class RobotContainer {
 
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
+    configureDriverAButtons();
+
+  }
+
+  //Testing AlignToPoseCommand---remove later
+  private void configureDriverAButtons(){
+    driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d()), true));
   }
 
   private void configureAutos() {
