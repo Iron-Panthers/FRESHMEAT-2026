@@ -18,6 +18,14 @@ import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIOComp;
+import frc.robot.subsystems.intake.IntakeController;
+import frc.robot.subsystems.intake.IntakeController.IntakeState;
+import frc.robot.subsystems.intake.intake_rack.IntakeRack;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIO;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIOSim;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
 import frc.robot.subsystems.swerve.Drive;
@@ -65,6 +73,9 @@ public class RobotContainer {
   private Vision vision;
   private RGB rgb;
   private CANWatchdog canWatchdog;
+  private IntakeController intakeController;
+  private IntakeRack intakeRack;
+  private IntakeRollers intakeRollers;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -121,7 +132,9 @@ public class RobotContainer {
                   new VisionIOPhotonvisionSim(
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
-
+          intakeRack = new IntakeRack(new IntakeRackIOSim());
+          intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
+          
           SimulatedArena.getInstance().resetFieldForAuto();
         }
       }
@@ -148,9 +161,21 @@ public class RobotContainer {
       rgb = new RGB(new RGBIO() {});
     }
 
+    if (intakeRack == null) {
+      intakeRack = new IntakeRack(new IntakeRackIO() {});
+    }
+
+    if (intakeRollers == null) {
+      intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
+    }
+
+    intakeController = new IntakeController(intakeRack, intakeRollers);
+
+
     nameCommands();
     configureAutos();
     configureBindings();
+    
   }
 
   public void containerMatchStarting() {
@@ -185,6 +210,7 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE)));
   }
 
   private void configureAutos() {
