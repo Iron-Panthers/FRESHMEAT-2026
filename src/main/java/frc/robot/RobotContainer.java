@@ -87,11 +87,11 @@ public class RobotContainer {
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          vision =
-              new Vision(
-                  new VisionIOPhotonvision("CamC", 0),
-                  new VisionIOPhotonvision("CamA", 1),
-                  new VisionIOPhotonvision("CamB", 2));
+          //vision =
+              //new Vision(
+                  // new VisionIOPhotonvision("CamC", 0),
+                  // new VisionIOPhotonvision("CamA", 1),
+                  //new VisionIOPhotonvision("CamB", 0));
         }
         case VISION -> {
           swerve =
