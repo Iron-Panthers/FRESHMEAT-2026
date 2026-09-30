@@ -4,7 +4,7 @@ import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIOSi
 
 public class IntakeRackIOSim extends GenericSuperstructureIOSim implements IntakeRackIO {
     public IntakeRackIOSim() {
-        super(1);
+        super(IntakeRackConstants.INTAKE_RACK_CONFIG.motorID());
     }
 
     @Override
