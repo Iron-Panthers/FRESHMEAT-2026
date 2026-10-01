@@ -20,6 +20,10 @@ import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIOComp;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
+import frc.robot.subsystems.serializer.Serializer;
+import frc.robot.subsystems.serializer.SerializerIO;
+import frc.robot.subsystems.serializer.SerializerIOSim;
+import frc.robot.subsystems.serializer.SerializerIOTalonFX;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.swerve.GyroIO;
@@ -61,6 +65,7 @@ public class RobotContainer {
   private final CommandXboxController driverA = new CommandXboxController(0);
   private final CommandXboxController driverB = new CommandXboxController(1);
 
+  private Serializer serializer;
   private Drive swerve;
   private Vision vision;
   private RGB rgb;
@@ -88,6 +93,7 @@ public class RobotContainer {
                   new VisionIOPhotonvision("CamC", 0),
                   new VisionIOPhotonvision("CamA", 1),
                   new VisionIOPhotonvision("CamB", 2));
+          serializer = new Serializer(new SerializerIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -123,6 +129,7 @@ public class RobotContainer {
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
 
           SimulatedArena.getInstance().resetFieldForAuto();
+          serializer = new Serializer(new SerializerIOSim());
         }
       }
     }
@@ -148,6 +155,10 @@ public class RobotContainer {
       rgb = new RGB(new RGBIO() {});
     }
 
+    if (serializer == null) {
+      serializer = new Serializer(new SerializerIO() {});
+    }
+    
     nameCommands();
     configureAutos();
     configureBindings();
