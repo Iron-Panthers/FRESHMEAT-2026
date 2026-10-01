@@ -27,5 +27,6 @@ public class Serializer extends GenericRollers<Serializer.SerializerTarget> {
 
     public Serializer(GenericRollersIO io) {
         super("Serializer", io);
+        setVelocityTarget(SerializerTarget.IDLE);
     }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.serializer;
 
+import static frc.robot.subsystems.serializer.SerializerConstants.*;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersConfiguration;
@@ -19,5 +21,6 @@ public class SerializerIOTalonFX extends GenericRollersIOTalonFX implements Seri
             .withAdditionalFollowerMotor(
                 SerializerConstants.SERIALIZER_CONFIG.motorID2(), SerializerConstants.SERIALIZER_CONFIG.opposeMotor())
             .withStatorCurrentLimit(SerializerConstants.STATOR_CURRENT_LIMIT));
+        super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
     }
 }
