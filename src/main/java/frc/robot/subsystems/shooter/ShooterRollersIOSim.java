@@ -1,5 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-public class ShooterRollersIOSim {
+public class ShooterRollersIOSim extends GenericRollersIOSim{
     
 }
