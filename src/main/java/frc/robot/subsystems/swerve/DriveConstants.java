@@ -300,6 +300,8 @@ public class DriveConstants {
       new PathConstraints(
           1.5, 1.5, Units.degreesToRadians(540), Units.degreesToRadians(720), 12, false);
 
+  public static final Translation3d BLUE_HUB_ORIGIN = new Translation3d(4.5974, 4.034536, 1.5748);
+  public static final Translation3d RED_HUB_ORIGIN = new Translation3d(11.938, 4.034536, 1.5748);
 
   public record DrivebaseConfig(
       double wheelRadius,
