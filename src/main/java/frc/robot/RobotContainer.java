@@ -6,6 +6,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AxisAssistCommand;
 import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToShootCommand;
@@ -235,6 +239,14 @@ public class RobotContainer {
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
 
+
+    configureDriverAButtons();
+
+  }
+
+  //Testing AlignToPoseCommand---remove later
+  private void configureDriverAButtons(){
+    driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d()), true));
   }
 
   private void configureAutos() {
