@@ -26,7 +26,7 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollerT
         }
     }
 
-        public ShooterRollers(String test, GenericRollersIO io){
+        public ShooterRollers(GenericRollersIO io){
             super("Shooter/Shooter Flywheels", io);
         }
         public boolean reachedVelocityTarget() {

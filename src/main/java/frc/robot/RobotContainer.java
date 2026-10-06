@@ -41,6 +41,11 @@ import frc.robot.subsystems.serializer.Serializer;
 import frc.robot.subsystems.serializer.SerializerIO;
 import frc.robot.subsystems.serializer.SerializerIOSim;
 import frc.robot.subsystems.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterRollers;
+import frc.robot.subsystems.shooter.ShooterRollersIO;
+import frc.robot.subsystems.shooter.ShooterRollersIOSim;
+import frc.robot.subsystems.shooter.ShooterRollersIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollerTarget;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.swerve.GyroIO;
@@ -91,6 +96,7 @@ public class RobotContainer {
   private IntakeController intakeController;
   private IntakeRack intakeRack;
   private IntakeRollers intakeRollers;
+  private ShooterRollers shooterRollers;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -115,6 +121,7 @@ public class RobotContainer {
                   new VisionIOPhotonvision("CamA", 1),
                   new VisionIOPhotonvision("CamB", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
+          shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -153,6 +160,7 @@ public class RobotContainer {
           
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());
+          shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
         }
       }
     }
@@ -188,6 +196,10 @@ public class RobotContainer {
 
     if (intakeRollers == null) {
       intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
+    }
+
+    if (shooterRollers == null) {
+      shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
 
     intakeController = new IntakeController(intakeRack, intakeRollers);
@@ -235,6 +247,9 @@ public class RobotContainer {
 
     // TODO: Test this eventually...
     driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+
+    // TODO: Test
+    driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollerTarget.SHOOT)));
 
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
