@@ -32,20 +32,22 @@ import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.intake.intake_rack.IntakeRack;
 import frc.robot.subsystems.intake.intake_rack.IntakeRackIO;
 import frc.robot.subsystems.intake.intake_rack.IntakeRackIOSim;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIOTalonFX;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
 import frc.robot.subsystems.serializer.Serializer;
 import frc.robot.subsystems.serializer.SerializerIO;
 import frc.robot.subsystems.serializer.SerializerIOSim;
 import frc.robot.subsystems.serializer.SerializerIOTalonFX;
-import frc.robot.subsystems.shooter.ShooterRollers;
-import frc.robot.subsystems.shooter.ShooterRollersIO;
-import frc.robot.subsystems.shooter.ShooterRollersIOSim;
-import frc.robot.subsystems.shooter.ShooterRollersIOTalonFX;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollerTarget;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIO;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOSim;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers.ShooterRollerTarget;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.swerve.GyroIO;
@@ -105,6 +107,8 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
+          intakeRack = new IntakeRack(new IntakeRackIOTalonFX());
+          intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
           swerve =
               new Drive(
                   new GyroIOPigeon2(),
@@ -157,6 +161,8 @@ public class RobotContainer {
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           //intakeRack = new IntakeRack(new IntakeRackIOSim());
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
+
+          serializer = new Serializer(new SerializerIOSim());
           
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());

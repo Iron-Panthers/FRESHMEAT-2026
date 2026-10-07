@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.shooter.ShooterRollers;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -11,7 +11,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollerTarget>{
     public enum ShooterRollerTarget implements GenericRollers.VelocityTarget{
         SHOOT(40),// replace with actual value
-        IDLE(0);
+        IDLE(0),
+        INTAKE(0);// Do we need this?
 
          
         public double velocity;

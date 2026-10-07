@@ -1,4 +1,6 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.shooter.ShooterRollers;
+
+import static frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersConstants.*;
 
 import com.ctre.phoenix6.sim.ChassisReference;
 
@@ -8,8 +10,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim;
-
-import static frc.robot.subsystems.shooter.ShooterRollersConstants.*;
 
 public class ShooterRollersIOSim extends GenericRollersIOSim implements ShooterRollersIO{
     private final FlywheelSim shooterFlywheelsSim;
