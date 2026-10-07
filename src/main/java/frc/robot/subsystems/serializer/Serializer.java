@@ -1,5 +1,7 @@
 package frc.robot.subsystems.serializer;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import frc.robot.lib.generic_subsystems.rollers.GenericRollers;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
 
@@ -27,5 +29,20 @@ public class Serializer extends GenericRollers<Serializer.SerializerTarget> {
 
     public Serializer(GenericRollersIO io) {
         super("Serializer", io);
+        setVelocityTarget(SerializerTarget.IDLE);
+    }
+
+    public double getVelocityRadsPerSec() {
+        return inputs.velocityRadsPerSec;
+    }
+
+    /**
+     * Returns true when the serializer is applying amps but not going anywhere
+     *
+     * @return
+    */
+    @AutoLogOutput(key = "Serializer/Serializer Stalling")
+    public boolean serializerStalling() {
+        return getFilteredCurrent() > 15d && getVelocityRadsPerSec() < 3d;
     }
 }
