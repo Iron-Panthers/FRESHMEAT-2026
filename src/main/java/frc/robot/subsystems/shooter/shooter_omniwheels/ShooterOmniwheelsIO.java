@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter_omniwheels;
+package frc.robot.subsystems.shooter.shooter_omniwheels;
 
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
 

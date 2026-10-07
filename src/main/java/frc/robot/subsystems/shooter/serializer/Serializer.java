@@ -1,4 +1,4 @@
-package frc.robot.subsystems.serializer;
+package frc.robot.subsystems.shooter.serializer;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 

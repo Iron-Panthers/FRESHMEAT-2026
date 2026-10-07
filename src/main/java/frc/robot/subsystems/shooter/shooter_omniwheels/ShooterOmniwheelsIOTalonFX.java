@@ -1,8 +1,8 @@
-package frc.robot.subsystems.shooter_omniwheels;
+package frc.robot.subsystems.shooter.shooter_omniwheels;
+
+import static frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsConstants.*;
 
 import com.ctre.phoenix6.signals.InvertedValue;
-
-import static frc.robot.subsystems.shooter_omniwheels.ShooterOmniwheelsConstants.*;
 
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersConfiguration;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOTalonFX;

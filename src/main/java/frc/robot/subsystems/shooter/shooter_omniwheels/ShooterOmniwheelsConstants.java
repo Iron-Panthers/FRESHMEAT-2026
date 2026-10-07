@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter_omniwheels;
+package frc.robot.subsystems.shooter.shooter_omniwheels;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
@@ -32,6 +32,14 @@ public class ShooterOmniwheelsConstants {
         case SIM -> new PIDGains(0.4, 0, 0, 0.2, .137, 0, 0);
         default -> new PIDGains(0.4, 0, 0, 0.2, .137, 0, 0);
     };
+
+    public static final ShooterOmniwheelPhysicalConstants PHYSICAL_CONSTANTS =
+    switch (Constants.getRobotType()) {
+    case SIM -> new ShooterOmniwheelPhysicalConstants(0.01);
+    case COMP -> new ShooterOmniwheelPhysicalConstants(0.1);
+    default -> new ShooterOmniwheelPhysicalConstants(0.1);
+    };
+
     public static final int SUPPLY_CURRENT_LIMIT = 50;
     public static final int STATOR_CURRENT_LIMIT = 70;
 
@@ -40,4 +48,5 @@ public class ShooterOmniwheelsConstants {
 
     public record PIDGains(
         double kP, double kI, double kD, double kS, double kV, double kA, double kG) {}
+    public record ShooterOmniwheelPhysicalConstants(double momentOfInertia) {}
 }

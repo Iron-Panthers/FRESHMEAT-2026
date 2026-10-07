@@ -1,5 +1,6 @@
-package frc.robot.subsystems.shooter;
-import static frc.robot.subsystems.shooter.ShooterRollersConstants.*;
+package frc.robot.subsystems.shooter.shooter_rollers;
+import static frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.*;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.lib.generic_subsystems.rollers.*;

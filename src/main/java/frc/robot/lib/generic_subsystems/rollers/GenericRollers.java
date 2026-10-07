@@ -2,7 +2,7 @@ package frc.robot.lib.generic_subsystems.rollers;
 
 
 import edu.wpi.first.math.filter.LinearFilter;
-import frc.robot.subsystems.shooter.ShooterRollersIO;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
 
 import org.littletonrobotics.junction.Logger;
 

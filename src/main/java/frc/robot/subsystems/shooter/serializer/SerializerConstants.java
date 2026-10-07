@@ -1,4 +1,4 @@
-package frc.robot.subsystems.serializer;
+package frc.robot.subsystems.shooter.serializer;
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
 
@@ -30,11 +30,17 @@ public class SerializerConstants {
         };
 
     public static final PIDGains GAINS =
-        switch (Constants.getRobotType()) {
-            case SIM ->  new PIDGains(0, 0, 0, 0, 0, 0, 0);
-            case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
-            default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
-        };
+    switch (Constants.getRobotType()) {
+        case SIM ->  new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
+    };
+
+    public static final SerializerPhysicalConstants PHYSICAL_CONSTANTS =
+      switch (Constants.getRobotType()) {
+        case SIM -> new SerializerPhysicalConstants(0.000105);
+        default -> new SerializerPhysicalConstants(0.000105);
+    };
 
     public static final double UPPER_VOLT_LIMIT = 12;
     public static final double LOWER_VOLT_LIMIT = -12;
@@ -52,4 +58,6 @@ public class SerializerConstants {
 
     public record PIDGains(
       double kP, double kI, double kD, double kS, double kV, double kA, double kG) {}
+    
+    public static record SerializerPhysicalConstants(double momentOfInertia) {}
 }
