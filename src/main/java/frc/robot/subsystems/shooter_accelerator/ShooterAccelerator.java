@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.utility.LoggableMechanism3d;
 import java.util.Optional;
@@ -43,7 +44,10 @@ public class ShooterAccelerator extends GenericSuperstructure<ShooterAccelerator
             this.positionNowIAmAngwy=positionNowIAmAngwy;
             this.uwuSupplyCurrentLimit=uwuSupplyCurrentLimit;
         }
-        public double getVelocity(double velocity){
+        ShooterAcceleratorTarget(int i, String currentLimitAmps) {
+                    //TODO Auto-generated constructor stub
+                }
+                public double getVelocity(double velocity){
             return velocity;
         }
         public double getSupplyCurrentLimit(double supplyCurrentLimit){
@@ -82,6 +86,11 @@ public class ShooterAccelerator extends GenericSuperstructure<ShooterAccelerator
         public Pose3d getDisplayPose3d() {
             return new Pose3d();
             }
-        
-
+        public ShooterAccelerator(ShooterAcceleratorIO io) {
+        super("Shooter/Shooter Accelerator", io);
     }
+        
+       // public AngularVelocity getCurrentVelocity() {
+    //return Units.RadiansPerSecond.of(inputs.velocityRadsPerSec);
+  //}
+}

@@ -1,6 +1,8 @@
 package frc.robot.lib.generic_subsystems.superstructure;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.subsystems.shooter_accelerator.ShooterAcceleratorIO;
+
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -41,14 +43,18 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
 
   protected GenericSuperstructureIOInputsAutoLogged inputs =
       new GenericSuperstructureIOInputsAutoLogged();
-  protected G positionTarget;
+  protected static G positionTarget;
 
-  public GenericSuperstructure(String name, GenericSuperstructureIO superstructureIO) {
+  public GenericSuperstructure(String name, ShooterAcceleratorIO io) {
     this.name = name;
-    this.superstructureIO = superstructureIO;
+    this.superstructureIO = io;
   }
 
-  public void periodic() {
+  public GenericSuperstructure(String name2, ShooterAcceleratorIO io) {
+    //TODO Auto-generated constructor stub
+}
+
+public void periodic() {
     double filteredAmps = linearFilter.calculate(getSupplyCurrentAmps());
 
     totalAmps += (getSupplyCurrentAmps() / 50);

@@ -9,14 +9,16 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public abstract class GenericRollersIOSim implements GenericRollersIO {
+public record RollerSim(
+      int plantMotors, int packMotors, double momentOfInertia, double dragAmpsPerRadPerSec) {}
   protected final TalonFX talon;
 
+   
   private final NeutralOut neutralOutput = new NeutralOut();
   private final double mechanismReduction;
   private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0);
-
-  public GenericRollersIOSim(
-      int id, int currentLimitAmps, boolean inverted, boolean brake, double reduction) {
+  
+  
     talon = new TalonFX(id);
 
     mechanismReduction = reduction;
