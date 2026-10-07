@@ -2,6 +2,8 @@ package frc.robot.lib.generic_subsystems.rollers;
 
 
 import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.subsystems.shooter.ShooterRollersIO;
+
 import org.littletonrobotics.junction.Logger;
 
 public abstract class GenericRollers<G extends GenericRollers.VelocityTarget> {
@@ -31,9 +33,9 @@ public abstract class GenericRollers<G extends GenericRollers.VelocityTarget> {
   protected double manualSupplyCurrentAmps = 0;
   protected boolean useManualVelocity = false;
 
-  public GenericRollers(String name, GenericRollersIO rollerIO) {
+  public GenericRollers(String name, GenericRollersIO io) {
     this.name = name;
-    this.rollerIO = rollerIO;
+    this.rollerIO = io;
     this.filter = LinearFilter.movingAverage(100);
   }
 
