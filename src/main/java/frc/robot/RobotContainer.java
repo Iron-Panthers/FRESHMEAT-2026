@@ -155,7 +155,7 @@ public class RobotContainer {
                   new VisionIOPhotonvisionSim(
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
-          intakeRack = new IntakeRack(new IntakeRackIOSim());
+          //intakeRack = new IntakeRack(new IntakeRackIOSim());
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
           
           SimulatedArena.getInstance().resetFieldForAuto();
