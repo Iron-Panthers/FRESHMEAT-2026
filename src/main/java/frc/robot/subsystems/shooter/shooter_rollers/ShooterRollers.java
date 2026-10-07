@@ -6,17 +6,18 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.lib.generic_subsystems.rollers.*;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollerTarget>{
-    public enum ShooterRollerTarget implements GenericRollers.VelocityTarget{
-        SHOOT(1000),// replace with actual value
-        IDLE(0);
+public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollersTarget>{
+    public enum ShooterRollersTarget implements GenericRollers.VelocityTarget{
+        SHOOT(1000, ShooterRollersConstants.CURRENT_LIMIT_AMPS),// replace with actual value
+        IDLE(0, ShooterRollersConstants.CURRENT_LIMIT_AMPS);
 
          
         public double velocity;
-        ShooterRollerTarget(int velocity) {
+        public double supplyCurrentLimit;
+        ShooterRollersTarget(double velocity, double supplyCurrentLimit) {
             this.velocity = velocity;
         }
-                public double getVelocity() {
+        public double getVelocity() {
             return getVelocity();
         }
 
