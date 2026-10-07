@@ -25,7 +25,7 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
   protected final DynamicMotionMagicVoltage positionControl =
       new DynamicMotionMagicVoltage(0, 0, 0).withUpdateFreqHz(0);
 
-  public GenericSuperstructureIOSim(int id) {
+  public GenericSuperstructureIOSim(int id, double reduction) {
 
     talon = new TalonFX(id);
     talon.setNeutralMode(NeutralModeValue.Brake);

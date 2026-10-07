@@ -19,7 +19,8 @@ public class IntakeRackIOSim extends GenericSuperstructureIOSim implements Intak
 
   public IntakeRackIOSim() {
     super(
-        IntakeRackConstants.INTAKE_RACK_CONFIG.motorID());
+        IntakeRackConstants.INTAKE_RACK_CONFIG.motorID(),
+        IntakeRackConstants.INTAKE_RACK_CONFIG.reduction());
 
     this.reduction = IntakeRackConstants.INTAKE_RACK_CONFIG.reduction();
 
