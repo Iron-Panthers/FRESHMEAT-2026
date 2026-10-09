@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.shooter.ShooterRollers;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
