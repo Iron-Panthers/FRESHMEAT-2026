@@ -4,11 +4,13 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollers;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
+import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 public class ShooterOmniwheels extends GenericRollers<ShooterOmniwheels.ShooterOmniwheelsTarget> {
     public enum ShooterOmniwheelsTarget implements GenericRollers.VelocityTarget{
         IDLE(-10, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
-        SHOOT(10, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT);
+        SHOOT(10, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
+        INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
         private double velocity;
         private double supplyCurrentLimit;

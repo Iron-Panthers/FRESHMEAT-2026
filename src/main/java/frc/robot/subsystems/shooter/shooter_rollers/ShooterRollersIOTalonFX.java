@@ -1,10 +1,5 @@
-<<<<<<<< HEAD:src/main/java/frc/robot/subsystems/shooter/ShooterRollers/ShooterRollersIOTalonFX.java
-package frc.robot.subsystems.shooter.ShooterRollers;
-import static frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersConstants.*;
-========
 package frc.robot.subsystems.shooter.shooter_rollers;
 import static frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.*;
->>>>>>>> feat/shooter-merge:src/main/java/frc/robot/subsystems/shooter/shooter_rollers/ShooterRollersIOTalonFX.java
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;

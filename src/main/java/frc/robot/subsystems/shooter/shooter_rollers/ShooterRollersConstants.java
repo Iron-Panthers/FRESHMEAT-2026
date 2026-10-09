@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/main/java/frc/robot/subsystems/shooter/ShooterRollers/ShooterRollersConstants.java
-package frc.robot.subsystems.shooter.ShooterRollers;
-========
 package frc.robot.subsystems.shooter.shooter_rollers;
->>>>>>>> feat/shooter-merge:src/main/java/frc/robot/subsystems/shooter/shooter_rollers/ShooterRollersConstants.java
 
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;

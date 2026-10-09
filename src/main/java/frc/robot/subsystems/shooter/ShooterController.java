@@ -22,7 +22,12 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.SHOOT,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
-            ShooterRollersTarget.SHOOT);
+            ShooterRollersTarget.SHOOT),
+        INTAKE(
+            SerializerTarget.INTAKE, //TODO: FIX
+            ShooterAcceleratorTarget.INTAKE,
+            ShooterOmniwheelsTarget.INTAKE,
+            ShooterRollersTarget.INTAKE);
 
         public final SerializerTarget serializerTarget;
         public final ShooterAcceleratorTarget acceleratorTarget;

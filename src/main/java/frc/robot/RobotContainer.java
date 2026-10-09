@@ -8,30 +8,22 @@ import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
-import frc.robot.commands.AxisAssistCommand;
-import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
-import frc.robot.subsystems.can_watchdog.CANWatchdogIOComp;
 import frc.robot.subsystems.intake.IntakeController;
 import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.intake.intake_rack.IntakeRack;
 import frc.robot.subsystems.intake.intake_rack.IntakeRackIO;
-import frc.robot.subsystems.intake.intake_rack.IntakeRackIOSim;
 import frc.robot.subsystems.intake.intake_rack.IntakeRackIOTalonFX;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
@@ -39,15 +31,15 @@ import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
-import frc.robot.subsystems.serializer.Serializer;
-import frc.robot.subsystems.serializer.SerializerIO;
-import frc.robot.subsystems.serializer.SerializerIOSim;
-import frc.robot.subsystems.serializer.SerializerIOTalonFX;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIO;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOSim;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOTalonFX;
-import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers.ShooterRollerTarget;
+import frc.robot.subsystems.shooter.serializer.Serializer;
+import frc.robot.subsystems.shooter.serializer.SerializerIO;
+import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
+import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOSim;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers.ShooterRollersTarget;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.swerve.GyroIO;
@@ -61,10 +53,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.utility.ElasticSetpoints;
-import frc.robot.utility.FuelSim.Hub;
 import frc.robot.utility.SimBattery;
 
-import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -262,7 +252,7 @@ public class RobotContainer {
     driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
-    driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollerTarget.SHOOT)));
+    driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
 
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
