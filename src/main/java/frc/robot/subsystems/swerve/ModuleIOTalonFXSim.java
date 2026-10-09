@@ -15,6 +15,16 @@ public class ModuleIOTalonFXSim extends ModuleIOTalonFX {
 
     simulation.useSteerMotorController(
         new PhoenixUtil.TalonFXMotorControllerWithRemoteCancoderSim(steerTalon, encoder));
+
+    
+    frc.robot.utility.SimBattery.getInstance()
+        .register(
+            () -> driveTalon.getSimState().getSupplyCurrent(),
+            DriveConstants.DRIVE_CURRENT_LIMIT_AMPS);
+    frc.robot.utility.SimBattery.getInstance()
+        .register(
+            () -> steerTalon.getSimState().getSupplyCurrent(),
+            DriveConstants.STEER_CURRENT_LIMIT_AMPS);
   }
 
   @Override

@@ -62,6 +62,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.utility.ElasticSetpoints;
 import frc.robot.utility.FuelSim.Hub;
+import frc.robot.utility.SimBattery;
 
 import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -249,7 +250,13 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    driverA.x().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE)));
+    driverA.x().onTrue(new InstantCommand(() -> {
+      if (intakeController.getTargetState() != IntakeState.INTAKE) {
+        intakeController.setTargetState(IntakeState.INTAKE);
+      } else {
+        intakeController.setTargetState(IntakeState.IDLE);
+      }
+    }));
 
     // TODO: Test this eventually...
     driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
@@ -335,6 +342,7 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Constants.Mode.SIM) return;
 
     SimulatedArena.getInstance().simulationPeriodic();
+    SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
   }

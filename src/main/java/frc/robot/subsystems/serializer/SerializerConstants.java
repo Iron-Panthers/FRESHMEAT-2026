@@ -41,6 +41,13 @@ public class SerializerConstants {
     public static final int CURRENT_LIMIT_AMPS = 1;
     public static final int STATOR_CURRENT_LIMIT = 1;
 
+
+    public static final SerializerPhysicalConstants PHYSICAL_CONSTANTS =
+      switch (Constants.getRobotType()) {
+        case SIM -> new SerializerPhysicalConstants(0.000105);
+        default -> new SerializerPhysicalConstants(0.000105);
+      };
+
     public record SerializerConfig (
         int motorID1,
         int motorID2,
@@ -52,4 +59,6 @@ public class SerializerConstants {
 
     public record PIDGains(
       double kP, double kI, double kD, double kS, double kV, double kA, double kG) {}
+
+    public static record SerializerPhysicalConstants(double momentOfIntertia) {}
 }

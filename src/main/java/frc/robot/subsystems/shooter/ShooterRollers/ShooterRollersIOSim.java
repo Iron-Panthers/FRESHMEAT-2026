@@ -10,6 +10,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim;
+import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim.RollerSim;
 
 public class ShooterRollersIOSim extends GenericRollersIOSim implements ShooterRollersIO{
     private final FlywheelSim shooterFlywheelsSim;
@@ -23,7 +24,8 @@ public class ShooterRollersIOSim extends GenericRollersIOSim implements ShooterR
         CURRENT_LIMIT_AMPS,
         SHOOTER_ROLLERS_CONFIG.inverted(),
         SHOOTER_ROLLERS_CONFIG.brake(),
-        SHOOTER_ROLLERS_CONFIG.reduction());
+        SHOOTER_ROLLERS_CONFIG.reduction(),
+        new RollerSim(4, 4, PHYSICAL_CONSTANTS.momentOfInertia(), 0.0341));
     super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
     // Create feedforward controller using configured gains
     feedforward = new SimpleMotorFeedforward(GAINS.kS(), GAINS.kV(), GAINS.kA());
