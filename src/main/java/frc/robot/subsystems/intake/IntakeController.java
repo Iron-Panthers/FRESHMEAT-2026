@@ -52,19 +52,25 @@ public class IntakeController extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.recordOutput("Intake/Intake State", targetState);
+        
         if (stopped) {
+            Logger.recordOutput("Intake/Intake State Test", "stopped");
             intakeRollers.setControlMode(ControlMode.STOP);
             intakeRack.setControlMode(GenericSuperstructure.ControlMode.STOP);
         // if else set control mode to zero
         } else if (intakeRack.getControlMode() == GenericSuperstructure.ControlMode.ZEROING) {
+            Logger.recordOutput("Intake/Intake State Test", "zeroing");
             intakeRollers.setVelocityTarget(targetState.getIntakeRollersTarget());
         } else if (intakeRack.getPosition() < 1.5 && targetState == IntakeState.INTAKE) {
+            Logger.recordOutput("Intake/Intake State Test", "intake");
             intakeRollers.setVelocityTarget(IntakeRollersTarget.IDLE);
             intakeRack.setPositionTarget(targetState.getIntakeRackTarget());
         } else if (targetState == IntakeState.IDLE && !intakeRack.reachedTarget()) {
+            Logger.recordOutput("Intake/Intake State Test", "idle");
             intakeRollers.setVelocityTarget(IntakeRollersTarget.INTAKE);
             intakeRack.setPositionTarget(targetState.getIntakeRackTarget());
         } else {
+            Logger.recordOutput("Intake/Intake State Test", "other");
             // set target states to those in the current controller state
             intakeRack.setPositionTarget(targetState.getIntakeRackTarget());
             intakeRollers.setVelocityTarget(targetState.getIntakeRollersTarget());

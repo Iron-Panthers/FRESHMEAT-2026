@@ -13,7 +13,8 @@ public class SerializerIOSim extends GenericRollersIOSim implements SerializerIO
             SerializerConstants.CURRENT_LIMIT_AMPS,
             SerializerConstants.SERIALIZER_CONFIG.inverted(),
             SerializerConstants.SERIALIZER_CONFIG.brake(),
-            SerializerConstants.SERIALIZER_CONFIG.reduction()
+            SerializerConstants.SERIALIZER_CONFIG.reduction(),
+            new RollerSim(1, 2, PHYSICAL_CONSTANTS.momentOfIntertia(), 0.2237)
         );
         setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
         talon.getSimState().setMotorType(TalonFXSimState.MotorType.KrakenX60);
