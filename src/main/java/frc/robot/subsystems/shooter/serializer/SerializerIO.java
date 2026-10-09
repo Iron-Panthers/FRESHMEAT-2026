@@ -1,4 +1,4 @@
-package frc.robot.subsystems.serializer;
+package frc.robot.subsystems.shooter.serializer;
 
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
 

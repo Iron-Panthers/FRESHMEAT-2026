@@ -1,6 +1,6 @@
-package frc.robot.subsystems.serializer;
+package frc.robot.subsystems.shooter.serializer;
 
-import static frc.robot.subsystems.serializer.SerializerConstants.*;
+import static frc.robot.subsystems.shooter.serializer.SerializerConstants.*;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 
