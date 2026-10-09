@@ -5,6 +5,11 @@ package frc.robot;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,13 +18,36 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.AlignToPoseCommand;
+import frc.robot.commands.AxisAssistCommand;
+import frc.robot.commands.AlignToPassCommand;
+import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIOComp;
+import frc.robot.subsystems.intake.IntakeController;
+import frc.robot.subsystems.intake.IntakeController.IntakeState;
+import frc.robot.subsystems.intake.intake_rack.IntakeRack;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIO;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIOSim;
+import frc.robot.subsystems.intake.intake_rack.IntakeRackIOTalonFX;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
+import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
+import frc.robot.subsystems.serializer.Serializer;
+import frc.robot.subsystems.serializer.SerializerIO;
+import frc.robot.subsystems.serializer.SerializerIOSim;
+import frc.robot.subsystems.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIO;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOSim;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollersIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterRollers.ShooterRollers.ShooterRollerTarget;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.swerve.GyroIO;
@@ -33,6 +61,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.utility.ElasticSetpoints;
+import frc.robot.utility.FuelSim.Hub;
+import frc.robot.utility.SimBattery;
 
 import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -61,10 +91,15 @@ public class RobotContainer {
   private final CommandXboxController driverA = new CommandXboxController(0);
   private final CommandXboxController driverB = new CommandXboxController(1);
 
+  private Serializer serializer;
   private Drive swerve;
   private Vision vision;
   private RGB rgb;
   private CANWatchdog canWatchdog;
+  private IntakeController intakeController;
+  private IntakeRack intakeRack;
+  private IntakeRollers intakeRollers;
+  private ShooterRollers shooterRollers;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -73,6 +108,8 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
+          intakeRack = new IntakeRack(new IntakeRackIOTalonFX());
+          intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
           swerve =
               new Drive(
                   new GyroIOPigeon2(),
@@ -88,6 +125,8 @@ public class RobotContainer {
                   new VisionIOPhotonvision("CamC", 0),
                   new VisionIOPhotonvision("CamA", 1),
                   new VisionIOPhotonvision("CamB", 2));
+          serializer = new Serializer(new SerializerIOTalonFX());
+          shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -121,8 +160,14 @@ public class RobotContainer {
                   new VisionIOPhotonvisionSim(
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
+          //intakeRack = new IntakeRack(new IntakeRackIOSim());
+          intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
 
+          serializer = new Serializer(new SerializerIOSim());
+          
           SimulatedArena.getInstance().resetFieldForAuto();
+          serializer = new Serializer(new SerializerIOSim());
+          shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
         }
       }
     }
@@ -148,9 +193,29 @@ public class RobotContainer {
       rgb = new RGB(new RGBIO() {});
     }
 
+    if (serializer == null) {
+      serializer = new Serializer(new SerializerIO() {});
+    }
+    
+    if (intakeRack == null) {
+      intakeRack = new IntakeRack(new IntakeRackIO() {});
+    }
+
+    if (intakeRollers == null) {
+      intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
+    }
+
+    if (shooterRollers == null) {
+      shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
+    }
+
+    intakeController = new IntakeController(intakeRack, intakeRollers);
+
+
     nameCommands();
     configureAutos();
     configureBindings();
+    
   }
 
   public void containerMatchStarting() {
@@ -185,6 +250,31 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> {
+      if (intakeController.getTargetState() != IntakeState.INTAKE) {
+        intakeController.setTargetState(IntakeState.INTAKE);
+      } else {
+        intakeController.setTargetState(IntakeState.IDLE);
+      }
+    }));
+
+    // TODO: Test this eventually...
+    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+
+    // TODO: Test
+    driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollerTarget.SHOOT)));
+
+    // TODO: Test this eventually...
+    // driverA.b().whileTrue(new AxisAssistCommand(swerve));
+
+
+    configureDriverAButtons();
+
+  }
+
+  //Testing AlignToPoseCommand---remove later
+  private void configureDriverAButtons(){
+    driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d()), true));
   }
 
   private void configureAutos() {
@@ -252,6 +342,7 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Constants.Mode.SIM) return;
 
     SimulatedArena.getInstance().simulationPeriodic();
+    SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
   }

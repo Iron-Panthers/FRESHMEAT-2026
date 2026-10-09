@@ -8,18 +8,28 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.MotorOutputManager;
+import frc.robot.utility.SimBattery;
+
 public abstract class GenericRollersIOSim implements GenericRollersIO {
+
+  public record RollerSim(
+    int plantMotors, int packMotors, double momentOfInertia, double dragAmpsPerRadPerSec){}
+
   protected final TalonFX talon;
 
   private final NeutralOut neutralOutput = new NeutralOut();
   private final double mechanismReduction;
   private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0);
+  private final RollerSim sim;
+  private double packSupplyCurrentAmps = 0.0;
 
   public GenericRollersIOSim(
-      int id, int currentLimitAmps, boolean inverted, boolean brake, double reduction) {
+      int id, int currentLimitAmps, boolean inverted, boolean brake, double reduction, RollerSim sim) {
     talon = new TalonFX(id);
 
     mechanismReduction = reduction;
+    this.sim = sim;
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted =
@@ -30,6 +40,11 @@ public abstract class GenericRollersIOSim implements GenericRollersIO {
     talon.getConfigurator().apply(config);
 
     talon.optimizeBusUtilization();
+
+    // The real IO registers with both; without these sim pack current omitted every mechanism.
+    MotorOutputManager.getInstance().registerMotorOutputs(() -> packSupplyCurrentAmps);
+    SimBattery.getInstance()
+        .register(() -> packSupplyCurrentAmps, currentLimitAmps * sim.packMotors());
   }
 
   @Override
