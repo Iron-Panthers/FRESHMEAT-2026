@@ -71,6 +71,9 @@ public class RobotContainer {
   // DO NOT DELETE -- this actually does something important
   private RobotState robotState = RobotState.getInstance();
 
+  // DO NOT DELETE -- storing the instance here registers @AutoLogOutput methods with AdvantageKit
+  private RobotSimState robotSimState;
+
   private ElasticSetpoints elasticSetpoints = ElasticSetpoints.getInstance();
 
   private boolean defaultZeroing = false;
@@ -90,8 +93,6 @@ public class RobotContainer {
   private IntakeRack intakeRack;
   private IntakeRollers intakeRollers;
   private ShooterRollers shooterRollers;
-
-  private SwerveDriveSimulation driveSimulation = null;
 
   public RobotContainer() {
 
@@ -130,10 +131,8 @@ public class RobotContainer {
           // VisionIOPhotonvision("arducam-5", 1));
         }
         case SIM -> {
-          driveSimulation =
-              new SwerveDriveSimulation(
-                  DriveConstants.mapleSimConfig, RobotState.getInstance().getEstimatedPose());
-          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          robotSimState = RobotSimState.getInstance();
+          SwerveDriveSimulation driveSimulation = robotSimState.getDriveSimulation();
           swerve =
               new Drive(
                   new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -330,10 +329,13 @@ public class RobotContainer {
   /** Ran every 20 milliseconds */
   public void updateSimulation() {
     if (Constants.getRobotMode() != Constants.Mode.SIM) return;
-
+    RobotSimState.getInstance().applyTerrainGravityForce();
     SimulatedArena.getInstance().simulationPeriodic();
+    RobotSimState.getInstance().updateTerrainState();
+    RobotSimState.getInstance().getFuelSim().updateSim();
     SimBattery.getInstance().update();
     Logger.recordOutput(
-        "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+        "FieldSimulation/RobotPosition", RobotSimState.getInstance().getRobotPose3d());
+    
   }
 }
