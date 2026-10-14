@@ -4,13 +4,16 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
@@ -54,6 +57,9 @@ import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.utility.ElasticSetpoints;
 import frc.robot.utility.SimBattery;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -216,6 +222,48 @@ public class RobotContainer {
   /** Use this method to define the named commands for all of the autos */
   private void nameCommands() {
     // Register Command Names in this method
+
+    Supplier<Pose2d> shootingPoseSupplier =
+        () ->
+            ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
+                ? new Pose2d(3.891, 0.823, new Rotation2d(77.005 * Math.PI / 180))
+                : new Pose2d(
+                    3.891,
+                    FlippingUtil.fieldSizeY - 0.823,
+                    new Rotation2d((-77.005) * Math.PI / 180));
+          
+        NamedCommands.registerCommand(
+        "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)); //TODO: make WaitUnitlRobotStuckCommand
+    Supplier<Pose2d> flippedShootingPoseSupplier =
+        () -> {
+          return RobotState.isAllianceRed()
+              ? FlippingUtil.flipFieldPose(shootingPoseSupplier.get())
+              : shootingPoseSupplier.get();
+        };
+            NamedCommands.registerCommand(
+        "Translate To Shoot",
+        Commands.defer(
+            () -> {
+              if (!RobotState.getInstance().isAutoAdaptive()) {
+                return new InstantCommand();
+              }
+              return ((new AlignToPoseCommand(swerve, new Pose2d(), true)
+                          .raceWith(new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)))
+                      .repeatedly())
+                  .until(
+                      () ->
+                          flippedShootingPoseSupplier
+                                  .get()
+                                  .getTranslation()
+                                  .getDistance(
+                                      RobotState.getInstance().getEstimatedPose().getTranslation())
+                              < .04)
+                  .andThen(
+                      new InstantCommand(() -> RobotState.getInstance().resetDynamicObstacles()))
+                  .andThen(
+                      new InstantCommand(() -> RobotState.getInstance().setIsAutoAdaptive(false)));
+            },
+            Set.of(swerve)));
   }
 
   private void configureBindings() {

@@ -14,6 +14,7 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,7 +40,10 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.vision.VisionConstants;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -84,6 +88,12 @@ public class RobotState {
   private ChassisSpeeds robotSpeeds = new ChassisSpeeds();
 
   private static RobotState instance;
+
+  private boolean isAutoAdaptive = false;
+
+    @AutoLogOutput(key = "PathPlanner/Dynamic Obstacles")
+  private List<Pair<Translation2d, Translation2d>> dynamicObstacles =
+      new ArrayList<Pair<Translation2d, Translation2d>>();
 
   public static RobotState getInstance() {
     if (instance == null) instance = new RobotState();
@@ -179,6 +189,19 @@ public class RobotState {
 
   public Pose2d getAlignPose() {
     return lastApproachPose;
+  }
+
+  public void resetDynamicObstacles() {
+    dynamicObstacles.clear();
+  }
+
+    public void setIsAutoAdaptive(boolean isAutoAdaptive) {
+    this.isAutoAdaptive = isAutoAdaptive;
+  }
+
+    @AutoLogOutput(key = "Robot State/is auto adaptive")
+  public boolean isAutoAdaptive() {
+    return isAutoAdaptive;
   }
 
   @AutoLogOutput(key = "Robot State/isAllianceRed")

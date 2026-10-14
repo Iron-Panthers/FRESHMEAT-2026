@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 public class AlignToPoseCommand extends Command{
     private Drive swerve;
+    private Supplier<Pose2d> approachPose;
     private Pose2d targetPose;
     private Command poseAlignCommand;
     private boolean endOnAccurate = false;
@@ -32,6 +33,9 @@ public class AlignToPoseCommand extends Command{
       Drive swerve, Pose2d targetPose, boolean endOnAccurate) {
     this(swerve, targetPose);
     this.endOnAccurate = endOnAccurate;
+  }
+
+  public AlignToPoseCommand(Drive swerve, Supplier<Pose2d> approachPose, boolean endOnAccurate) {
   }
 
     @Override
