@@ -47,7 +47,10 @@ public class AlignToPoseCommand extends Command{
                 new VelocityClamp(swerve)
                     .andThen(
                         RobotState.getInstance()
-                        .getPathPlannerApproachPoseCommand(currentApproachPose));
+                        .getPathPlannerApproachPoseCommand(
+                          currentApproachPose,
+                          RobotState.getInstance().isAutoUnderTrench(),
+                          true));
             poseAlignCommand.initialize();
         } catch(Exception e) {
             e.printStackTrace();

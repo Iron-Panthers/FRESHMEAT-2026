@@ -169,24 +169,6 @@ public class RobotState {
     return translateByVector(pose, mag, theta).transformBy(new Transform2d(0, 0, theta));
   }
 
-  /**
-   * Gets the scuffed path planner built command for following a path to a certain pose
-   *
-   * @param approachPose2d
-   * @return
-   */
-  public Command getPathPlannerApproachPoseCommand(Pose2d approachPose2d) {
-    Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
-    Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
-
-    Command finalPathfindingCommand = null;
-
-    finalPathfindingCommand =
-        AutoBuilder.pathfindToPose(approachPose2d, DriveConstants.ALIGN_PATH_CONSTRAINTS, 0.0);
-    
-
-    return finalPathfindingCommand;
-  }
 
   public void addRobotSpeeds(ChassisSpeeds chassisSpeeds) {
     this.robotSpeeds = chassisSpeeds;
@@ -214,8 +196,7 @@ public class RobotState {
   public Command getPathPlannerApproachPoseCommand(
       Pose2d approachPose2d,
       boolean underTrench,
-      boolean stayOnCurrentSide,
-      boolean stayOnRightSide) {
+      boolean stayOnCurrentSide) {
     Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
     Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
 
@@ -248,6 +229,10 @@ public class RobotState {
 
     public void setIsAutoAdaptive(boolean isAutoAdaptive) {
     this.isAutoAdaptive = isAutoAdaptive;
+  }
+
+  public void setPathPlannerTargetPose(Pose2d pose) {
+    pathPlannerTargetPose = pose;
   }
 
   public Pose2d getPathPlannerTargetPose() {
