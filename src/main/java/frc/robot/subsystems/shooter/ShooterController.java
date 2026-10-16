@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import java.io.Serial;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.Serializer.SerializerTarget;
@@ -27,8 +29,29 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.INTAKE, //TODO: FIX
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
-            ShooterRollersTarget.INTAKE);
-
+            ShooterRollersTarget.INTAKE),
+        TOTAL_SPIN_UP(
+            SerializerTarget.INTAKE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.INTAKE,  
+            ShooterRollersTarget.SHOOT),
+        COMPACT_SPIN_UP(
+            SerializerTarget.INTAKE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT),
+        ZEROING(
+            SerializerTarget.IDLE,
+            ShooterAcceleratorTarget.IDLE,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.IDLE),
+        PASS_SPIN_UP(
+            SerializerTarget.IDLE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT);
+        
+        
         public final SerializerTarget serializerTarget;
         public final ShooterAcceleratorTarget acceleratorTarget;
         public final ShooterOmniwheelsTarget omniwheelsTarget;
@@ -44,6 +67,8 @@ public class ShooterController extends SubsystemBase {
           this.omniwheelsTarget = omniwheelsTarget;
           this.rollersTarget = rollersTarget;
         }
+        
+              
     }
 
     private ShooterState targetState = ShooterState.IDLE;
