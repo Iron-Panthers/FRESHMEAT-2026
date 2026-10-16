@@ -137,10 +137,7 @@ public class RobotContainer {
           // VisionIOPhotonvision("arducam-5", 1));
         }
         case SIM -> {
-          driveSimulation =
-              new SwerveDriveSimulation(
-                  DriveConstants.mapleSimConfig, RobotState.getInstance().getEstimatedPose());
-          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          driveSimulation = RobotSimState.getInstance().getDriveSimulation();
           swerve =
               new Drive(
                   new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -388,9 +385,9 @@ public class RobotContainer {
     SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
-    // Logger.recordOutput(
-    //     "FieldSimulation/ObstaclePositions",
-    //     RobotSimState.getInstance().getObstaclePositions().toArray(new Pose2d[0]));
+    Logger.recordOutput(
+        "FieldSimulation/ObstaclePositions",
+        RobotSimState.getInstance().getObstaclePositions().toArray(new Pose2d[0]));
 
   }
 }
