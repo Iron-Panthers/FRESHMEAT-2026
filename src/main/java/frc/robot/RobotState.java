@@ -89,7 +89,12 @@ public class RobotState {
 
   private static RobotState instance;
 
+  private Pose2d pathPlannerTargetPose;
+
   private boolean isAutoAdaptive = false;
+
+  private boolean isAutoUnderTrench = true;
+
 
     @AutoLogOutput(key = "PathPlanner/Dynamic Obstacles")
   private List<Pair<Translation2d, Translation2d>> dynamicObstacles =
@@ -191,12 +196,71 @@ public class RobotState {
     return lastApproachPose;
   }
 
+  public void addDynamicObstacle(Pair<Translation2d, Translation2d> obj) {
+    dynamicObstacles.add(obj);
+  }
+
   public void resetDynamicObstacles() {
     dynamicObstacles.clear();
   }
 
+  /**
+   * Gets the scuffed path planner built command for following a path to a certain pose
+   *
+   * @param approachPose2d
+   * @param underTrench
+   * @return
+   */
+  public Command getPathPlannerApproachPoseCommand(
+      Pose2d approachPose2d,
+      boolean underTrench,
+      boolean stayOnCurrentSide,
+      boolean stayOnRightSide) {
+    Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
+    Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
+
+    Command finalPathfindingCommand = null;
+
+    List<Pair<Translation2d, Translation2d>> finalObstaclesList =
+        new ArrayList<Pair<Translation2d, Translation2d>>(dynamicObstacles);
+
+    finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_TRENCH_WALL);
+
+    if (stayOnCurrentSide) {
+      finalObstaclesList.add(DriveConstants.FIELD_SPLITTING_LINE_CENTER);
+    }
+
+    if (underTrench) {
+      finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_TRENCH_PATHFINDING);
+    } else {
+      finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_BUMP_PATHFINDING);
+    }
+
+    Pathfinding.setDynamicObstacles(finalObstaclesList, estimatedPose.getTranslation());
+
+    Logger.recordOutput("Robot State/Dynamic Obstacles", finalObstaclesList.toString());
+
+    finalPathfindingCommand =
+        AutoBuilder.pathfindToPose(approachPose2d, DriveConstants.ALIGN_PATH_CONSTRAINTS, 0.0);
+
+    return finalPathfindingCommand;
+  }
+
     public void setIsAutoAdaptive(boolean isAutoAdaptive) {
     this.isAutoAdaptive = isAutoAdaptive;
+  }
+
+  public Pose2d getPathPlannerTargetPose() {
+    return pathPlannerTargetPose;
+  }
+
+  @AutoLogOutput(key = "Robot State/adaptive auto going under")
+  public boolean isAutoUnderTrench() {
+    return isAutoUnderTrench;
+  }
+
+  public void setIsAutoUnderTrench(boolean isAutoUnderTrench) {
+    this.isAutoUnderTrench = isAutoUnderTrench;
   }
 
     @AutoLogOutput(key = "Robot State/is auto adaptive")
@@ -211,7 +275,7 @@ public class RobotState {
     if (RobotBase.isReal()) {
       return alliance.get() == DriverStation.Alliance.Red;
     }
-    return true;
+    return false;
   }
 
 }

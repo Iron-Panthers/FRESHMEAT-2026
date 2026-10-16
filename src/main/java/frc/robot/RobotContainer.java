@@ -21,6 +21,7 @@ import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
+import frc.robot.commands.WaitUnitlRobotStuckCommand;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
 import frc.robot.subsystems.intake.IntakeController;
@@ -223,6 +224,8 @@ public class RobotContainer {
   private void nameCommands() {
     // Register Command Names in this method
 
+    NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
+
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
@@ -232,15 +235,15 @@ public class RobotContainer {
                     FlippingUtil.fieldSizeY - 0.823,
                     new Rotation2d((-77.005) * Math.PI / 180));
           
-        NamedCommands.registerCommand(
-        "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)); //TODO: make WaitUnitlRobotStuckCommand
+    NamedCommands.registerCommand(
+        "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)); 
     Supplier<Pose2d> flippedShootingPoseSupplier =
         () -> {
           return RobotState.isAllianceRed()
               ? FlippingUtil.flipFieldPose(shootingPoseSupplier.get())
               : shootingPoseSupplier.get();
         };
-            NamedCommands.registerCommand(
+    NamedCommands.registerCommand(
         "Translate To Shoot",
         Commands.defer(
             () -> {
@@ -350,6 +353,8 @@ public class RobotContainer {
 
   // runs when auto starts
   public void autoInit() {
+    RobotState.getInstance().setIsAutoAdaptive(false);
+    RobotState.getInstance().setIsAutoUnderTrench(true);
     // Smart zero the robot
     CommandScheduler.getInstance().schedule(new InstantCommand(() -> swerve.smartZeroGyro()));
   }
@@ -383,5 +388,9 @@ public class RobotContainer {
     SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+    // Logger.recordOutput(
+    //     "FieldSimulation/ObstaclePositions",
+    //     RobotSimState.getInstance().getObstaclePositions().toArray(new Pose2d[0]));
+
   }
 }
