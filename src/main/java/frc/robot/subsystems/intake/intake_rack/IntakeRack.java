@@ -21,7 +21,8 @@ public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarge
     public enum IntakeRackTarget implements GenericSuperstructure.PositionTarget {
         IDLE(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
         INTAKE(10, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-        STOW(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());
+        STOW(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+        SHOOT(5, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());//replace with actual value
 
         private static final double EPSILON = IntakeRackConstants.POSITION_TARGET_EPSILON;
         private double position;

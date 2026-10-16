@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
@@ -31,10 +32,15 @@ import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
+import frc.robot.subsystems.shooter.ShooterController;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.SerializerIO;
 import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.ShooterAcceleratorTarget;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOSim;
@@ -90,6 +96,10 @@ public class RobotContainer {
   private IntakeRack intakeRack;
   private IntakeRollers intakeRollers;
   private ShooterRollers shooterRollers;
+  private ShooterController shooterController;
+  private ShooterOmniwheels shooterOmniwheels;
+  private ShooterAccelerator shooterAccelerator;
+  private ShootCommand shootCommand;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -117,6 +127,8 @@ public class RobotContainer {
                   new VisionIOPhotonvision("CamB", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOTalonFX());
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -198,6 +210,10 @@ public class RobotContainer {
     if (shooterRollers == null) {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
+    if (shooterController == null) {
+      shooterController = new ShooterController(serializer, shooterRollers);
+    }
+    shootCommand = new ShootCommand(intakeController,shooterController);
 
     intakeController = new IntakeController(intakeRack, intakeRollers);
 
@@ -249,7 +265,8 @@ public class RobotContainer {
     }));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    driverA.b().whileTrue(new )
+    // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
     driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
