@@ -22,12 +22,12 @@ import java.util.function.Supplier;
  * <p>Use {@link #whileHeld()} for the whileTrue binding and {@link #onRelease()} for the onFalse
  * binding.
  */
-public class ShootCommandFactory {
-  private final ShooterController shooterController;
-  private final IntakeController intakeController;
-  private final ElasticUpdater matchTimerUpdater;
-  private final Supplier<Rotation2d> getHeadingError;
-  double time = Timer.getFPGATimestamp();
-  private boolean justShoot = false;
+// public class ShootCommandFactory {
+//   private final ShooterController shooterController;
+//   private final IntakeController intakeController;
+//   private final ElasticUpdater matchTimerUpdater;
+//   private final Supplier<Rotation2d> getHeadingError;
+//   double time = Timer.getFPGATimestamp();
+//   private boolean justShoot = false;
 
-}
+// }
