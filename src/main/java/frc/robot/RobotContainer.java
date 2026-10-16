@@ -40,6 +40,7 @@ import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.ShooterAcceleratorTarget;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
@@ -128,7 +129,6 @@ public class RobotContainer {
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
           shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOTalonFX());
-          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -164,8 +164,9 @@ public class RobotContainer {
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           //intakeRack = new IntakeRack(new IntakeRackIOSim());
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
-
           serializer = new Serializer(new SerializerIOSim());
+          shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOSim());
           
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());
@@ -211,9 +212,9 @@ public class RobotContainer {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
     if (shooterController == null) {
-      shooterController = new ShooterController(serializer, shooterRollers);
+      shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
     }
-    shootCommand = new ShootCommand(intakeController,shooterController);
+    shootCommand = new ShootCommand(shooterController,intakeController);
 
     intakeController = new IntakeController(intakeRack, intakeRollers);
 
@@ -265,8 +266,10 @@ public class RobotContainer {
     }));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new )
+      
     // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+      
+      driverA.b().whileTrue(shootCommand.whileHeld()).onFalse(shootCommand.whenReleased());
 
     // TODO: Test
     driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));

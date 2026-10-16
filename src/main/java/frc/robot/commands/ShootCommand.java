@@ -6,7 +6,7 @@ import frc.robot.subsystems.intake.IntakeController;
 import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.shooter.ShooterController;
 
-public class ShootCommand {
+public class ShootCommand extends Command {
     private final ShooterController shooterController;
     private final IntakeController intakeController;
 
