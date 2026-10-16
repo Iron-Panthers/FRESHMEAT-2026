@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
+import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
@@ -257,7 +258,7 @@ public class RobotContainer {
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
 
-
+    driverB.a().onTrue(new LowPowerModeCommand(swerve));
     configureDriverAButtons();
 
   }
@@ -266,6 +267,7 @@ public class RobotContainer {
   private void configureDriverAButtons(){
     driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d()), true));
   }
+  
 
   private void configureAutos() {
     RobotConfig robotConfig;
