@@ -31,10 +31,19 @@ import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
+import frc.robot.subsystems.shooter.ShooterController;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.SerializerIO;
 import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIO;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOSim;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIO;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOSim;
@@ -90,6 +99,9 @@ public class RobotContainer {
   private IntakeRack intakeRack;
   private IntakeRollers intakeRollers;
   private ShooterRollers shooterRollers;
+  private ShooterOmniwheels shooterOmniwheels;
+  private ShooterAccelerator shooterAccelerator;
+  private ShooterController shooterController;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -117,6 +129,8 @@ public class RobotContainer {
                   new VisionIOPhotonvision("CamB", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -156,8 +170,10 @@ public class RobotContainer {
           serializer = new Serializer(new SerializerIOSim());
           
           SimulatedArena.getInstance().resetFieldForAuto();
-          serializer = new Serializer(new SerializerIOSim());
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
+
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOSim());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOSim());
         }
       }
     }
@@ -199,7 +215,16 @@ public class RobotContainer {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
 
+    if (shooterAccelerator == null) {
+      shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
+    }
+
+    if (shooterOmniwheels == null) {
+      shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIO() {});
+    }
+
     intakeController = new IntakeController(intakeRack, intakeRollers);
+    shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
 
 
     nameCommands();
