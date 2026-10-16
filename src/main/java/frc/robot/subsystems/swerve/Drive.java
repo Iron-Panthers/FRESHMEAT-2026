@@ -280,7 +280,7 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("Swerve/PID/Velocity Y", axisAssistController.getYVel());
     }
 
-    Logger.recordOutput("Swerve/Low Power Mode", ModuleIO.getSupplyCurrentLimit() == DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS);
+    Logger.recordOutput("Swerve/Low Power Mode", modules[0].getDriveSupplyCurrentLimit() <= DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS);
   }
 
   public void setDefenseMode() {

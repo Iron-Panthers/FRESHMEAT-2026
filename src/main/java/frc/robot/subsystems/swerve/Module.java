@@ -59,6 +59,10 @@ public class Module {
     moduleIO.setSupplyCurrentLimit(currentLimitAmps);
   }
 
+  public double getDriveSupplyCurrentLimit() {
+    return inputs.driveSupplyCurrent;
+  }
+
   public void setNeutralMode(NeutralModeValue value) {
     moduleIO.setNeutralMode(value);
   }
