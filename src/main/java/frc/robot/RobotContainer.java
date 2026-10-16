@@ -39,6 +39,7 @@ import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.ShooterAcceleratorTarget;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOSim;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOTalonFX;
@@ -167,10 +168,8 @@ public class RobotContainer {
           serializer = new Serializer(new SerializerIOSim());
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
           shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOSim());
-          
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOSim());
           SimulatedArena.getInstance().resetFieldForAuto();
-          serializer = new Serializer(new SerializerIOSim());
-          shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
         }
       }
     }
@@ -214,9 +213,9 @@ public class RobotContainer {
     if (shooterController == null) {
       shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
     }
-    shootCommand = new ShootCommand(shooterController,intakeController);
 
     intakeController = new IntakeController(intakeRack, intakeRollers);
+    shootCommand = new ShootCommand(shooterController, intakeController);
 
 
     nameCommands();
