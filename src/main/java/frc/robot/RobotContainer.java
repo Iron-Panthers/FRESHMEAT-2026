@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
+import frc.robot.commands.AlignToTrenchCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
@@ -283,15 +284,20 @@ public class RobotContainer {
 
   }
 
-  //Testing AlignToPoseCommand---remove later
   private void configureDriverAButtons(){
-    driverA.leftBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.5,0.9, new Rotation2d(1.57)), true)
-      .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14)))
-      .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+    driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
+
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
+
     driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    driverA.b().onTrue(new IntakeCommand(intakeController, shooterController));
+    driverA.b().onTrue(new IntakeCommand(intakeController, shooterController))
+    .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
+    driverA.a().whileTrue(new AlignToShootCommand(swerve)
+    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))))
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+
+    driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
   }
 
   private void configureAutos() {
