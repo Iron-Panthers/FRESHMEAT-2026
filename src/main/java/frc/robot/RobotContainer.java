@@ -145,10 +145,10 @@ public class RobotContainer {
           // VisionIOPhotonvision("arducam-5", 1));
         }
         case SIM -> {
-          driveSimulation =
-              new SwerveDriveSimulation(
-                  DriveConstants.mapleSimConfig, RobotState.getInstance().getEstimatedPose());
-          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          // RobotSimState must be initialized first — its constructor calls
+          // SimulatedArena.overrideInstance(), so any arena access before this point
+          // would get orphaned. We reuse its driveSimulation so both share the same arena.
+          driveSimulation = RobotSimState.getInstance().getDriveSimulation();
           swerve =
               new Drive(
                   new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -166,7 +166,7 @@ public class RobotContainer {
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
-          // intakeRack = new IntakeRack(new IntakeRackIOSim());
+          intakeRack = new IntakeRack(new IntakeRackIOSim());
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
