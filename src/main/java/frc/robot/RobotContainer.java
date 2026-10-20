@@ -312,7 +312,7 @@ public class RobotContainer {
     driverA.povRight().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))
     .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
 
-    driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = false));
+    driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
   }
 
   private void configureAutos() {
