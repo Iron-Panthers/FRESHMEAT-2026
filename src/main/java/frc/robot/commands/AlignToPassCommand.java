@@ -18,7 +18,9 @@ public class AlignToPassCommand extends Command {
 
     public AlignToPassCommand(Drive swerve, Translation2d pointTarget) {
         this.swerve = swerve;
-        this.pointTarget = pointTarget;
+        this.pointTarget = RobotState.isAllianceRed() 
+            ? pointTarget
+            : FlippingUtil.flipFieldPosition(pointTarget);
     }
 
     @Override

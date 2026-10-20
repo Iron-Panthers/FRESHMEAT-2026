@@ -8,12 +8,14 @@ import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.AlignToTrenchCommand;
@@ -289,15 +291,23 @@ public class RobotContainer {
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    //driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    
     driverA.b().onTrue(new IntakeCommand(intakeController, shooterController))
     .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
+
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
+
     driverA.a().whileTrue(new AlignToShootCommand(swerve)
-    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
+
+    driverA.povLeft().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))
+    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+
+    driverA.povRight().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))
+    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
   }
 
   private void configureAutos() {
