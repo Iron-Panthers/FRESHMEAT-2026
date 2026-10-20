@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToPoseCommand;
@@ -283,6 +284,8 @@ public class RobotContainer {
 
 
     configureDriverAButtons();
+    new Trigger(() -> vision.getMultiTags() && !defaultZeroing)
+        .onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
   }
 
@@ -291,7 +294,7 @@ public class RobotContainer {
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    //driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
     driverA.b().onTrue(new IntakeCommand(intakeController, shooterController))
     .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
@@ -308,6 +311,8 @@ public class RobotContainer {
 
     driverA.povRight().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))
     .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+
+    driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = false));
   }
 
   private void configureAutos() {
