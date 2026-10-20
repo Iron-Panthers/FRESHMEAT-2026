@@ -195,6 +195,17 @@ public class RobotSimState {
   public int getFuelCount() {
     return fuelCount;
   }
+  
+  public void logScoring() {
+    int blue = FuelSim.Hub.BLUE_HUB.getScore();
+    int red = FuelSim.Hub.RED_HUB.getScore();
+    int scored = RobotState.getInstance().isAllianceRed() ? red : blue;
+
+    Logger.recordOutput("Field Simulation/Blue Score", blue);
+    Logger.recordOutput("Field Simulation/Red Score", red);
+    Logger.recordOutput("Field Simulation/Score", scored);
+    Logger.recordOutput("Field Simulation/Held Fuel", fuelCount);
+  }
 
   public Pose3d[] getIntakeGamePieces() {
     Pose3d[] gamePiecePoses = new Pose3d[fuelCount];
@@ -265,6 +276,7 @@ public class RobotSimState {
 
     double currentTime = Timer.getFPGATimestamp();
     if (currentTime - lastShootTime >= shootIntervalSeconds) {
+      Logger.recordOutput("THISISATESTTESTTEST", 1);
       // Time to shoot another ball
       shootFuel(
           PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE, currentShooterTransform, currentLaunchVelocity, currentShooterWidth);

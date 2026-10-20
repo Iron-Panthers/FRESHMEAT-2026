@@ -2,12 +2,19 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
@@ -258,7 +266,7 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    driverA.b().whileTrue(new AlignToShootCommand(swerve));
+    driverA.b().whileTrue(new ShootCommand(shooterController, swerve));
     driverA.x().onTrue(new InstantCommand(() -> {
       if (intakeController.getTargetState() != IntakeState.INTAKE) {
         intakeController.setTargetState(IntakeState.INTAKE);
@@ -266,9 +274,6 @@ public class RobotContainer {
         intakeController.setTargetState(IntakeState.IDLE);
       }
     }));
-
-    // TODO: Test this eventually...
-    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
     driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -356,6 +361,22 @@ public class RobotContainer {
     SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", RobotSimState.getInstance().getRobotPose3d());
-    
+    RobotSimState.getInstance().logScoring();
+
+
+
+    // Update the shooting logic with the correct rollers
+    RobotSimState.getInstance()
+        .setShooterRunning(
+            shooterRollers.getCurrentVelocity().in(MetersPerSecond) > 1.0
+                && shooterAccelerator.getCurrentVelocity().in(RotationsPerSecond) > 1.0
+                && shooterOmniwheels.getCurrentVelocity().in(RotationsPerSecond) > 1.0,
+            20.0,
+                new Transform3d(new Translation3d(), new Rotation3d(35, 0, -Math.PI / 2)),
+            shooterRollers.getCurrentVelocity(),
+            Units.Inches.of(26));
+
+    // Handle automatic shooter firing
+    RobotSimState.getInstance().periodicShooter();
   }
 }

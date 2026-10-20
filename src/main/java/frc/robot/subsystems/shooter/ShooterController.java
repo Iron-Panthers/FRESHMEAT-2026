@@ -80,6 +80,11 @@ public class ShooterController extends SubsystemBase {
         Logger.recordOutput("Shooter Speed", RobotState.getInstance().getShooterSpeed(RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(RobotState.isAllianceRed() ?
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
+        Logger.recordOutput("Shooter/Target", targetState.toString());
+        shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
+        shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
+        serializer.setVelocityTarget(targetState.serializerTarget);
         serializer.periodic();
         shooterAccelerator.periodic();
         shooterOmniwheels.periodic();

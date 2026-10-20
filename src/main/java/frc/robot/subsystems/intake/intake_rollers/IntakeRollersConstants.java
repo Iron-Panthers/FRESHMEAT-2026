@@ -17,8 +17,8 @@ public class IntakeRollersConstants {
                 false,
                 false);
             case SIM -> new IntakeRollersConfig(
-                CAN.at(5, "Intake Rollers 1"),
-                CAN.at(6, "Intake Rollers 2"),
+                CAN.at(60, "Intake Rollers 1"),
+                CAN.at(61, "Intake Rollers 2"),
                 1,
                 false,
                 false,
