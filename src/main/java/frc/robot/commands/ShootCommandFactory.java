@@ -29,5 +29,67 @@ public class ShootCommandFactory {
   private final Supplier<Rotation2d> getHeadingError;
   double time = Timer.getFPGATimestamp();
   private boolean justShoot = false;
+    public ShootCommandFactory(
+      ShooterController shooterController,
+      IntakeController intakeController,
+      ElasticUpdater matchTimerUpdater,
+      Supplier<Rotation2d> getHeadingError) {
+        this.shooterController = shooterController;
+        this.intakeController = intakeController;
+        this.matchTimerUpdater = matchTimerUpdater;
+        this.getHeadingError = getHeadingError;
+        SmartDashboard.putNumber("INtake rack in time",5);
+      }
+
+      public Command whileHeld() {
+        return justshootCommand(false)
+      }
+      
+      
+      public Command justShootCommand(boolean justShoot) {
+    return new InstantCommand(() -> this.justShoot = justShoot)
+      .alongWith(
+            new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW))
+                .andThen(
+                    new WaitCommand(1)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW)))
+                .andThen(
+                    new WaitCommand(0.2)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW)))
+                .andThen(
+                    new WaitCommand(0.1)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(
+                            () ->
+                                intakeController.setTargetState(
+                                    IntakeState
+                                        .INTAKE_SLOW))))
+            .alongWith(
+              new InstantCommand(()->{
+                shooterController.setTargetState(
+                  (shooterController.getTargetState()==ShooterState.TOTAL_SPIN_UP||
+                  shooterController.getTargetState()==ShooterState.SHOOT)
+                  &&shooterRollersUpToSpeed()
+                  &&(matchTimerUpdater.isOurHubActive()
+                  ||matchTimerUpdater.getTimeUntilOurHubShifts()<=2
+                  ||matchTimerUpdater.getTimeUntilOurHubShifts()
+                  <=24)
+                  &&
+                )
+              })
+            )
+
+  }
 
 }
