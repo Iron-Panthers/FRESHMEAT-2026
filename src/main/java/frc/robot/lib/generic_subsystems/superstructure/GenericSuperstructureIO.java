@@ -41,4 +41,6 @@ public interface GenericSuperstructureIO {
   default void setSupplyCurrentLimit(double amps) {}
 
   default void setMaxCruiseVelocity(double cruiseVelocity) {}
+
+  default void updateInputs(GenericSuperstructureIOInputs inputs) {}
 }
