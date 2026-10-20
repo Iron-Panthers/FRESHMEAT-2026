@@ -77,7 +77,7 @@ public class RobotSimState {
     fuelSim.setLoggingFrequency(20);
     fuelSim.start();
 
-    addObstacleToSim(new Pose2d(new Translation2d(7.17, 3), new Rotation2d()));
+    addObstacleToSim(new Pose2d(new Translation2d(9.8, 5.385), new Rotation2d()));
   }
 
   // Get sim state from RobotContainer
