@@ -236,7 +236,7 @@ public class RobotContainer {
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)); 
     Supplier<Pose2d> flippedShootingPoseSupplier =
         () -> {
-          return RobotState.isAllianceRed()
+          return !RobotState.isAllianceRed()
               ? FlippingUtil.flipFieldPose(shootingPoseSupplier.get())
               : shootingPoseSupplier.get();
         };
@@ -247,7 +247,7 @@ public class RobotContainer {
               if (!RobotState.getInstance().isAutoAdaptive()) {
                 return new InstantCommand();
               }
-              return ((new AlignToPoseCommand(swerve, new Pose2d(), true)
+              return ((new AlignToPoseCommand(swerve, shootingPoseSupplier, true)
                           .raceWith(new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)))
                       .repeatedly())
                   .until(
@@ -312,7 +312,7 @@ public class RobotContainer {
 
   //Testing AlignToPoseCommand---remove later
   private void configureDriverAButtons(){
-    driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d()), true));
+    driverA.y().onTrue(new AlignToPoseCommand(swerve, new Pose2d(2.5,4, new Rotation2d())));
   }
 
   private void configureAutos() {

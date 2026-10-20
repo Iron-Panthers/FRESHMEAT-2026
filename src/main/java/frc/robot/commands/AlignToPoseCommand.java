@@ -14,34 +14,36 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class AlignToPoseCommand extends Command{
     private Drive swerve;
     private Supplier<Pose2d> approachPose;
-    private Pose2d targetPose;
     private Command poseAlignCommand;
     private boolean endOnAccurate = false;
     private Pose2d currentApproachPose;
+    private boolean stayOnCurrentSide = false;
 
     public AlignToPoseCommand(Drive swerve, Pose2d targetPose){
         this.swerve = swerve;
-        this.targetPose = 
+        this.approachPose = 
             RobotState.isAllianceRed() 
-            ? FlippingUtil.flipFieldPose(targetPose)
-            : targetPose;
+            ? () -> FlippingUtil.flipFieldPose(approachPose.get())
+            : approachPose;
 
         addRequirements(swerve);
     }
 
-    public AlignToPoseCommand(
-      Drive swerve, Pose2d targetPose, boolean endOnAccurate) {
-    this(swerve, targetPose);
+  public AlignToPoseCommand(
+      Drive swerve,
+      Supplier<Pose2d> approachPose,
+      boolean endOnAccurate) {
+    this.swerve = swerve;
+    this.approachPose = approachPose;
+    RobotState.getInstance().isAutoUnderTrench();
     this.endOnAccurate = endOnAccurate;
-  }
-
-  public AlignToPoseCommand(Drive swerve, Supplier<Pose2d> approachPose, boolean endOnAccurate) {
+    this.stayOnCurrentSide = true;
   }
 
     @Override
     public void initialize(){
-        currentApproachPose = targetPose;
-        swerve.setTargetPosition(targetPose);
+        currentApproachPose = approachPose.get();
+        swerve.setTargetPosition(currentApproachPose);
         try {
             poseAlignCommand =
                 new VelocityClamp(swerve)
@@ -69,7 +71,7 @@ public class AlignToPoseCommand extends Command{
             poseAlignCommand.execute();
         } else {
             if (!swerve.isPIDAutoAlign()){
-                swerve.setPIDAutoAlignTargetPosition(targetPose);
+                swerve.setPIDAutoAlignTargetPosition(approachPose.get());
             }
         }
     }
