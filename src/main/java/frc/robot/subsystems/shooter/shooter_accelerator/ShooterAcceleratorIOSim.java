@@ -18,6 +18,6 @@ public class ShooterAcceleratorIOSim extends GenericRollersIOSim implements Shoo
 
   @Override
   public void updateInputs(GenericRollersIOInputs inputs) {
-    
+    super.updateInputs(inputs);
   }
 }

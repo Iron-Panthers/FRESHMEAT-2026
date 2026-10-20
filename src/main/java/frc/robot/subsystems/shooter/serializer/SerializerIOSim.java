@@ -21,6 +21,6 @@ public class SerializerIOSim extends GenericRollersIOSim implements SerializerIO
 
     @Override
     public void updateInputs(GenericRollersIOInputs inputs) {
-
+        super.updateInputs(inputs);
     }
 }
