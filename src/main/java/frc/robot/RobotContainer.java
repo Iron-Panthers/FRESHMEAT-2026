@@ -283,7 +283,6 @@ public class RobotContainer {
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
 
-    driverB.a().onTrue(new LowPowerModeCommand(swerve));
     configureDriverAButtons();
     new Trigger(() -> vision.getMultiTags() && !defaultZeroing)
         .onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
@@ -291,6 +290,9 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons(){
+
+    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
+    
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
