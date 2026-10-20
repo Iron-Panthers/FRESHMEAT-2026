@@ -22,8 +22,8 @@ public class AlignToPoseCommand extends Command{
         this.swerve = swerve;
         this.targetPose = 
             RobotState.isAllianceRed() 
-            ? FlippingUtil.flipFieldPose(targetPose)
-            : targetPose;
+            ? targetPose
+            : FlippingUtil.flipFieldPose(targetPose);
 
         addRequirements(swerve);
     }

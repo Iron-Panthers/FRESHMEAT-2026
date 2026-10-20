@@ -35,6 +35,7 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
 
     public ShooterRollers(GenericRollersIO io){
         super("Shooter/Shooter Flywheels", io);
+        setVelocityTarget(ShooterRollersTarget.IDLE);
     }
 
     @AutoLogOutput(key = "Shooter/Shooter Rollers/Current Velocity")

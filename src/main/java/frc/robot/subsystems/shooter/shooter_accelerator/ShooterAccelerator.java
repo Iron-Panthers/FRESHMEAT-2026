@@ -26,8 +26,9 @@ public class ShooterAccelerator extends GenericRollers<ShooterAccelerator.Shoote
         }
     }
         
-        public ShooterAccelerator(GenericRollersIO io) {
+    public ShooterAccelerator(GenericRollersIO io) {
         super("Shooter/Shooter Accelerator", io);
+        setVelocityTarget(ShooterAcceleratorTarget.IDLE);
     }
         
     public AngularVelocity getCurrentVelocity() {

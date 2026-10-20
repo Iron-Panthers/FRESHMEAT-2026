@@ -25,7 +25,7 @@ public class IntakeRollersConstants {
                 false);
             default -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),
-                CAN.at(6, "Intake Rollers 2"), 
+                CAN.at(7, "Intake Rollers 2"), 
                 1,
                 false,
                 false,
