@@ -20,8 +20,7 @@ public class AlignToShootCommand extends Command {
 
     @Override
     public void initialize() {
-        CommandScheduler.getInstance().schedule(new AlignToPassCommand(swerve, (RobotState.isAllianceRed()) ?
-            DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
-            DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d()));
+        CommandScheduler.getInstance().schedule(new AlignToPassCommand(swerve, 
+        (DriveConstants.RED_HUB_ORIGIN.toTranslation2d())));
     }
 }
