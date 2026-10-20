@@ -10,8 +10,8 @@ public class ShooterRollersConstants {
         case SIM -> new ShooterRollersConfig(
             CAN.at(36, "Shooter Roller 1"),
             CAN.at(37, "Shooter Roller 2"),
-            CAN.at(0, "Shooter Roller 3"),
-            CAN.at(0, "Shooter Roller 4"),
+            CAN.at(38, "Shooter Roller 3"),
+            CAN.at(39, "Shooter Roller 4"),
             0.71,
             false,
             false,
