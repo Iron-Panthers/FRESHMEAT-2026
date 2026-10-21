@@ -49,21 +49,21 @@ public class ShootCommandFactory {
       public Command justShootCommand(boolean justShoot) {
     return new InstantCommand(() -> this.justShoot = justShoot)
       .alongWith(
-            new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW))
+            new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE))
                 .andThen(
                     new WaitCommand(1)
                         .andThen(
                             new InstantCommand(
                                 () -> intakeController.setTargetState(IntakeState.STOW)))
                         .andThen(new WaitCommand(0.1))
-                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW)))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE)))
                 .andThen(
                     new WaitCommand(0.2)
                         .andThen(
                             new InstantCommand(
                                 () -> intakeController.setTargetState(IntakeState.STOW)))
                         .andThen(new WaitCommand(0.1))
-                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE_SLOW)))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE)))
                 .andThen(
                     new WaitCommand(0.1)
                         .andThen(
@@ -74,19 +74,19 @@ public class ShootCommandFactory {
                             () ->
                                 intakeController.setTargetState(
                                     IntakeState
-                                        .INTAKE_SLOW))))
+                                        .INTAKE))))
             .alongWith(
               new InstantCommand(()->{
                 shooterController.setTargetState(
                   (shooterController.getTargetState()==ShooterState.TOTAL_SPIN_UP||
                   shooterController.getTargetState()==ShooterState.SHOOT)
-                  &&shooterRollersUpToSpeed()
+                  &&shooterController.shooterRollersUpToSpeed()
                   &&(matchTimerUpdater.isOurHubActive()
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()<=2
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()
                   <=24)
                   &&(getHeadingError.get().getDegrees()<6
-                  ||  getHeadingError.get().getDegrees()>400
+                  ||  getHeadingError.get().getDegrees()>354
                   || justShoot )
                   ?ShooterState.SHOOT
                   :ShooterState.TOTAL_SPIN_UP
@@ -111,7 +111,15 @@ public class ShootCommandFactory {
                                             == ShooterState.TOTAL_SPIN_UP))))
                         .repeatedly()));
 
-                public Command onReleasewithconsent(){
+                
+       
+                
+
+               
+
+  }
+      
+    public Command onReleasewithconsent(){
                   return new InstantCommand(
                     ()-> {
                       if (shooterController.getTargetState() == ShooterState.SHOOT) {
@@ -119,13 +127,14 @@ public class ShootCommandFactory {
                       }
                     });
                   }
-          public Command whileHeldPassing() {
+
+     public Command whileHeldPassing() {
     return new InstantCommand(
             () -> {
               shooterController.setTargetState(
                   (shooterController.getTargetState() == ShooterState.PASS_SPIN_UP
                               || shooterController.getTargetState() == ShooterState.PASS)
-                          && shooterController.flywheelsUpToSpeed() // time correct
+                          && shooterController.shooterRollersUpToSpeed() // time correct
                       ? ShooterState.PASS
                       : ShooterState.PASS_SPIN_UP);
             })
@@ -133,10 +142,4 @@ public class ShootCommandFactory {
         .alongWith(
             new WaitCommand(1.5).andThen(intakeController.setTargetStateCommand(IntakeState.STOW)));
   }
-                
-
-               
-
-  }
-
 }
