@@ -126,6 +126,8 @@ public class RobotContainer {
   private ShooterOmniwheels shooterOmniwheels;
   private ShooterController shooterController;
 
+  private SwerveDriveSimulation driveSimulation = null;
+
   public RobotContainer() {
 
     if (Constants.getRobotMode() != Mode.REPLAY) {
