@@ -18,8 +18,9 @@ public class IntakeController extends SubsystemBase {
     public enum IntakeState {
         IDLE(IntakeRackTarget.IDLE, IntakeRollersTarget.IDLE),
         INTAKE(IntakeRackTarget.INTAKE, IntakeRollersTarget.INTAKE),
-    ZEROING(IntakeRackTarget.STOW, IntakeRollersTarget.IDLE),
-        SHOOT(IntakeRackTarget.SHOOT, IntakeRollersTarget.SHOOT);
+        ZEROING(IntakeRackTarget.STOW, IntakeRollersTarget.IDLE),
+        SHOOT(IntakeRackTarget.SHOOT, IntakeRollersTarget.SHOOT),
+        STOW(IntakeRackTarget.STOW, IntakeRollersTarget.IDLE);
         
 
         private IntakeRackTarget intakeRackTarget;

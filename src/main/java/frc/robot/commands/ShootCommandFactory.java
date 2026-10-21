@@ -38,18 +38,16 @@ public class ShootCommandFactory {
         this.intakeController = intakeController;
         this.matchTimerUpdater = matchTimerUpdater;
         this.getHeadingError = getHeadingError;
-        SmartDashboard.putNumber("INtake rack in time",5);
+        SmartDashboard.putNumber("Intake rack in time",5);
       }
 
-      public Command setJustShootCommand(boolean justShoot) {
-    return new InstantCommand(() -> this.justShoot = justShoot);
-  }
+    public Command setJustShootCommand(boolean justShoot) {
+        return new InstantCommand(() -> this.justShoot = justShoot);
+    }
       
       
-      public Command justShootCommand(boolean justShoot) {
-    return new InstantCommand(() -> this.justShoot = justShoot)
-      .alongWith(
-            new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE))
+    public Command whileHeld() {
+    return new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE))
                 .andThen(
                     new WaitCommand(1)
                         .andThen(
@@ -74,7 +72,7 @@ public class ShootCommandFactory {
                             () ->
                                 intakeController.setTargetState(
                                     IntakeState
-                                        .INTAKE))))
+                                        .INTAKE)))
             .alongWith(
               new InstantCommand(()->{
                 shooterController.setTargetState(
@@ -110,16 +108,9 @@ public class ShootCommandFactory {
                                         (shooterController.getTargetState()
                                             == ShooterState.TOTAL_SPIN_UP))))
                         .repeatedly()));
-
-                
-       
-                
-
-               
-
   }
       
-    public Command onReleasewithconsent(){
+    public Command onRelease(){
                   return new InstantCommand(
                     ()-> {
                       if (shooterController.getTargetState() == ShooterState.SHOOT) {

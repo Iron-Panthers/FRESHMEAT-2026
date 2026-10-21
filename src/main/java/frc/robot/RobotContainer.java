@@ -17,10 +17,12 @@ import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootCommandFactory;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
+import frc.robot.subsystems.elastic_updater.ElasticUpdater;
 import frc.robot.subsystems.intake.IntakeController;
 import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.intake.intake_rack.IntakeRack;
@@ -81,6 +83,8 @@ public class RobotContainer {
 
   private ElasticSetpoints elasticSetpoints = ElasticSetpoints.getInstance();
 
+  private ElasticUpdater matchTimerUpdater = new ElasticUpdater();
+
   private boolean defaultZeroing = false;
 
   // private SendableChooser<Command> autoChooser;
@@ -102,6 +106,7 @@ public class RobotContainer {
   private ShooterOmniwheels shooterOmniwheels;
   private ShooterAccelerator shooterAccelerator;
   private ShootCommand shootCommand;
+  private ShootCommandFactory shootCommandFactory;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -210,13 +215,17 @@ public class RobotContainer {
     if (shooterRollers == null) {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
-    if (shooterController == null) {
-      shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
-    }
-
+    
+    shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
     intakeController = new IntakeController(intakeRack, intakeRollers);
+
     shootCommand = new ShootCommand(shooterController, intakeController);
 
+    shootCommandFactory = new ShootCommandFactory(
+      shooterController,
+      intakeController,
+      matchTimerUpdater,
+      swerve::getShootingError);
 
     nameCommands();
     configureAutos();
@@ -268,7 +277,7 @@ public class RobotContainer {
       
     // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
       
-      driverA.b().whileTrue(shootCommand.whileHeld()).onFalse(shootCommand.whenReleased());
+      driverA.b().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
     // TODO: Test
     driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));

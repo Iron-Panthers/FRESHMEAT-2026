@@ -503,4 +503,11 @@ public class Drive extends SubsystemBase {
   public Translation2d getCenterOfRotation() {
     return centerOfRotation;
   }
+
+  public Rotation2d getShootingError() {
+    if (headingController == null) {
+      return Rotation2d.fromDegrees(0);
+    }
+    return headingController.getError();
+  }
 }
