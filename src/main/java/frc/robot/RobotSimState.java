@@ -3,10 +3,15 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
@@ -29,6 +34,8 @@ public class RobotSimState {
 
   private int fuelCount = START_FUEL_CAPACITY;
   private boolean intakeActive = false;
+
+  List<SwerveDriveSimulation> obstacles = new ArrayList<SwerveDriveSimulation>();
 
   private RobotSimState() {
     // init the arena (drive sim only, no game piece placement)
@@ -69,6 +76,20 @@ public class RobotSimState {
     fuelSim.spawnStartingFuel();
     fuelSim.setLoggingFrequency(20);
     fuelSim.start();
+
+    addObstacleToSim(new Pose2d(new Translation2d(9.8, 5.385), new Rotation2d()));
+  }
+
+  // Get sim state from RobotContainer
+
+  public List<Pose2d> getObstaclePositions() {
+    return obstacles.stream().map((obstacle) -> obstacle.getSimulatedDriveTrainPose()).toList();
+  }
+
+  public void addObstacleToSim(Pose2d pose) {
+    SwerveDriveSimulation obstacle = new SwerveDriveSimulation(DriveConstants.obstacleConfig, pose);
+    obstacles.add(obstacle);
+    SimulatedArena.getInstance().addDriveTrainSimulation(obstacle);
   }
 
   // Singleton instance

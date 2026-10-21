@@ -472,6 +472,10 @@ public class Drive extends SubsystemBase {
     }
   }
 
+  public ChassisSpeeds getTargetSpeed() {
+    return targetSpeeds;
+  }
+
   public boolean reachedAutoAlignTarget() {
     if (driveMode != DriveModes.AUTO_ALIGN) {
       return false;

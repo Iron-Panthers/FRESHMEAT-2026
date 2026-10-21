@@ -31,6 +31,7 @@ public class ShooterOmniwheels extends GenericRollers<ShooterOmniwheels.ShooterO
 
     public ShooterOmniwheels(GenericRollersIO io) {
         super("Shooter/Shooter Omniwheels", io);
+        setVelocityTarget(ShooterOmniwheelsTarget.IDLE);
     }
 
     public AngularVelocity getCurrentVelocity() {

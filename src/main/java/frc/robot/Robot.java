@@ -44,12 +44,16 @@ public class Robot extends LoggedRobot {
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogTargetPoseCallback(
-        (pose) -> Logger.recordOutput("Path Planner/Target Pose", pose));
+        (pose) -> {
+          RobotState.getInstance().setPathPlannerTargetPose(pose); // Don't kill me Nora
+          Logger.recordOutput("PathPlanner/TargetPose", pose);
+        });
     PathPlannerLogging.setLogCurrentPoseCallback(
         (pose) -> Logger.recordOutput("Path Planner/Current Pose", pose));
     PathPlannerLogging.setLogActivePathCallback(
         (path) ->
             Logger.recordOutput("Path Planner/Active Path", path.toArray(new Pose2d[path.size()])));
+
 
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
