@@ -24,6 +24,7 @@ import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.AlignToTrenchCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.commands.WaitUnitlRobotStuckCommand;
@@ -333,7 +334,6 @@ public class RobotContainer {
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AxisAssistCommand(swerve));
 
-
     configureDriverAButtons();
     new Trigger(() -> vision.getMultiTags() && !defaultZeroing)
         .onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
@@ -341,6 +341,9 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons(){
+
+    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
+    
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
@@ -365,6 +368,7 @@ public class RobotContainer {
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
   }
+  
 
   private void configureAutos() {
     RobotConfig robotConfig;
