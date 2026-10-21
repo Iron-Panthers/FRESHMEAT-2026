@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.Serializer.SerializerTarget;
@@ -93,5 +95,9 @@ public class ShooterController extends SubsystemBase {
 
     public void setStopped(boolean stopped) {
         this.stopped = stopped;
+    }
+
+    public Command setTargetStateCommand(ShooterState targetState) {
+        return new InstantCommand(() -> setTargetState(targetState));
     }
 }

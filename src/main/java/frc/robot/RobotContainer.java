@@ -264,12 +264,11 @@ public class RobotContainer {
               new InstantCommand(() -> {
                 shooterController.setTargetState(ShooterState.SPIN_UP);
               }));
-    NamedCommands.registerCommand("Align to pose", new AlignToPoseCommand(swerve, shooterController));
-    NamedCommands.registerCommand("Intake down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
-    NamedCommands.registerCommand("Intake stow", intakeController.setTargetStateCommand(IntakeState.STOW));
+    NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, RobotState.getInstance().getAlignPose()));
+    NamedCommands.registerCommand("Intake Down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
+    NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
     NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
-    
-    
+    NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve));
   }
     
      

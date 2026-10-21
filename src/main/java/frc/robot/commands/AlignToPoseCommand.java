@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
-import frc.robot.subsystems.shooter.ShooterController;
 import frc.robot.subsystems.swerve.Drive;
 import frc.robot.subsystems.swerve.DriveConstants;
 
@@ -19,12 +18,12 @@ public class AlignToPoseCommand extends Command{
     private boolean endOnAccurate = false;
     private Pose2d currentApproachPose;
 
-    public AlignToPoseCommand(Drive swerve, ShooterController shooterController){
+    public AlignToPoseCommand(Drive swerve, Pose2d targetPose){
         this.swerve = swerve;
         this.targetPose = 
             RobotState.isAllianceRed() 
-            ? shooterController
-            : FlippingUtil.flipFieldPose(shooterController);
+            ? targetPose
+            : FlippingUtil.flipFieldPose(targetPose);
 
         addRequirements(swerve);
     }
