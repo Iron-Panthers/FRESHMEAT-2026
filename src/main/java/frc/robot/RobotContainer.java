@@ -4,7 +4,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -241,7 +243,36 @@ public class RobotContainer {
   /** Use this method to define the named commands for all of the autos */
   private void nameCommands() {
     // Register Command Names in this method
+    new EventTrigger("Intake down")
+        .onTrue(
+          new InstantCommand(() -> {
+            intakeController.setTargetState(IntakeState.INTAKE);
+            shooterController.setTargetState(ShooterState.INTAKE);
+          }));
+    new EventTrigger("Intake off")
+          .onTrue(
+            new InstantCommand(() -> {
+              intakeController.setTargetState(IntakeState.IDLE);
+            }));
+    new EventTrigger("Intake stow")
+            .onTrue(
+              new InstantCommand(() -> {
+                intakeController.setTargetState(IntakeState.STOW);
+              }));
+    new EventTrigger("Spin up shooter")
+            .onTrue(
+              new InstantCommand(() -> {
+                shooterController.setTargetState(ShooterState.SPIN_UP);
+              }));
+    NamedCommands.registerCommand("Align to pose", new AlignToPoseCommand(swerve, shooterController));
+    NamedCommands.registerCommand("Intake down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
+    NamedCommands.registerCommand("Intake stow", intakeController.setTargetStateCommand(IntakeState.STOW));
+    NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
+    
+    
   }
+    
+     
 
   private void configureBindings() {
     // -----Driver Controls-----

@@ -25,6 +25,12 @@ public class ShooterController extends SubsystemBase {
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
             ShooterRollersTarget.SHOOT),
+        SPIN_UP(
+            SerializerTarget.SPIN_UP,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT
+        ),
         INTAKE(
             SerializerTarget.INTAKE, //TODO: FIX
             ShooterAcceleratorTarget.INTAKE,

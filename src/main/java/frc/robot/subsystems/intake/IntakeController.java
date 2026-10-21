@@ -19,8 +19,8 @@ public class IntakeController extends SubsystemBase {
         IDLE(IntakeRackTarget.IDLE, IntakeRollersTarget.IDLE),
         INTAKE(IntakeRackTarget.INTAKE, IntakeRollersTarget.INTAKE),
         ZEROING(IntakeRackTarget.STOW, IntakeRollersTarget.IDLE),
-        REVERSE(IntakeRackTarget.INTAKE, IntakeRollersTarget.REVERSE);
-        
+        REVERSE(IntakeRackTarget.INTAKE, IntakeRollersTarget.REVERSE),
+        STOW(IntakeRackTarget.STOW, IntakeRollersTarget.STOW);
 
         private IntakeRackTarget intakeRackTarget;
         private IntakeRollersTarget intakeRollersTarget;
