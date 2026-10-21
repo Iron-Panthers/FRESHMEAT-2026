@@ -15,9 +15,4 @@ public class ShooterAcceleratorIOSim extends GenericRollersIOSim implements Shoo
         new RollerSim(2, 2, PHYSICAL_CONSTANTS.momentOfInertia(), 0.0267));
     setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
   }
-
-  @Override
-  public void updateInputs(GenericRollersIOInputs inputs) {
-    super.updateInputs(inputs);
-  }
 }

@@ -260,7 +260,7 @@ public class RobotSimState {
   }
 
   // Store current shooting parameters
-  final private Angle PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE = Units.Radians.of(0);
+  final private Angle PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE = Units.Degrees.of(75);
   private Transform3d currentShooterTransform = new Transform3d();
   private LinearVelocity currentLaunchVelocity = MetersPerSecond.of(0);
   private Distance currentShooterWidth = Meters.of(0);

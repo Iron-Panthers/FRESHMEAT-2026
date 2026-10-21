@@ -7,8 +7,8 @@ public class SerializerConstants {
         //TODO: get actual serializer constants
         switch (Constants.getRobotType()) {
         case SIM -> new SerializerConfig(
-            CAN.at(100, "Serializer 1"),
-            CAN.at(200, "Serializer 2"),
+            CAN.at(90, "Serializer 1"),
+            CAN.at(91, "Serializer 2"),
             1,
             false,
             false,
