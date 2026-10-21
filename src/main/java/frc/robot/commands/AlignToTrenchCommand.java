@@ -20,10 +20,9 @@ public class AlignToTrenchCommand extends Command {
         () -> (RobotState.isAllianceRed()) ?
         (RobotState.getInstance().getEstimatedPose().getY() < 4)
         ? new Pose2d(12.5,0.8, new Rotation2d(1.59))
-        : new Pose2d(12.5, 7.2, new Rotation2d(4.69))) :
-
-        ((RobotState.getInstance().getEstimatedPose().getY() > 4)
+        : new Pose2d(12.5, 7.2, new Rotation2d(4.69)) :
+        (RobotState.getInstance().getEstimatedPose().getY() > 4)
         ? new Pose2d(12.5,0.8, new Rotation2d(1.59))
-        : new Pose2d(12.5, 7.2, new Rotation2d(4.69)), true)));
+        : new Pose2d(12.5, 7.2, new Rotation2d(4.69)), true));
     }
 }

@@ -85,6 +85,7 @@ public class ShooterController extends SubsystemBase {
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);
+        Logger.recordOutput("Shooter/Shooter State", targetState);
         serializer.periodic();
         shooterAccelerator.periodic();
         shooterOmniwheels.periodic();

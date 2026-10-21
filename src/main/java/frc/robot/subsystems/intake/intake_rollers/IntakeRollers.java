@@ -6,7 +6,8 @@ import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
 public class IntakeRollers extends GenericRollers<IntakeRollers.IntakeRollersTarget> {
     public enum IntakeRollersTarget implements GenericRollers.VelocityTarget{
         IDLE(0, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
-        INTAKE(10, IntakeRollersConstants.CURRENT_LIMIT_AMPS);
+        INTAKE(10, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
+        REVERSE(-10, IntakeRollersConstants.CURRENT_LIMIT_AMPS);
 
         private double velocity;
         private double supplyCurrentLimit;

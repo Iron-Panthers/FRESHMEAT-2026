@@ -11,21 +11,21 @@ public class IntakeRollersConstants {
         switch (Constants.getRobotType()) {
             case COMP -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),  // TODO: change CAN ids
-                CAN.at(6, "Intake Rollers 2"),  // TODO: change CAN ids
+                CAN.at(7, "Intake Rollers 2"),  // TODO: change CAN ids
                 1,
                 false,
                 false,
                 false);
             case SIM -> new IntakeRollersConfig(
-                CAN.at(60, "Intake Rollers 1"),
-                CAN.at(61, "Intake Rollers 2"),
+                CAN.at(5, "Intake Rollers 1"),
+                CAN.at(7, "Intake Rollers 2"),
                 1,
                 false,
                 false,
                 false);
             default -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),
-                CAN.at(6, "Intake Rollers 2"), 
+                CAN.at(7, "Intake Rollers 2"), 
                 1,
                 false,
                 false,
