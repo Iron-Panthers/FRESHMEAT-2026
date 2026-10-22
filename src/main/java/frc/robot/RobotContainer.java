@@ -269,6 +269,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
     NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
     NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve));
+    NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
+    NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+    NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SHOOT));
+
   }
     
      
