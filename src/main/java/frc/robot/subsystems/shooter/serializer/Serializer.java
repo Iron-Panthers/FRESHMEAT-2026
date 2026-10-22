@@ -47,8 +47,8 @@ public class Serializer extends GenericRollers<Serializer.SerializerTarget> {
         return getFilteredCurrent() > 15d && getVelocityRadsPerSec() < 3d;
     }
 
-    public static void setTargetState(SerializerTarget shoot) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTargetState'");
-    }
+    // public static void setTargetState(SerializerTarget shoot) {
+    //     // TODO Auto-generated method stub
+        
+    // }
 }

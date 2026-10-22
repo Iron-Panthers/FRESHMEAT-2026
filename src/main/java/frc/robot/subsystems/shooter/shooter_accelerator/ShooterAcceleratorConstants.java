@@ -10,8 +10,8 @@ public class ShooterAcceleratorConstants {
     public static final ShooterAcceleratorConfig SHOOTER_ACCELERATOR_CONFIG =
     switch(Constants.getRobotType()) { 
         case SIM -> new ShooterAcceleratorConfig( 
-            CAN.at(38, "Shooter Accelerator 1"), 
-            CAN.at(39, "Shooter Accelerator 2"), // Matches COMP. 
+            CAN.at(40, "Shooter Accelerator 1"), 
+            CAN.at(41, "Shooter Accelerator 2"), // Matches COMP. 
             1.5, 
             true, 
             false, 
@@ -37,9 +37,9 @@ public class ShooterAcceleratorConstants {
 
     public static final PIDGains GAINS =
     switch(Constants.getRobotType()){
-        case SIM -> new PIDGains(1,1,1,1,1,1,1);//placeholder value
-        case COMP -> new PIDGains(1,1,1,1,1,1,1);//placeholder value
-        default -> new PIDGains(1,1,1,1,1,1,1);//placeholder value
+        case SIM -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
+        case COMP -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
+        default -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 
     public static final ShooterAcceleratorPhysicalConstants PHYSICAL_CONSTANTS =

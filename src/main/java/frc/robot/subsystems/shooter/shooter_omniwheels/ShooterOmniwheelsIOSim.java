@@ -14,7 +14,11 @@ public class ShooterOmniwheelsIOSim extends GenericRollersIOSim implements Shoot
             SHOOTER_OMNIWHEELS_CONFIG.brake(),
             SHOOTER_OMNIWHEELS_CONFIG.reduction(),
             new RollerSim(2, 2, PHYSICAL_CONSTANTS.momentOfInertia(), 0.0267));
+        setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
     }
 
-    public void updateInputs(GenericRollersIOInputs inputs) {}
+    @Override
+    public void updateInputs(GenericRollersIOInputs inputs) {
+        super.updateInputs(inputs);
+    }
 }

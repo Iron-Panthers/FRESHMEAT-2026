@@ -2,6 +2,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -10,6 +13,10 @@ import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +32,7 @@ import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.AlignToTrenchCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LowPowerModeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.commands.WaitUnitlRobotStuckCommand;
@@ -93,6 +101,9 @@ public class RobotContainer {
   // DO NOT DELETE -- this actually does something important
   private RobotState robotState = RobotState.getInstance();
 
+  // DO NOT DELETE -- storing the instance here registers @AutoLogOutput methods with AdvantageKit
+  private RobotSimState robotSimState;
+
   private ElasticSetpoints elasticSetpoints = ElasticSetpoints.getInstance();
 
   private boolean defaultZeroing = false;
@@ -156,6 +167,7 @@ public class RobotContainer {
           // VisionIOPhotonvision("arducam-5", 1));
         }
         case SIM -> {
+          robotSimState = RobotSimState.getInstance();
           // RobotSimState must be initialized first — its constructor calls
           // SimulatedArena.overrideInstance(), so any arena access before this point
           // would get orphaned. We reuse its driveSimulation so both share the same arena.
@@ -207,10 +219,6 @@ public class RobotContainer {
     if (rgb == null) {
       rgb = new RGB(new RGBIO() {});
     }
-
-    if (serializer == null) {
-      serializer = new Serializer(new SerializerIO() {});
-    }
     
     if (intakeRack == null) {
       intakeRack = new IntakeRack(new IntakeRackIO() {});
@@ -224,6 +232,10 @@ public class RobotContainer {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
 
+    if (serializer == null) {
+      serializer = new Serializer(new SerializerIO() {});
+    }
+
     if (shooterAccelerator == null) {
       shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
     }
@@ -231,7 +243,7 @@ public class RobotContainer {
     if (shooterOmniwheels == null) {
       shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIO() {});
     }
-
+ 
     intakeController = new IntakeController(intakeRack, intakeRollers);
     shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
 
@@ -435,8 +447,10 @@ public class RobotContainer {
   /** Ran every 20 milliseconds */
   public void updateSimulation() {
     if (Constants.getRobotMode() != Constants.Mode.SIM) return;
-
+    RobotSimState.getInstance().applyTerrainGravityForce();
     SimulatedArena.getInstance().simulationPeriodic();
+    RobotSimState.getInstance().updateTerrainState();
+    RobotSimState.getInstance().getFuelSim().updateSim();
     SimBattery.getInstance().update();
     Logger.recordOutput(
         "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
@@ -444,5 +458,22 @@ public class RobotContainer {
         "FieldSimulation/ObstaclePositions",
         RobotSimState.getInstance().getObstaclePositions().toArray(new Pose2d[0]));
 
+    RobotSimState.getInstance().logScoring();
+
+
+
+    // Update the shooting logic with the correct rollers
+    RobotSimState.getInstance()
+        .setShooterRunning(
+            shooterRollers.getCurrentVelocity().in(MetersPerSecond) > 1.0
+                && shooterAccelerator.getCurrentVelocity().in(RotationsPerSecond) > 1.0
+                && shooterOmniwheels.getCurrentVelocity().in(RotationsPerSecond) > 1.0,
+            20.0,
+                new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.PI)),
+            shooterRollers.getCurrentVelocity(),
+            Units.Inches.of(26));
+
+    // Handle automatic shooter firing
+    RobotSimState.getInstance().periodicShooter();
   }
 }

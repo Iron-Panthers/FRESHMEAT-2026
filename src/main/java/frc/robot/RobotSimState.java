@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.RobotType;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.utility.FuelSim;
+import frc.robot.utility.TrenchTerrainSim;
+
+import org.dyn4j.geometry.Vector2;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.*;
@@ -109,6 +112,12 @@ public class RobotSimState {
   // Drive simulation
   private SwerveDriveSimulation driveSimulation;
 
+  // Terrain contact state — updated each loop after simulationPeriodic()
+  private TrenchTerrainSim.TerrainContactState terrainState =
+      new TrenchTerrainSim.TerrainContactState(
+          DriveConstants.DRIVE_CONFIG.wheelRadius(), 0.0, 0.0, 0.0, new double[4]);
+
+
   public SwerveDriveSimulation getDriveSimulation() {
     return driveSimulation;
   }
@@ -133,6 +142,44 @@ public class RobotSimState {
 
   public ChassisSpeeds getChassisSpeedsFieldRelative() {
     return driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative();
+  }
+
+  /**
+   * Updates the terrain contact state from the robot's current simulated pose. Call this once per
+   * loop <em>after</em> {@code SimulatedArena.getInstance().simulationPeriodic()}.
+   */
+  public void updateTerrainState() {
+    terrainState =
+        TrenchTerrainSim.compute(
+            driveSimulation.getSimulatedDriveTrainPose(),
+            DriveConstants.MODULE_TRANSLATIONS,
+            DriveConstants.DRIVE_CONFIG.wheelRadius(),
+            DriveConstants.DRIVE_CONFIG.trackWidth(), // front-to-rear (wheelbase)
+            DriveConstants.DRIVE_CONFIG.trackLength()); // left-to-right (track width)
+  }
+
+  /**
+   * Injects a gravity resistance force into the Dyn4j physics engine to simulate the robot climbing
+   * or descending the trench bump. Call this once per loop <em>before</em> {@code
+   * SimulatedArena.getInstance().simulationPeriodic()}.
+   *
+   * <p>The force is scaled by the number of physics sub-ticks because Dyn4j clears the {@code
+   * Body.force} accumulator after each sub-tick integration step. A single {@code applyForce()}
+   * call placed before {@code simulationPeriodic()} would otherwise only affect the first sub-tick.
+   */
+  public void applyTerrainGravityForce() {
+    double gradientX = terrainState.avgGradientX();
+    if (gradientX == 0.0) return; // flat ground — no bump force needed
+
+    double mass = driveSimulation.getMass().getMass(); // kg, from Dyn4j Body
+    double subTickDtSec =
+        SimulatedArena.getSimulationDt().in(edu.wpi.first.units.Units.Seconds); // typically 0.004 s
+    int nSubTicks = (int) Math.round(Constants.PERIODIC_LOOP_SEC / subTickDtSec); // typically 5
+
+    // F = −m · g · dZ/dX (opposing forward motion on an uphill ramp)
+    // Multiply by nSubTicks so the impulse integrates to the correct total over the full 20 ms loop
+    double fx = -mass * 9.81 * gradientX * nSubTicks;
+    driveSimulation.applyForce(new Vector2(fx, 0.0));
   }
 
   // Shooting utilities
@@ -169,6 +216,17 @@ public class RobotSimState {
   public int getFuelCount() {
     return fuelCount;
   }
+  
+  public void logScoring() {
+    int blue = FuelSim.Hub.BLUE_HUB.getScore();
+    int red = FuelSim.Hub.RED_HUB.getScore();
+    int scored = RobotState.getInstance().isAllianceRed() ? red : blue;
+
+    Logger.recordOutput("Field Simulation/Blue Score", blue);
+    Logger.recordOutput("Field Simulation/Red Score", red);
+    Logger.recordOutput("Field Simulation/Score", scored);
+    Logger.recordOutput("Field Simulation/Held Fuel", fuelCount);
+  }
 
   public Pose3d[] getIntakeGamePieces() {
     Pose3d[] gamePiecePoses = new Pose3d[fuelCount];
@@ -202,7 +260,6 @@ public class RobotSimState {
   public void setShooterRunning(
       boolean running,
       double shotsPerSecond,
-      Angle shooterAngle,
       Transform3d shooterTransform3d,
       LinearVelocity launchVelocity,
       Distance shooterWidth) {
@@ -217,14 +274,14 @@ public class RobotSimState {
     }
 
     // Store the shooting parameters for use in periodic
-    this.currentShooterAngle = shooterAngle;
+    
     this.currentShooterTransform = shooterTransform3d;
     this.currentLaunchVelocity = launchVelocity;
     this.currentShooterWidth = shooterWidth;
   }
 
   // Store current shooting parameters
-  private Angle currentShooterAngle = Units.Radians.of(0);
+  final private Angle PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE = Units.Degrees.of(75);
   private Transform3d currentShooterTransform = new Transform3d();
   private LinearVelocity currentLaunchVelocity = MetersPerSecond.of(0);
   private Distance currentShooterWidth = Meters.of(0);
@@ -240,9 +297,10 @@ public class RobotSimState {
 
     double currentTime = Timer.getFPGATimestamp();
     if (currentTime - lastShootTime >= shootIntervalSeconds) {
+      Logger.recordOutput("THISISATESTTESTTEST", 1);
       // Time to shoot another ball
       shootFuel(
-          currentShooterAngle, currentShooterTransform, currentLaunchVelocity, currentShooterWidth);
+          PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE, currentShooterTransform, currentLaunchVelocity, currentShooterWidth);
       lastShootTime = currentTime;
       Logger.recordOutput("Robot Sim State/Auto Shooter Active", true);
     }
