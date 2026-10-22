@@ -28,7 +28,7 @@ public class ShooterController extends SubsystemBase {
             ShooterOmniwheelsTarget.SHOOT,
             ShooterRollersTarget.SHOOT),
         INTAKE(
-            SerializerTarget.INTAKE, //TODO: FIX
+            SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
             ShooterRollersTarget.INTAKE);

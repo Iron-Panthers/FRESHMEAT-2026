@@ -367,16 +367,19 @@ public class RobotContainer {
 
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
-    driverA.a().whileTrue(new AlignToShootCommand(swerve)
-    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+    driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new AlignToShootCommand(swerve)))
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
-    driverA.povLeft().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))
-    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
-    driverA.povRight().whileTrue(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))
-    .andThen(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))));
+    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
   }
