@@ -22,7 +22,7 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
 
   protected final NeutralOut neutralOutput = new NeutralOut();
 
-  protected final DynamicMotionMagicVoltage positionControl =
+  protected DynamicMotionMagicVoltage positionControl =
       new DynamicMotionMagicVoltage(0, 0, 0).withUpdateFreqHz(0);
 
   public GenericSuperstructureIOSim(int id, double reduction) {
@@ -80,9 +80,10 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
     motionMagicConfig.MotionMagicCruiseVelocity = motionMagicCruiseVelocity;
     motionMagicConfig.MotionMagicJerk = motionMagicJerk;
 
-    positionControl.withAcceleration(motionMagicAcceleration);
-    positionControl.withVelocity(motionMagicCruiseVelocity);
-    positionControl.withJerk(motionMagicJerk);
+    positionControl = positionControl
+        .withAcceleration(motionMagicAcceleration)
+        .withVelocity(motionMagicCruiseVelocity)
+        .withJerk(motionMagicJerk);
 
     talon.getConfigurator().apply(gainsConfig);
     talon.getConfigurator().apply(motionMagicConfig);
