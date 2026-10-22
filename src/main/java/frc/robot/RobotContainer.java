@@ -472,7 +472,7 @@ public class RobotContainer {
                 && shooterAccelerator.getCurrentVelocity().in(RotationsPerSecond) > 1.0
                 && shooterOmniwheels.getCurrentVelocity().in(RotationsPerSecond) > 1.0,
             20.0,
-                new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.PI)),
+                new Transform3d(new Translation3d(0.2, 0, 0.2), new Rotation3d(0, 0, Math.PI)),
             shooterRollers.getCurrentVelocity(),
             Units.Inches.of(26));
 
