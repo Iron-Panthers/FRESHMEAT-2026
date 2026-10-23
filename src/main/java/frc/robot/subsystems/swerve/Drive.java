@@ -279,6 +279,8 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("Swerve/PID/Velocity X", axisAssistController.getXVel());
       Logger.recordOutput("Swerve/PID/Velocity Y", axisAssistController.getYVel());
     }
+
+    Logger.recordOutput("Swerve/Low Power Mode Test", modules[0].getDriveSupplyCurrentLimit() <= DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS);
   }
 
   public void setDefenseMode() {
@@ -472,6 +474,10 @@ public class Drive extends SubsystemBase {
     }
   }
 
+  public ChassisSpeeds getTargetSpeed() {
+    return targetSpeeds;
+  }
+
   public boolean reachedAutoAlignTarget() {
     if (driveMode != DriveModes.AUTO_ALIGN) {
       return false;
@@ -502,6 +508,10 @@ public class Drive extends SubsystemBase {
 
   public Translation2d getCenterOfRotation() {
     return centerOfRotation;
+  }
+
+  public void setLowPowerMode(boolean lowPowerMode) {
+      setDriveSupplyCurrentLimits(lowPowerMode ? DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS : DriveConstants.DRIVE_CURRENT_LIMIT_AMPS); 
   }
 
   public Rotation2d getShootingError() {

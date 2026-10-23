@@ -18,6 +18,10 @@ import frc.robot.utility.LoggableMechanism3d;
 
 public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarget>
     implements LoggableMechanism3d {
+    // for logging the VelocityRotPerSec and SupplyCurrentAmps every 5 seconds in test mode
+    private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
+    private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = new java.util.ArrayList<>();
+
     public enum IntakeRackTarget implements GenericSuperstructure.PositionTarget {
         IDLE(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
         INTAKE(10, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
@@ -117,6 +121,44 @@ public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarge
         this.loggableMechanism3dParent = parent;
     }
 
+
+    public void resetTestState() {
+        speedIntervalReadings.clear();
+        supplyCurrentIntervalReadings.clear();
+    }
+
+    // Returns "avgRot/s,avgCurrent" at each 5s transition, null otherwise
+    public String runTestLogger(double testStartTime, double currentTime, boolean isNextTransition) {
+        if (testStartTime == -1) {
+        testStartTime = currentTime;
+        }
+
+        double currentSpeed = inputs.velocityRotPerSec;
+        double currentSupplyCurrent = inputs.supplyCurrentAmps;
+        speedIntervalReadings.add(currentSpeed);
+        supplyCurrentIntervalReadings.add(currentSupplyCurrent);
+
+        if (isNextTransition) {
+        double sumSpeed = 0;
+        double sumSupplyCurrent = 0;
+        for (double val : speedIntervalReadings) {
+            sumSpeed += val;
+        }
+        for (double val : supplyCurrentIntervalReadings) {
+            sumSupplyCurrent += val;
+        }
+
+        double avgSpeed = speedIntervalReadings.isEmpty() ? 0 : sumSpeed / speedIntervalReadings.size();
+        double avgSupplyCurrent = supplyCurrentIntervalReadings.isEmpty() ? 0 : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
+
+        speedIntervalReadings.clear();
+        supplyCurrentIntervalReadings.clear();
+
+        return String.format("%.2f", avgSpeed) + "," + String.format("%.2f", avgSupplyCurrent);
+        }
+        return null;
+    }
+    
     @AutoLogOutput(key = "Intake/Intake Rack/Display Pose3d")
     @Override
     public Pose3d getDisplayPose3d() {

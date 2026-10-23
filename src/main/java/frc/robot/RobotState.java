@@ -14,6 +14,7 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,7 +40,10 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.vision.VisionConstants;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -84,6 +88,17 @@ public class RobotState {
   private ChassisSpeeds robotSpeeds = new ChassisSpeeds();
 
   private static RobotState instance;
+
+  private Pose2d pathPlannerTargetPose;
+
+  private boolean isAutoAdaptive = false;
+
+  private boolean isAutoUnderTrench = true;
+
+
+    @AutoLogOutput(key = "PathPlanner/Dynamic Obstacles")
+  private List<Pair<Translation2d, Translation2d>> dynamicObstacles =
+      new ArrayList<Pair<Translation2d, Translation2d>>();
 
   public static RobotState getInstance() {
     if (instance == null) instance = new RobotState();
@@ -154,24 +169,6 @@ public class RobotState {
     return translateByVector(pose, mag, theta).transformBy(new Transform2d(0, 0, theta));
   }
 
-  /**
-   * Gets the scuffed path planner built command for following a path to a certain pose
-   *
-   * @param approachPose2d
-   * @return
-   */
-  public Command getPathPlannerApproachPoseCommand(Pose2d approachPose2d) {
-    Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
-    Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
-
-    Command finalPathfindingCommand = null;
-
-    finalPathfindingCommand =
-        AutoBuilder.pathfindToPose(approachPose2d, DriveConstants.ALIGN_PATH_CONSTRAINTS, 0.0);
-    
-
-    return finalPathfindingCommand;
-  }
 
   public void addRobotSpeeds(ChassisSpeeds chassisSpeeds) {
     this.robotSpeeds = chassisSpeeds;
@@ -179,6 +176,81 @@ public class RobotState {
 
   public Pose2d getAlignPose() {
     return lastApproachPose;
+  }
+
+  public void addDynamicObstacle(Pair<Translation2d, Translation2d> obj) {
+    dynamicObstacles.add(obj);
+  }
+
+  public void resetDynamicObstacles() {
+    dynamicObstacles.clear();
+  }
+
+  /**
+   * Gets the scuffed path planner built command for following a path to a certain pose
+   *
+   * @param approachPose2d
+   * @param underTrench
+   * @return
+   */
+  public Command getPathPlannerApproachPoseCommand(
+      Pose2d approachPose2d,
+      boolean underTrench,
+      boolean stayOnCurrentSide) {
+    Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
+    Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
+
+    Command finalPathfindingCommand = null;
+
+    List<Pair<Translation2d, Translation2d>> finalObstaclesList =
+        new ArrayList<Pair<Translation2d, Translation2d>>(dynamicObstacles);
+
+    finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_TRENCH_WALL);
+
+    if (stayOnCurrentSide) {
+      finalObstaclesList.add(DriveConstants.FIELD_SPLITTING_LINE_CENTER);
+    }
+
+    if (underTrench) {
+      finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_TRENCH_PATHFINDING);
+    } else {
+      finalObstaclesList.addAll(DriveConstants.OBSTACLES_FOR_BUMP_PATHFINDING);
+    }
+
+    Pathfinding.setDynamicObstacles(finalObstaclesList, estimatedPose.getTranslation());
+
+    Logger.recordOutput("Robot State/Dynamic Obstacles", finalObstaclesList.toString());
+
+    finalPathfindingCommand =
+        AutoBuilder.pathfindToPose(approachPose2d, DriveConstants.ALIGN_PATH_CONSTRAINTS, 0.0);
+
+    return finalPathfindingCommand;
+  }
+
+    public void setIsAutoAdaptive(boolean isAutoAdaptive) {
+    this.isAutoAdaptive = isAutoAdaptive;
+  }
+
+  public void setPathPlannerTargetPose(Pose2d pose) {
+    pathPlannerTargetPose = pose;
+  }
+
+  public Pose2d getPathPlannerTargetPose() {
+    return pathPlannerTargetPose;
+  }
+
+  @AutoLogOutput(key = "Robot State/adaptive auto going under")
+  public boolean isAutoUnderTrench() {
+    return isAutoUnderTrench;
+  }
+
+  public void setIsAutoUnderTrench(boolean isAutoUnderTrench) {
+    this.isAutoUnderTrench = isAutoUnderTrench;
+  }
+
+    @AutoLogOutput(key = "Robot State/is auto adaptive")
+  public boolean isAutoAdaptive() {
+    return isAutoAdaptive;
   }
 
   @AutoLogOutput(key = "Robot State/isAllianceRed")
@@ -191,4 +263,58 @@ public class RobotState {
     return true;
   }
 
+  private final InterpolatingTreeMap<Double, HoodParams> shooterTable =
+    new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), HoodParams::interpolate);
+
+  public void initializeShooterTable() {
+    this.shooterTable.clear();
+    switch (Constants.getRobotType()) {
+      case SIM -> {
+          addEntry(1.3, new HoodParams(8.37, 1.621));
+          addEntry(2.0, new HoodParams(12.88, 1.621));
+          addEntry(2.5, new HoodParams(16.01, 1.601));
+          addEntry(3.0, new HoodParams(19.32, 1.602));
+          addEntry(3.5, new HoodParams(22.54, 1.581));
+          addEntry(4.0, new HoodParams(25.76, 1.561));
+          addEntry(4.5, new HoodParams(28.98, 1.561));
+      }
+      default -> {
+          addEntry(1.3, new HoodParams(8.37, 1.09));
+          addEntry(2.0, new HoodParams(12.88, .97));
+          addEntry(2.5, new HoodParams(16.01, 1.14));
+          addEntry(3.0, new HoodParams(19.32, 1.15));
+          addEntry(3.5, new HoodParams(22.54, 1.22));
+          addEntry(4.0, new HoodParams(25.76, 1.3));
+          addEntry(4.5, new HoodParams(28.98, 1.34));
+          addEntry(5.2, new HoodParams(33.49, 1.39));
+      }
+    }
+  }
+
+  public double getShooterSpeed(double distance) {
+    return shooterTable.get(distance).shooterSpeed;
+  }
+
+  private void addEntry(double distance, HoodParams defaults) {
+    String prefix = String.format("Tuning/Shooter/%.1fm/", distance);
+    double speed = getLutNTEntry(prefix + "shooterSpeed", defaults.shooterSpeed).get();
+    double tof = getLutNTEntry(prefix + "timeOfFlight", defaults.timeOfFlight).get();
+    HoodParams params = new HoodParams(speed, tof);
+    shooterTable.put(distance, params);
+  }
+
+  private final HashMap<String, LoggedNetworkNumber> ntLutEntries = new HashMap<>();
+
+  private LoggedNetworkNumber getLutNTEntry(String key, double defaultValue) {
+    return ntLutEntries.computeIfAbsent(key, k -> new LoggedNetworkNumber(k, defaultValue));
+  }
+
+  public record HoodParams(double shooterSpeed, double timeOfFlight) implements Interpolatable<HoodParams> {
+    @Override
+    public HoodParams interpolate(HoodParams endValue, double t) {
+      return new HoodParams(
+        MathUtil.interpolate(this.shooterSpeed, endValue.shooterSpeed, t),
+        MathUtil.interpolate(this.timeOfFlight, endValue.timeOfFlight, t));
+    }
+  }
 }

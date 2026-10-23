@@ -25,7 +25,7 @@ public class IntakeRollersConstants {
                 false);
             default -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),
-                CAN.at(6, "Intake Rollers 2"), 
+                CAN.at(7, "Intake Rollers 2"), 
                 1,
                 false,
                 false,
@@ -35,7 +35,7 @@ public class IntakeRollersConstants {
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
             case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
-            case SIM ->  new PIDGains(0, 0, 0, 0, 0, 0, 0);
+            case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };
 
@@ -48,7 +48,11 @@ public class IntakeRollersConstants {
 
     public static final double UPPER_VOLT_LIMIT = 12;
     public static final double LOWER_VOLT_LIMIT = -12;
-    public static final int CURRENT_LIMIT_AMPS = 1;
+    public static final int CURRENT_LIMIT_AMPS =
+        switch (Constants.getRobotType()) {
+            case SIM -> 40;
+            default -> 40;
+        };
     public static final double STATOR_CURRENT_LIMIT = 50;
 
     public record IntakeRollersConfig(

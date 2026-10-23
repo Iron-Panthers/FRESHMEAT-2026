@@ -34,7 +34,7 @@ public class IntakeRackConstants {
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
             case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
-            case SIM ->  new PIDGains(0, 0, 0, 0, 0, 0, 0);
+            case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };
 
@@ -63,7 +63,11 @@ public class IntakeRackConstants {
 
     public static final double UPPER_VOLT_LIMIT = 0;
     public static final double LOWER_VOLT_LIMIT = 0;
-    public static final double SUPPLY_CURRENT_LIMIT_AMPS = 1;
+    public static final double SUPPLY_CURRENT_LIMIT_AMPS =
+        switch (Constants.getRobotType()) {
+            case SIM -> 40;
+            default -> 40;
+        };
 
     public static final double ZEROING_VOLTS = -3;
     public static final double ZEROING_OFFSET = 0;

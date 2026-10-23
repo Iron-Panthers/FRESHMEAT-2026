@@ -18,14 +18,16 @@ public class AlignToPassCommand extends Command {
 
     public AlignToPassCommand(Drive swerve, Translation2d pointTarget) {
         this.swerve = swerve;
-        this.pointTarget = pointTarget;
+        this.pointTarget = RobotState.isAllianceRed() 
+            ? pointTarget
+            : FlippingUtil.flipFieldPosition(pointTarget);
     }
 
     @Override
     public void initialize() {
         Pose2d estimatedPose = RobotState.getInstance().getEstimatedPose();
         
-        targetAngle = pointTarget.minus(estimatedPose.getTranslation()).getAngle();
+        targetAngle = pointTarget.minus(estimatedPose.getTranslation()).getAngle().plus(Rotation2d.kPi);
 
         // I have zero idea why it needs to be flipped for red...
         if (RobotState.isAllianceRed()) targetAngle = targetAngle.plus(Rotation2d.kPi);
