@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
@@ -432,6 +433,57 @@ public class RobotContainer {
     swerve.setNeutralMode(NeutralModeValue.Brake);
   }
 
+
+  private double testModeStartTime = -1;
+  private final java.util.ArrayList<String> combinedTestData = new java.util.ArrayList<>();
+  public void testInit() {
+    Commands.sequence(
+            new IntakeCommand(intakeController, shooterController),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.SHOOT)),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.INTAKE)),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.IDLE)),
+            Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)),
+            new WaitCommand(5.0))
+        .schedule();
+    
+    testModeStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    timeOfLastTransition = testModeStartTime;
+  }
+  private double timeOfLastTransition = 0;
+  public void testPeriodic() {
+    double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    boolean isNextTransition = false;
+    if (currentTime - testModeStartTime >= 25) {
+        return;
+    }
+    if (currentTime - timeOfLastTransition >= 5) {
+      isNextTransition = true;
+      timeOfLastTransition = currentTime;
+    }
+    String serData = serializer.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String accData = shooterAccelerator.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String rackData = intakeRack.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String rolData = intakeRollers.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+
+    if (isNextTransition) {
+      double relativeTime = currentTime - testModeStartTime;
+      combinedTestData.add(
+          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + rackData + "," + rolData);
+    }
+    
+  }
+
+  public void testExit() {
+    shooterController.setTargetState(ShooterState.IDLE);
+    intakeController.setTargetState(IntakeState.IDLE);
+    printAndClearStoredData();
+  }
+
+
   /** Ran when periodic disabled */
   public void updateDashboardStatus() {
     // TODO: Define all of the dashboard outputs here
@@ -479,4 +531,17 @@ public class RobotContainer {
     // Handle automatic shooter firing
     RobotSimState.getInstance().periodicShooter();
   }
+
+    public void printAndClearStoredData() {
+        System.out.println("=== Test Mode Combined Data ===");
+        System.out.println("Timestamp(s),Ser AvgRad/s,Ser AvgCurrent(A),Acc AvgRad/s,Acc AvgCurrent(A),Rack AvgRot/s,Rack AvgCurrent(A),Rollers AvgRad/s,Rollers AvgCurrent(A)");
+        for (String row : combinedTestData) {
+            System.out.println(row);
+        }
+        combinedTestData.clear();
+        serializer.resetTestState();
+        shooterAccelerator.resetTestState();
+        intakeRack.resetTestState();
+        intakeRollers.resetTestState();
+    }
 }
