@@ -16,14 +16,14 @@ public class ShooterRollersConstants {
             false,
             false,
             true,
-            false,
+            false, //TODO: Sus
             false);
         default -> new ShooterRollersConfig(
-            CAN.at(18, "Shooter Roller Left Bottom"),
-            CAN.at(10, "Shooter Roller Left Top"),
-            CAN.at(16, "Shooter Roller Right Bottom"),
-            CAN.at(15, "Shooter Roller Right Top"),
-            1.411,
+            CAN.at(0, "Shooter Roller Left Bottom"),
+            CAN.at(24, "Shooter Roller Left Top"),
+            CAN.at(12, "Shooter Roller Right Bottom"),
+            CAN.at(22, "Shooter Roller Right Top"),
+            0.75,
             true,
             false,
             false,
@@ -35,7 +35,7 @@ public class ShooterRollersConstants {
   public static final PIDGains GAINS =
       switch (Constants.getRobotType()) {
         case SIM -> new PIDGains(3, 0, 0, 0, .1, 0, 0);
-        default -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        default -> new PIDGains(0.1, 0, 0, 0.17, 0.1158, 0.12, 0);
       };
 
   public static final double VELOCITY_ADJUSTMENT = 0.98;

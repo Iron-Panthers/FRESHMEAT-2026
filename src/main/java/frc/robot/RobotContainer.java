@@ -59,6 +59,7 @@ import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIO;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOSim;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIO;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
@@ -134,25 +135,26 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
-          intakeRack = new IntakeRack(new IntakeRackIOTalonFX());
-          intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
-          swerve =
-              new Drive(
-                  new GyroIOPigeon2(),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
+          // intakeRack = new IntakeRack(new IntakeRackIOTalonFX());
+          // intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
+          // swerve =
+          //     new Drive(
+          //         new GyroIOPigeon2(),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          vision =
-              new Vision(
-                  new VisionIOPhotonvision("CamC", 0),
-                  new VisionIOPhotonvision("CamA", 1),
-                  new VisionIOPhotonvision("CamB", 2));
-          serializer = new Serializer(new SerializerIOTalonFX());
+          // vision =
+          //     new Vision(
+          //         new VisionIOPhotonvision("CamC", 0),
+          //         new VisionIOPhotonvision("CamA", 1),
+          //         new VisionIOPhotonvision("CamB", 2));
+          // serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
           
         }
         case VISION -> {

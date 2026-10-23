@@ -15,7 +15,7 @@ public class IntakeRackConstants {
     public static final IntakeRackConfig INTAKE_RACK_CONFIG =
         switch (Constants.getRobotType()) {
             case COMP -> new IntakeRackConfig(
-                CAN.at(52, "Intake Rack"),
+                CAN.at(34, "Intake Rack"),
                 1,
                 InvertedValue.CounterClockwise_Positive,
                 false);

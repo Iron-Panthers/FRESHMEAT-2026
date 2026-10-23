@@ -8,7 +8,7 @@ import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 public class ShooterAccelerator extends GenericRollers<ShooterAccelerator.ShooterAcceleratorTarget> {
     public enum ShooterAcceleratorTarget implements GenericRollers.VelocityTarget {
         IDLE(0,ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
-        SHOOT(50, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
+        SHOOT(20, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
             
         private double velocity;
