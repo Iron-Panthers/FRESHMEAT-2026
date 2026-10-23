@@ -11,7 +11,9 @@ import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.Shoot
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels.ShooterOmniwheelsTarget;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers.ShooterRollersTarget;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.ShooterRollersConfig;
 import frc.robot.subsystems.swerve.DriveConstants;
 
 
@@ -77,11 +79,21 @@ public class ShooterController extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput("Shooter Speed", RobotState.getInstance().getShooterSpeed(RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(RobotState.isAllianceRed() ?
+        double robotDistanceFromHub = RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(RobotState.isAllianceRed() ?
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
-        DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
+        DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d());
+        double shooterSpeed = RobotState.getInstance().getShooterSpeed(robotDistanceFromHub);
+        // TODO: Should this really be in shooter controller?
+        Logger.recordOutput("Robot Distance From Hub", robotDistanceFromHub);
+        Logger.recordOutput("Shooter Speed", shooterSpeed);
         Logger.recordOutput("Shooter/Target", targetState.toString());
-        shooterRollers.setVelocityTarget(targetState.rollersTarget);
+
+        if (targetState.rollersTarget == ShooterRollersTarget.SHOOT) {
+            shooterRollers.setVelocityTargetManual(shooterSpeed, ShooterRollersConstants.CURRENT_LIMIT_AMPS);
+        } else {
+            shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        }
+    
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);

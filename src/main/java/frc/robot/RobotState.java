@@ -270,13 +270,13 @@ public class RobotState {
     this.shooterTable.clear();
     switch (Constants.getRobotType()) {
       case SIM -> {
-          addEntry(1.3, new HoodParams(8.37, 1.621));
-          addEntry(2.0, new HoodParams(12.88, 1.621));
-          addEntry(2.5, new HoodParams(16.01, 1.601));
-          addEntry(3.0, new HoodParams(19.32, 1.602));
-          addEntry(3.5, new HoodParams(22.54, 1.581));
-          addEntry(4.0, new HoodParams(25.76, 1.561));
-          addEntry(4.5, new HoodParams(28.98, 1.561));
+          addEntry(1.3, new HoodParams(26, 1.621)); // good
+          addEntry(2.0, new HoodParams(30, 1.621)); // good
+          addEntry(2.5, new HoodParams(33, 1.601));
+          addEntry(3.0, new HoodParams(35, 1.602));
+          addEntry(3.5, new HoodParams(38, 1.581));
+          addEntry(4.0, new HoodParams(40, 1.561));
+          addEntry(4.5, new HoodParams(42, 1.561));
       }
       default -> {
           addEntry(1.3, new HoodParams(8.37, 1.09));
