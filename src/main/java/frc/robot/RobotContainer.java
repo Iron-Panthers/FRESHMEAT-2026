@@ -53,10 +53,18 @@ import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
+import frc.robot.subsystems.shooter.ShooterController;
+import frc.robot.subsystems.shooter.ShooterController.ShooterState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.SerializerIO;
 import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIO;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOSim;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIO;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOSim;
@@ -120,6 +128,11 @@ public class RobotContainer {
   private IntakeRack intakeRack;
   private IntakeRollers intakeRollers;
   private ShooterRollers shooterRollers;
+  private ShooterAccelerator shooterAccelerator;
+  private ShooterOmniwheels shooterOmniwheels;
+  private ShooterController shooterController;
+  private ShootCommand shootCommand;
+  private ShootCommandFactory shootCommandFactory;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -188,6 +201,8 @@ public class RobotContainer {
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOSim());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOSim());
         }
       }
     }
@@ -225,9 +240,22 @@ public class RobotContainer {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
 
+    if (shooterAccelerator == null) {
+      shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
+    }
+
+    if (shooterOmniwheels == null) {
+      shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIO() {});
+    }
+
     intakeController = new IntakeController(intakeRack, intakeRollers);
     shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
 
+    shootCommandFactory = new ShootCommandFactory(
+      shooterController,
+      intakeController,
+      matchTimerUpdater,
+      swerve::getShootingError);
 
     nameCommands();
     configureAutos();
@@ -349,9 +377,14 @@ public class RobotContainer {
 
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
+  
     driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
     .andThen(new AlignToShootCommand(swerve)))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    
+    // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
+    // Currently it functions similarily to the above command except it doesn't look at the hub.
+    // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
