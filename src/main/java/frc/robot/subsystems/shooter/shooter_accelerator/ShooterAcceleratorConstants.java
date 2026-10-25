@@ -13,7 +13,7 @@ public class ShooterAcceleratorConstants {
             CAN.at(35, "Shooter Accelerator Right"),
             CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
             1.5,
-            true,
+            false,
             false,
             true
         ); 
@@ -21,7 +21,7 @@ public class ShooterAcceleratorConstants {
             CAN.at(35, "Shooter Accelerator Right"),
             CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
             0.9,
-            true,
+            false,
             false,
             true
         ); 
@@ -29,7 +29,7 @@ public class ShooterAcceleratorConstants {
             CAN.at(35, "Shooter Accelerator Right"), 
             CAN.at(23, "Shooter Accelerator Left"), 
             1.5, 
-            true, 
+            false, 
             true, 
             true
         );
@@ -39,7 +39,6 @@ public class ShooterAcceleratorConstants {
     switch(Constants.getRobotType()){
         case SIM -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
         case COMP -> new PIDGains(0.3, 0, 0, 0.19, 0.70588, 0.1791, 0);
-        //case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
         default -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 

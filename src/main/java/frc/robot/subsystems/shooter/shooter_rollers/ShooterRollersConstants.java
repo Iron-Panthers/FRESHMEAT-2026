@@ -20,7 +20,7 @@ public class ShooterRollersConstants {
             false);
         default -> new ShooterRollersConfig(
             CAN.at(0, "Shooter Roller Left Bottom"),
-            CAN.at(24, "Shooter Roller Left Top"),
+            CAN.at(26, "Shooter Roller Left Top"),
             CAN.at(12, "Shooter Roller Right Bottom"),
             CAN.at(22, "Shooter Roller Right Top"),
             0.75,

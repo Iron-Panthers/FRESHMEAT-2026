@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake.intake_rack;
+package frc.robot.subsystems.intake.intake_pivot;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
@@ -7,48 +7,48 @@ import frc.robot.RobotSimState;
 import frc.robot.utility.*;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIOSim;
 
-public class IntakeRackIOSim extends GenericSuperstructureIOSim implements IntakeRackIO {
+public class IntakePivotIOSim extends GenericSuperstructureIOSim implements IntakePivotIO {
 
-  private final ElevatorSim intakeRackSim;
+  private final ElevatorSim intakePivotSim;
   private final double reduction;
 
-  /** Holding load toward stow: median applied voltage while the real rack is deployed and still. */
+  /** Holding load toward stow: median applied voltage while the real pivot is deployed and still. */
   private static final double LOAD_VOLTS = 0.61;
 
   private static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
 
-  public IntakeRackIOSim() {
+  public IntakePivotIOSim() {
     super(
-        IntakeRackConstants.INTAKE_RACK_CONFIG.motorID(),
-        IntakeRackConstants.INTAKE_RACK_CONFIG.reduction());
+        IntakePivotConstants.INTAKE_PIVOT_CONFIG.motorID(),
+        IntakePivotConstants.INTAKE_PIVOT_CONFIG.reduction());
 
-    this.reduction = IntakeRackConstants.INTAKE_RACK_CONFIG.reduction();
+    this.reduction = IntakePivotConstants.INTAKE_PIVOT_CONFIG.reduction();
 
-    intakeRackSim =
+    intakePivotSim =
         new ElevatorSim(
             MOTOR,
             reduction,
-            IntakeRackConstants.PHYSICAL_CONSTANTS.massInKilograms(),
-            IntakeRackConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
-            IntakeRackConstants.PHYSICAL_CONSTANTS.minExtensionMeters(),
-            IntakeRackConstants.PHYSICAL_CONSTANTS.maxExtensionMeters(),
-            IntakeRackConstants.PHYSICAL_CONSTANTS.simulateGravity(),
+            IntakePivotConstants.PHYSICAL_CONSTANTS.massInKilograms(),
+            IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
+            IntakePivotConstants.PHYSICAL_CONSTANTS.minExtensionMeters(),
+            IntakePivotConstants.PHYSICAL_CONSTANTS.maxExtensionMeters(),
+            IntakePivotConstants.PHYSICAL_CONSTANTS.simulateGravity(),
             0);
     setOffset();
     frc.robot.utility.SimBattery.getInstance()
-        .register(() -> lastSupplyCurrentAmps, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS);
+        .register(() -> lastSupplyCurrentAmps, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS);
     setSlot0(
-        IntakeRackConstants.GAINS.kP(),
-        IntakeRackConstants.GAINS.kI(),
-        IntakeRackConstants.GAINS.kD(),
-        IntakeRackConstants.GAINS.kS(),
-        IntakeRackConstants.GAINS.kV(),
-        IntakeRackConstants.GAINS.kA(),
-        IntakeRackConstants.GAINS.kG(),
-        IntakeRackConstants.MOTION_MAGIC_CONFIG.acceleration(),
-        IntakeRackConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
+        IntakePivotConstants.GAINS.kP(),
+        IntakePivotConstants.GAINS.kI(),
+        IntakePivotConstants.GAINS.kD(),
+        IntakePivotConstants.GAINS.kS(),
+        IntakePivotConstants.GAINS.kV(),
+        IntakePivotConstants.GAINS.kA(),
+        IntakePivotConstants.GAINS.kG(),
+        IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration(),
+        IntakePivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
         0,
-        IntakeRackConstants.GRAVITY_TYPE);
+        IntakePivotConstants.GRAVITY_TYPE);
   }
 
   /** Last computed supply current, published to SimBattery. */
@@ -64,24 +64,24 @@ public class IntakeRackIOSim extends GenericSuperstructureIOSim implements Intak
     appliedVoltage =
         frc.robot.utility.SimCurrentLimit.clampToSupplyLimit(
             appliedVoltage,
-            intakeRackSim.getVelocityMetersPerSecond()
-                / IntakeRackConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
+            intakePivotSim.getVelocityMetersPerSecond()
+                / IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
             reduction,
             MOTOR,
             RobotController.getBatteryVoltage(),
-            IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS);
+            IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS);
 
-    intakeRackSim.setInputVoltage(
+    intakePivotSim.setInputVoltage(
         frc.robot.utility.SimCurrentLimit.applyConstantLoad(appliedVoltage, LOAD_VOLTS));
-    intakeRackSim.update(0.02);
+    intakePivotSim.update(0.02);
 
     // Mechanism units, converted to rotor units for the sensor.
     double mechanismRotations =
-        intakeRackSim.getPositionMeters()
-            / (2 * Math.PI * IntakeRackConstants.PHYSICAL_CONSTANTS.drumRadiusMeters());
+        intakePivotSim.getPositionMeters()
+            / (2 * Math.PI * IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters());
     double mechanismRPS =
-        intakeRackSim.getVelocityMetersPerSecond()
-            / (2 * Math.PI * IntakeRackConstants.PHYSICAL_CONSTANTS.drumRadiusMeters());
+        intakePivotSim.getVelocityMetersPerSecond()
+            / (2 * Math.PI * IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters());
 
     talon.getSimState().setRawRotorPosition(mechanismRotations * reduction);
     talon.getSimState().setRotorVelocity(mechanismRPS * reduction);
@@ -95,8 +95,8 @@ public class IntakeRackIOSim extends GenericSuperstructureIOSim implements Intak
     double statorAmps =
         frc.robot.utility.SimCurrentLimit.statorAmps(
             appliedVoltage,
-            intakeRackSim.getVelocityMetersPerSecond()
-                / IntakeRackConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
+            intakePivotSim.getVelocityMetersPerSecond()
+                / IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters(),
             reduction,
             MOTOR);
     double dutyCycle = availableVolts > 0.0 ? Math.abs(appliedVoltage) / availableVolts : 0.0;
@@ -115,6 +115,6 @@ public class IntakeRackIOSim extends GenericSuperstructureIOSim implements Intak
 
   @Override
   public void setOffset() {
-    intakeRackSim.setState(0, 0);
+    intakePivotSim.setState(0, 0);
   }
 }

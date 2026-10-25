@@ -8,38 +8,38 @@ public class SerializerConstants {
         switch (Constants.getRobotType()) {
         case SIM -> new SerializerConfig(
             CAN.at(25, "Serializer Right"),
-            CAN.at(26, "Serializer Left"),
+            CAN.at(24, "Serializer Left"),
             1,
+            true,
             false,
-            false,
-            false);
+            true);
         case COMP -> new SerializerConfig(
             CAN.at(25, "Serializer Right"),
-            CAN.at(26, "Serializer Left"),
+            CAN.at(24, "Serializer Left"),
             1,
+            true,
             false,
-            false,
-            false);
+            true);
         default -> new SerializerConfig(
             CAN.at(25, "Serializer Right"),
-            CAN.at(26, "Serializer Left"),
+            CAN.at(24, "Serializer Left"),
             1,
+            true,
             false,
-            false,
-            false);
+            true);
         };
 
     public static final PIDGains GAINS =
     switch (Constants.getRobotType()) {
         case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
-        case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        case COMP -> new PIDGains(0.1, 0, 0, 0.2, 0.1164, 0.321, 0);
         default ->   new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 
     public static final double UPPER_VOLT_LIMIT = 12;
     public static final double LOWER_VOLT_LIMIT = -12;
-    public static final int CURRENT_LIMIT_AMPS = 1;
-    public static final int STATOR_CURRENT_LIMIT = 1;
+    public static final int CURRENT_LIMIT_AMPS = 35;
+    public static final int STATOR_CURRENT_LIMIT = 50;
 
 
     public static final SerializerPhysicalConstants PHYSICAL_CONSTANTS =
