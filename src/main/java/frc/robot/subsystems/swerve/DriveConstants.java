@@ -107,7 +107,7 @@ public class DriveConstants {
               CAN.at(18, "FL Drive"),
               CAN.at(45, "FL Steer"), //TODO: fix
               25,
-              new Rotation2d(1.383651),
+              new Rotation2d(1.383651+Math.PI),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
@@ -121,7 +121,7 @@ public class DriveConstants {
               CAN.at(8, "BL Drive"),
               CAN.at(7, "BL Steer"),
               9,
-              new Rotation2d(0.418777),
+              new Rotation2d(0.418777+Math.PI),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
