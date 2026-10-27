@@ -362,7 +362,7 @@ public class RobotContainer {
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
     driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
@@ -372,18 +372,24 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
     driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
     .andThen(new AlignToShootCommand(swerve)))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
     driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
   }

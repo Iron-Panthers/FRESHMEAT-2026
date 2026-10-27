@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollersTarget>{
     public enum ShooterRollersTarget implements GenericRollers.VelocityTarget{
         SHOOT(30, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        CONSTANT_SHOOT(30 * 0.8, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         IDLE(0, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
@@ -35,7 +36,7 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
 
     public ShooterRollers(GenericRollersIO io){
         super("Shooter/Shooter Flywheels", io);
-        setVelocityTarget(ShooterRollersTarget.IDLE);
+        setVelocityTarget(ShooterRollersTarget.SHOOT);
     }
 
     @AutoLogOutput(key = "Shooter/Shooter Rollers/Current Velocity")

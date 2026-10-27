@@ -52,11 +52,13 @@ public class ShooterController extends SubsystemBase {
 
     private ShooterState targetState = ShooterState.IDLE;
     private boolean stopped = false;
+    private boolean constantRollersVelocity = true;
 
     private final Serializer serializer;
     private final ShooterAccelerator shooterAccelerator;
     private final ShooterOmniwheels shooterOmniwheels;
     private final ShooterRollers shooterRollers;
+
 
     public ShooterController(
         Serializer serializer,
@@ -81,7 +83,11 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
         Logger.recordOutput("Shooter/Target", targetState.toString());
-        shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        if (constantRollersVelocity) {
+            shooterRollers.setVelocityTarget(ShooterRollersTarget.CONSTANT_SHOOT);
+        } else {
+            shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        }
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);
@@ -90,6 +96,7 @@ public class ShooterController extends SubsystemBase {
         shooterAccelerator.periodic();
         shooterOmniwheels.periodic();
         shooterRollers.periodic();
+        Logger.recordOutput("Shooter/Use Constant Roller Velocity", constantRollersVelocity);
     }
 
     public ShooterState getTargetState() {
@@ -102,5 +109,9 @@ public class ShooterController extends SubsystemBase {
 
     public void setStopped(boolean stopped) {
         this.stopped = stopped;
+    }
+
+    public void setConstantRollersVelocity(boolean constantRollersVelocity) {
+        this.constantRollersVelocity = constantRollersVelocity;
     }
 }
