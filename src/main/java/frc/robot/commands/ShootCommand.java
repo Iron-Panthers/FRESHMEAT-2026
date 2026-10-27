@@ -1,33 +1,25 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.RobotState;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.intake.IntakeController;
+import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.shooter.ShooterController;
-import frc.robot.subsystems.shooter.ShooterController.ShooterState;
-import frc.robot.subsystems.swerve.Drive;
-import frc.robot.subsystems.swerve.DriveConstants;
 
-/** Purely for testing purposes :/
-*/
 public class ShootCommand extends Command {
+    private final ShooterController shooterController;
+    private final IntakeController intakeController;
 
-    private ShooterController shooterController;
-    private Drive swerve;
-
-    public ShootCommand(ShooterController shooterController, Drive swerve) {
-        this.swerve = swerve;
+    public ShootCommand(ShooterController shooterController, IntakeController intakeController) {
         this.shooterController = shooterController;
+        this.intakeController = intakeController;
     }
-
-    @Override
-    public void initialize() {
-        CommandScheduler.getInstance().schedule(new AlignToShootCommand(swerve));
-        shooterController.setTargetState(ShooterState.SHOOT);
-    }
+    public Command whileHeld() {
+        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.SHOOT)), 
+                (Commands.runOnce(() -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
+    } 
+    public Command whenReleased() {
+        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)), 
+                (Commands.runOnce(() -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
+    }   
 }
