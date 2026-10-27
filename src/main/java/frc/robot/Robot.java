@@ -44,12 +44,16 @@ public class Robot extends LoggedRobot {
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogTargetPoseCallback(
-        (pose) -> Logger.recordOutput("Path Planner/Target Pose", pose));
+        (pose) -> {
+          RobotState.getInstance().setPathPlannerTargetPose(pose); // Don't kill me Nora
+          Logger.recordOutput("PathPlanner/TargetPose", pose);
+        });
     PathPlannerLogging.setLogCurrentPoseCallback(
         (pose) -> Logger.recordOutput("Path Planner/Current Pose", pose));
     PathPlannerLogging.setLogActivePathCallback(
         (path) ->
             Logger.recordOutput("Path Planner/Active Path", path.toArray(new Pose2d[path.size()])));
+
 
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -167,11 +171,21 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    robotContainer.testInit();
+  }
+
+  /** This function is called once when test mode is disabled. */
+  @Override
+  public void testExit() {
+    robotContainer.testExit();
+  }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    robotContainer.testPeriodic();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

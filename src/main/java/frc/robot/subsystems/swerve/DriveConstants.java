@@ -222,6 +222,7 @@ public class DriveConstants {
 
   public static final double STEER_CURRENT_LIMIT_AMPS = 10;
   public static final double DRIVE_CURRENT_LIMIT_AMPS = 40;
+  public static final double LOW_POWER_CURRENT_LIMIT_AMPS = 20;
 
   /**
    * These are the configs for the maple sim drivebase This should be updated to be similar to the
@@ -244,6 +245,9 @@ public class DriveConstants {
                       Meters.of(DRIVE_CONFIG.wheelRadius()),
                       KilogramSquareMeters.of(0.04),
                       1.4));
+
+  public static final DriveTrainSimulationConfig obstacleConfig =
+        DriveTrainSimulationConfig.Default().withRobotMass(Kilograms.of(1000000000));
 
   public static final TrajectoryFollowerConstants TRAJECTORY_CONFIG =
       switch (getRobotType()) {
@@ -283,6 +287,8 @@ public class DriveConstants {
 
   public static final Pose2d INITIAL_POSE = new Pose2d(2.9, 3.8, new Rotation2d(1, 0));
 
+  public static final double ADAPTIVE_AUTO_ERROR = 1.8;
+
   public static final PPHolonomicDriveController HOLONOMIC_DRIVE_CONTROLLER =
       new PPHolonomicDriveController(
           TRAJECTORY_CONFIG.linearPID(),
@@ -301,8 +307,80 @@ public class DriveConstants {
       new PathConstraints(
           1.5, 1.5, Units.degreesToRadians(540), Units.degreesToRadians(720), 12, false);
 
+  // pathfinding constants
+
+  // BUFFER_X = .44 works decently, test more
+  public static final double BUFFER_X = 0.387;
+  public static final double BUFFER_Y = 0.28;
+  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_TRENCH_WALL =
+      List.of(
+          Pair.of(
+              new Translation2d(3.977 - BUFFER_X, 1.287 - BUFFER_Y),
+              new Translation2d(5.322 + BUFFER_X, 1.592 + BUFFER_Y)),
+          Pair.of(
+              new Translation2d(3.977 - BUFFER_X, 6.477 - BUFFER_Y),
+              new Translation2d(5.322 + BUFFER_X, 6.783 + BUFFER_Y)),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(3.977 - BUFFER_X, 1.287 - BUFFER_Y)),
+              FlippingUtil.flipFieldPosition(
+                  new Translation2d(5.322 + BUFFER_X, 1.592 + BUFFER_Y))),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(3.977 - BUFFER_X, 6.477 - BUFFER_Y)),
+              FlippingUtil.flipFieldPosition(
+                  new Translation2d(5.322 + BUFFER_X, 6.783 + BUFFER_Y))));
+
+  /*
+  List.of(
+      Pair.of(new Translation2d(3.977, 1.287), new Translation2d(5.172, 1.592)),
+      Pair.of(new Translation2d(3.977, 6.477), new Translation2d(5.172, 6.783)),
+      Pair.of(
+          FlippingUtil.flipFieldPosition(new Translation2d(3.977, 1.287)),
+          FlippingUtil.flipFieldPosition(new Translation2d(5.172, 1.592))),
+      Pair.of(
+          FlippingUtil.flipFieldPosition(new Translation2d(3.977, 6.477)),
+          FlippingUtil.flipFieldPosition(new Translation2d(5.172, 6.783))));
+  */
+
+  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_TRENCH_PATHFINDING =
+      List.of(
+          Pair.of(new Translation2d(4.039, 6.590), new Translation2d(5.216, 4.572)),
+          Pair.of(new Translation2d(4.039, 3.472), new Translation2d(5.216, 1.570)),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 6.590)),
+              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 4.572))),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 3.472)),
+              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 1.570))));
+
+  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_BUMP_PATHFINDING =
+      List.of(
+          Pair.of(new Translation2d(4.039, 8.117), new Translation2d(5.216, 6.746)),
+          Pair.of(new Translation2d(4.039, 1.337), new Translation2d(5.216, 0)),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 8.117)),
+              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 6.746))),
+          Pair.of(
+              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 1.337)),
+              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 0))));
+
+  public static final Pair<Translation2d, Translation2d> FIELD_SPLITTING_LINE_RIGHT =
+      Pair.of(
+          new Translation2d(0, FlippingUtil.fieldSizeY / 2 - 0.05 - 2.5),
+          new Translation2d(FlippingUtil.fieldSizeX, FlippingUtil.fieldSizeY / 2 + .05 - 2.5));
+  public static final Pair<Translation2d, Translation2d> FIELD_SPLITTING_LINE_LEFT =
+      Pair.of(
+          new Translation2d(0, FlippingUtil.fieldSizeY / 2 - 0.05 + 2.5),
+          new Translation2d(FlippingUtil.fieldSizeX, FlippingUtil.fieldSizeY / 2 + .05 + 2.5));
+
+  public static final Pair<Translation2d, Translation2d> FIELD_SPLITTING_LINE_CENTER =
+      Pair.of(
+          new Translation2d(0, FlippingUtil.fieldSizeY / 2 + .1),
+          new Translation2d(FlippingUtil.fieldSizeX, FlippingUtil.fieldSizeY / 2));
+
+  public static final Translation2d CENTER_OF_FIELD = new Translation2d(8.27, 4.035);
   public static final Translation3d BLUE_HUB_ORIGIN = new Translation3d(4.5974, 4.034536, 1.5748);
   public static final Translation3d RED_HUB_ORIGIN = new Translation3d(11.938, 4.034536, 1.5748);
+  public static final double HUB_WIDTH = Units.inchesToMeters(24);
 
   public record DrivebaseConfig(
       double wheelRadius,

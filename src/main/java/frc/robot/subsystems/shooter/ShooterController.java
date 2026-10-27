@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
 import frc.robot.subsystems.shooter.serializer.Serializer.SerializerTarget;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels.ShooterOmniwheelsTarget;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers.ShooterRollersTarget;
+import frc.robot.subsystems.swerve.DriveConstants;
 
 
 public class ShooterController extends SubsystemBase {
@@ -34,7 +36,7 @@ public class ShooterController extends SubsystemBase {
             ShooterRollersTarget.SHOOT
         ),
         INTAKE(
-            SerializerTarget.INTAKE, //TODO: FIX
+            SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
             ShooterRollersTarget.INTAKE);
@@ -74,10 +76,23 @@ public class ShooterController extends SubsystemBase {
         this.shooterAccelerator = shooterAccelerator;
         this.shooterOmniwheels = shooterOmniwheels;
         this.shooterRollers = shooterRollers;
+        initialize();
+    }
+
+    public void initialize() {
+        RobotState.getInstance().initializeShooterTable();
     }
 
     @Override
     public void periodic() {
+        Logger.recordOutput("Shooter Speed", RobotState.getInstance().getShooterSpeed(RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(RobotState.isAllianceRed() ?
+        DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
+        DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
+        Logger.recordOutput("Shooter/Target", targetState.toString());
+        shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
+        shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
+        serializer.setVelocityTarget(targetState.serializerTarget);
         Logger.recordOutput("Shooter/Shooter State", targetState);
         serializer.periodic();
         shooterAccelerator.periodic();

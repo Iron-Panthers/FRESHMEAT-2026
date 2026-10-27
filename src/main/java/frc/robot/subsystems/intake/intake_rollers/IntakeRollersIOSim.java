@@ -18,5 +18,5 @@ public class IntakeRollersIOSim extends GenericRollersIOSim implements IntakeRol
         talon.getSimState().setMotorType(TalonFXSimState.MotorType.KrakenX60);
     }
 
-    public void updateInputs(GenericRollersIOInputs inputs) {}
+    public void updateInputs(GenericRollersIOInputs inputs) { super.updateInputs(inputs); }
 }

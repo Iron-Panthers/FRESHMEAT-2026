@@ -31,9 +31,9 @@ public class SerializerConstants {
 
     public static final PIDGains GAINS =
     switch (Constants.getRobotType()) {
-        case SIM ->  new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
         case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
-        default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        default ->   new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 
     public static final double UPPER_VOLT_LIMIT = 12;
