@@ -19,7 +19,7 @@ public class AlignToPoseCommand extends Command{
     private Pose2d currentApproachPose;
     private boolean stayOnCurrentSide = false;
 
-    public AlignToPoseCommand(Drive swerve, Pose2d targetPose){
+    public AlignToPoseCommand(Drive swerve, Supplier<Pose2d> approachPose){
         this.swerve = swerve;
         this.approachPose = 
             RobotState.isAllianceRed() 
