@@ -262,6 +262,36 @@ public class RobotContainer {
   /** Use this method to define the named commands for all of the autos */
   private void nameCommands() {
     // Register Command Names in this method
+    new EventTrigger("Intake down")
+        .onTrue(
+          new InstantCommand(() -> {
+            intakeController.setTargetState(IntakeState.INTAKE);
+            shooterController.setTargetState(ShooterState.INTAKE);
+          }));
+    new EventTrigger("Intake off")
+          .onTrue(
+            new InstantCommand(() -> {
+              intakeController.setTargetState(IntakeState.IDLE);
+            }));
+    new EventTrigger("Intake stow")
+            .onTrue(
+              new InstantCommand(() -> {
+                intakeController.setTargetState(IntakeState.STOW);
+              }));
+    new EventTrigger("Spin up shooter")
+            .onTrue(
+              new InstantCommand(() -> {
+                shooterController.setTargetState(ShooterState.SPIN_UP);
+              }));
+    NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, RobotState.getInstance().getAlignPose()));
+    NamedCommands.registerCommand("Intake Down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
+    NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
+    NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
+    NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve));
+    NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
+    NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+    NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+
   }
     
      
