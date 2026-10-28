@@ -30,7 +30,9 @@ public class AlignToPassCommand extends Command {
         targetAngle = pointTarget.minus(estimatedPose.getTranslation()).getAngle().plus(Rotation2d.kPi);
 
         // I have zero idea why it needs to be flipped for red...
-        if (RobotState.isAllianceRed()) targetAngle = targetAngle.plus(Rotation2d.kPi);
+        if (RobotState.isAllianceRed()){
+            targetAngle = targetAngle.plus(Rotation2d.kPi);
+        }
 
         swerve.setTargetHeading(targetAngle);
     }

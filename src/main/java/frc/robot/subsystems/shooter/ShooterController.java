@@ -60,6 +60,7 @@ public class ShooterController extends SubsystemBase {
 
     private ShooterState targetState = ShooterState.IDLE;
     private boolean stopped = false;
+    private boolean autoAim = false;
 
     private final Serializer serializer;
     private final ShooterAccelerator shooterAccelerator;
@@ -114,5 +115,13 @@ public class ShooterController extends SubsystemBase {
 
     public Command setTargetStateCommand(ShooterState targetState) {
         return new InstantCommand(() -> setTargetState(targetState));
+    }
+
+    public void setAutoAim(boolean autoAim) {
+        this.autoAim = autoAim;
+    }
+
+    public Command setAutoAimCommand(boolean autoAim) {
+    return new InstantCommand(() -> setAutoAim(autoAim));
     }
 }

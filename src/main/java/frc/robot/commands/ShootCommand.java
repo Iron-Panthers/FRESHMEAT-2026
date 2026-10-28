@@ -27,7 +27,7 @@ public class ShootCommand extends Command {
 
     @Override
     public void initialize() {
-        CommandScheduler.getInstance().schedule(new AlignToShootCommand(swerve));
+        CommandScheduler.getInstance().schedule(new AlignToShootCommand(swerve, shooterController));
         shooterController.setTargetState(ShooterState.SHOOT);
     }
 }

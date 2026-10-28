@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -283,11 +284,11 @@ public class RobotContainer {
               new InstantCommand(() -> {
                 shooterController.setTargetState(ShooterState.SPIN_UP);
               }));
-    NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, RobotState.getInstance().getAlignPose()));
+    NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, ()->RobotState.getInstance().getAlignPose()));
     NamedCommands.registerCommand("Intake Down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
     NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
     NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
-    NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve));
+    NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve, shooterController)); //doesn't work
     NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
     NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
     NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
@@ -347,7 +348,7 @@ public class RobotContainer {
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, ()-> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
     driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
@@ -357,7 +358,7 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
     driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
-    .andThen(new AlignToShootCommand(swerve)))
+    .andThen(new AlignToShootCommand(swerve, shooterController)))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
