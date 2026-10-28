@@ -513,4 +513,11 @@ public class Drive extends SubsystemBase {
   public void setLowPowerMode(boolean lowPowerMode) {
       setDriveSupplyCurrentLimits(lowPowerMode ? DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS : DriveConstants.DRIVE_CURRENT_LIMIT_AMPS); 
   }
+
+  public Rotation2d getShootingError() {
+    if (headingController == null) {
+      return Rotation2d.fromDegrees(0);
+    }
+    return headingController.getError();
+  }
 }
