@@ -195,6 +195,7 @@ public class RobotContainer {
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
+          intakeRack = new IntakeRack(new IntakeRackIOSim());
 
           serializer = new Serializer(new SerializerIOSim());
           
@@ -242,6 +243,9 @@ public class RobotContainer {
 
     if (shooterAccelerator == null) {
       shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
+    }
+    if (serializer == null){
+      serializer = new Serializer(new SerializerIO() {});
     }
 
     if (shooterOmniwheels == null) {
@@ -348,7 +352,7 @@ public class RobotContainer {
     // }));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    //driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -364,7 +368,7 @@ public class RobotContainer {
 
   private void configureDriverAButtons(){
 
-    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
+    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
@@ -378,8 +382,8 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld())
-    .onTrue(new AlignToShootCommand(swerve))
+    driverA.a().whileTrue(shootCommandFactory.whileHeld()
+    .alongWith(new AlignToShootCommand(swerve)))
     .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
@@ -388,11 +392,11 @@ public class RobotContainer {
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
-    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //alright guys what is this
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
-    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
+    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //this too
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
