@@ -293,6 +293,47 @@ public class RobotContainer {
               new InstantCommand(() -> {
                 shooterController.setTargetState(ShooterState.SPIN_UP);
               }));
+    Supplier<Pose2d> shootingPoseSupplier =
+        () ->
+            ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
+                ? new Pose2d(3.891, 0.823, new Rotation2d(77.005 * Math.PI / 180))
+                : new Pose2d(
+                    3.891,
+                    FlippingUtil.fieldSizeY - 0.823,
+                    new Rotation2d((-77.005) * Math.PI / 180));
+          
+    NamedCommands.registerCommand(
+        "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)); 
+    Supplier<Pose2d> flippedShootingPoseSupplier =
+        () -> {
+          return RobotState.isAllianceRed()
+              ? FlippingUtil.flipFieldPose(shootingPoseSupplier.get())
+              : shootingPoseSupplier.get();
+        };
+    NamedCommands.registerCommand(
+        "Translate To Shoot",
+        Commands.defer(
+            () -> {
+              if (!RobotState.getInstance().isAutoAdaptive()) {
+                return new InstantCommand();
+              }
+              return ((new AlignToPoseCommand(swerve, flippedShootingPoseSupplier, true)
+                          .raceWith(new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)))
+                      .repeatedly())
+                  .until(
+                      () ->
+                          flippedShootingPoseSupplier
+                                  .get()
+                                  .getTranslation()
+                                  .getDistance(
+                                      RobotState.getInstance().getEstimatedPose().getTranslation())
+                              < .04)
+                  .andThen(
+                      new InstantCommand(() -> RobotState.getInstance().resetDynamicObstacles()))
+                  .andThen(
+                      new InstantCommand(() -> RobotState.getInstance().setIsAutoAdaptive(false)));
+            },
+            Set.of(swerve)));
     NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, ()->RobotState.getInstance().getAlignPose()));
     NamedCommands.registerCommand("Intake Down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
     NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
@@ -337,7 +378,7 @@ public class RobotContainer {
     // }));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    driverA.b().whileTrue(new AlignToShootCommand(swerve, shooterController).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -368,7 +409,7 @@ public class RobotContainer {
 
   
     driverA.a().whileTrue(shootCommandFactory.whileHeld())
-    .onTrue(new AlignToShootCommand(swerve))
+    .onTrue(new AlignToShootCommand(swerve, shooterController))
     .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
