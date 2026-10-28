@@ -43,10 +43,11 @@ public abstract class GenericRollers<G extends GenericRollers.VelocityTarget> {
     rollerIO.updateInputs(inputs);
     Logger.processInputs(name, inputs);
 
-    
-    Logger.recordOutput(name + "/Target", velocityTarget.toString());
-    Logger.recordOutput(name + "/Target Velocity", velocityTarget.getVelocity());
-    Logger.recordOutput(name + "/Max Current Amps", velocityTarget.getSupplyCurrentLimit());
+    if (velocityTarget != null) {
+      Logger.recordOutput(name + "/Target", velocityTarget.toString());
+      Logger.recordOutput(name + "/Target Velocity", velocityTarget.getVelocity());
+      Logger.recordOutput(name + "/Max Current Amps", velocityTarget.getSupplyCurrentLimit());
+    }
 
     filteredCurrent = this.filter.calculate(inputs.supplyCurrentAmps);
     Logger.recordOutput(name + "/Filtered Current", filteredCurrent);
@@ -58,8 +59,8 @@ public abstract class GenericRollers<G extends GenericRollers.VelocityTarget> {
     switch (controlMode) {
       case VELOCITY -> {
         rollerIO.setSupplyCurrentLimit(
-            useManualVelocity ? manualSupplyCurrentAmps : velocityTarget.getSupplyCurrentLimit());
-        rollerIO.runVelocity(useManualVelocity ? manualVelocityRPS : velocityTarget.getVelocity());
+            useManualVelocity || velocityTarget == null ? manualSupplyCurrentAmps : velocityTarget.getSupplyCurrentLimit());
+        rollerIO.runVelocity(useManualVelocity || velocityTarget == null ? manualVelocityRPS : velocityTarget.getVelocity());
       }
       case STOP -> {
         rollerIO.stop();
