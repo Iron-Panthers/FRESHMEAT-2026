@@ -106,29 +106,29 @@ public class DriveConstants {
           new ModuleConfig(
               CAN.at(18, "FL Drive"),
               CAN.at(45, "FL Steer"), //TODO: fix
-              25,
-              new Rotation2d(1.383651+Math.PI),
+              28,
+              new Rotation2d(-2.167515 + Math.PI),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
               CAN.at(44, "FR Drive"),
               CAN.at(4, "FR Steer"), //TODO: fix
-              29,
-              new Rotation2d(-0.80534 ),
+              9,
+              new Rotation2d(0.418777),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.CounterClockwise_Positive),
           new ModuleConfig(
               CAN.at(8, "BL Drive"),
               CAN.at(7, "BL Steer"),
-              9,
-              new Rotation2d(0.418777+Math.PI),
+              29,
+              new Rotation2d(-0.80534 + Math.PI),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
               CAN.at(6, "BR Drive"),
               CAN.at(46, "BR Steer"),
-              28,
-              new Rotation2d(-2.167515),
+              25,
+              new Rotation2d(1.383651),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.CounterClockwise_Positive)
         };

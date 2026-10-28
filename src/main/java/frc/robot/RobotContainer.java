@@ -136,15 +136,15 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
-          // intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
+          intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
           // intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
-          swerve =
-              new Drive(
-                  new GyroIOPigeon2(),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
-                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
+          // swerve =
+          //     new Drive(
+          //         new GyroIOPigeon2(),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
+          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
@@ -333,13 +333,13 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    // driverA.x().onTrue(new InstantCommand(() -> {
-    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
-    //     intakeController.setTargetState(IntakeState.INTAKE);
-    //   } else {
-    //     intakeController.setTargetState(IntakeState.IDLE);
-    //   }
-    // }));
+    driverA.x().onTrue(new InstantCommand(() -> {
+      if (intakeController.getTargetState() != IntakeState.INTAKE) {
+        intakeController.setTargetState(IntakeState.INTAKE);
+      } else {
+        intakeController.setTargetState(IntakeState.IDLE);
+      }
+    }));
 
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
@@ -364,7 +364,7 @@ public class RobotContainer {
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    // driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
     driverA.b().onTrue(new IntakeCommand(intakeController, shooterController))
     .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));

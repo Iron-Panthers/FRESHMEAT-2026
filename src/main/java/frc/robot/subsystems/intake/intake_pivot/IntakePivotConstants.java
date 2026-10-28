@@ -16,7 +16,7 @@ public class IntakePivotConstants {
         switch (Constants.getRobotType()) {
             case COMP -> new IntakePivotConfig(
                 CAN.at(34, "Intake Pivot"),
-                1,
+                0.0145,
                 InvertedValue.CounterClockwise_Positive,
                 false);
             case SIM -> new IntakePivotConfig(

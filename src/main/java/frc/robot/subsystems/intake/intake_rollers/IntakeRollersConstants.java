@@ -12,7 +12,7 @@ public class IntakeRollersConstants {
             case COMP -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),  // TODO: change CAN ids
                 CAN.at(29, "Intake Rollers 2"),  // TODO: change CAN ids
-                1,
+                0.4167,
                 false,
                 false,
                 false);
