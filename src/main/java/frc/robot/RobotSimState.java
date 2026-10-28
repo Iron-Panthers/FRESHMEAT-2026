@@ -69,8 +69,8 @@ public class RobotSimState {
     double halfWidth = DriveConstants.mapleSimConfig.bumperWidthY.in(Meters) / 2.0;
     double intakeReach = 0.1; // meters beyond bumper
     fuelSim.registerIntake(
-        -halfLength - intakeReach,
-        -halfLength,
+        halfLength,
+        halfLength + intakeReach,
         -halfWidth,
         halfWidth,
         () -> intakeActive && fuelCount < 60,
