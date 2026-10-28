@@ -93,6 +93,6 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
 
   @Override
   public void setMaxCruiseVelocity(double cruiseVelocity) {
-    positionControl.withVelocity(cruiseVelocity);
+    positionControl = positionControl.withVelocity(cruiseVelocity);
   }
 }

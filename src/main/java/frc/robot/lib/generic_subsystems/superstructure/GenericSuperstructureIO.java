@@ -15,8 +15,6 @@ public interface GenericSuperstructureIO {
     public boolean isZeroing = false;
   }
 
-  default void updateInputs(GenericSuperstructureIOInputsAutoLogged inputs) {}
-
   default void runPosition(double position) {}
 
   default void runCharacterization() {}
