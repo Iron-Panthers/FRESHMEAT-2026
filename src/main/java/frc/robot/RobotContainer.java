@@ -378,9 +378,9 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
-    .andThen(new AlignToShootCommand(swerve)))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    driverA.a().whileTrue(shootCommandFactory.whileHeld())
+    .onTrue(new AlignToShootCommand(swerve))
+    .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
     // Currently it functions similarily to the above command except it doesn't look at the hub.
