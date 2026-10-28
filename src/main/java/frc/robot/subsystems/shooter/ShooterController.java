@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import java.io.Serial;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,8 +41,35 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
-            ShooterRollersTarget.INTAKE);
-
+            ShooterRollersTarget.INTAKE),
+        TOTAL_SPIN_UP(
+            SerializerTarget.INTAKE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.INTAKE,  
+            ShooterRollersTarget.SHOOT),
+        COMPACT_SPIN_UP(
+            SerializerTarget.INTAKE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT),
+        ZEROING(
+            SerializerTarget.IDLE,
+            ShooterAcceleratorTarget.IDLE,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.IDLE),
+        PASS_SPIN_UP(
+            SerializerTarget.IDLE,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT),
+        PASS(
+            SerializerTarget.SHOOT,
+            ShooterAcceleratorTarget.PASS,
+            ShooterOmniwheelsTarget.SHOOT,
+            ShooterRollersTarget.PASS
+        );
+        
+        
         public final SerializerTarget serializerTarget;
         public final ShooterAcceleratorTarget acceleratorTarget;
         public final ShooterOmniwheelsTarget omniwheelsTarget;
@@ -56,6 +85,8 @@ public class ShooterController extends SubsystemBase {
           this.omniwheelsTarget = omniwheelsTarget;
           this.rollersTarget = rollersTarget;
         }
+        
+              
     }
 
     private ShooterState targetState = ShooterState.IDLE;
@@ -123,5 +154,9 @@ public class ShooterController extends SubsystemBase {
 
     public Command setAutoAimCommand(boolean autoAim) {
     return new InstantCommand(() -> setAutoAim(autoAim));
+    }
+
+    public boolean shooterRollersUpToSpeed() {
+        return shooterRollers.reachedVelocityTarget();
     }
 }

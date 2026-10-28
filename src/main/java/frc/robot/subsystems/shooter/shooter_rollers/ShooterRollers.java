@@ -3,7 +3,6 @@ package frc.robot.subsystems.shooter.shooter_rollers;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.lib.generic_subsystems.rollers.*;
-import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -13,7 +12,8 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
     public enum ShooterRollersTarget implements GenericRollers.VelocityTarget{
         SHOOT(30, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         IDLE(0, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
-        INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
+        INTAKE(-10, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        PASS(9, ShooterRollersConstants.CURRENT_LIMIT_AMPS);
 
         public double velocity;
         public double supplyCurrentLimit;

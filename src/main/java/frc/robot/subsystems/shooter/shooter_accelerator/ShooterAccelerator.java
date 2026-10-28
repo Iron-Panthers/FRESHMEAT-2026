@@ -3,7 +3,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollers;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
-import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 public class ShooterAccelerator extends GenericRollers<ShooterAccelerator.ShooterAcceleratorTarget> {
     // for logging the VelocityRadsPerSec and SupplyCurrentAmps every 5 seconds in test mode
@@ -13,7 +12,8 @@ public class ShooterAccelerator extends GenericRollers<ShooterAccelerator.Shoote
     public enum ShooterAcceleratorTarget implements GenericRollers.VelocityTarget {
         IDLE(0,ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
         SHOOT(50, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
-        INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
+        INTAKE(-10, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
+        PASS(30, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS);
             
         private double velocity;
         private double supplyCurrentLimit;
