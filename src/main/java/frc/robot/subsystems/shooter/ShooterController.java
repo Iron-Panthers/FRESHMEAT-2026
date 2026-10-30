@@ -4,6 +4,8 @@ import java.io.Serial;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
@@ -130,6 +132,10 @@ public class ShooterController extends SubsystemBase {
     public void setTargetState(ShooterState targetState) {
         this.targetState = targetState;
     }
+
+    public Command setTargetStateCommand(ShooterState target) {
+    return new InstantCommand(() -> setTargetState(target), this);
+  }
 
     public void setStopped(boolean stopped) {
         this.stopped = stopped;

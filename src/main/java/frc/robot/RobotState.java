@@ -260,7 +260,7 @@ public class RobotState {
     if (RobotBase.isReal()) {
       return alliance.get() == DriverStation.Alliance.Red;
     }
-    return true;
+    return false;
   }
 
   private final InterpolatingTreeMap<Double, HoodParams> shooterTable =
@@ -316,5 +316,63 @@ public class RobotState {
         MathUtil.interpolate(this.shooterSpeed, endValue.shooterSpeed, t),
         MathUtil.interpolate(this.timeOfFlight, endValue.timeOfFlight, t));
     }
+  }
+
+    public Pose2d getShootingPose() {
+    Pose2d shootingPoseOne =
+        getShootingPose(DriveConstants.DISTANCE_TARGET_TO_HUB).plus(new Transform2d(new Translation2d(), Rotation2d.kZero));
+    Logger.recordOutput("Robot State/Shooting Pose One", shootingPoseOne);
+    return shootingPoseOne;
+  }
+
+  public Pose2d getShootingPose(double distanceTargetToHub) {
+    Pose2d flippedEstimatedPose =
+        isAllianceRed() ? FlippingUtil.flipFieldPose(estimatedPose) : estimatedPose;
+    Translation2d hubCoords = new Pose2d(4.62, 4.03, new Rotation2d()).getTranslation();
+    Translation2d translHubCoords = hubCoords.minus(flippedEstimatedPose.getTranslation());
+    double distanceToHub = translHubCoords.getNorm();
+    double angle = Math.atan2(translHubCoords.getY(), translHubCoords.getX());
+
+    if (distanceTargetToHub >= 2.5
+        && (angle > -35.64 / 180 * Math.PI && Math.abs(angle) < 28.25 / 180 * Math.PI)) {
+      distanceTargetToHub = 2;
+    }
+
+    double y =
+        -distanceTargetToHub * Math.sin(angle)
+            + translHubCoords.getY()
+            + flippedEstimatedPose.getY();
+    double x =
+        -distanceTargetToHub * Math.cos(angle)
+            + translHubCoords.getX()
+            + flippedEstimatedPose.getX();
+
+    if (y > 7.307) {
+      return new Pose2d(
+          2.326,
+          7.307,
+          new Rotation2d(Math.atan2(hubCoords.getY() - 7.307, hubCoords.getX() - 2.326)));
+    }
+    if (y < 0.753) {
+      return new Pose2d(
+          2.326,
+          0.753,
+          new Rotation2d(Math.atan2(hubCoords.getY() - 0.753, hubCoords.getX() - 2.326)));
+    }
+    if (x > 3.322) {
+      if (angle > 0) {
+        return new Pose2d(
+            3.322,
+            2.502,
+            new Rotation2d(Math.atan2(hubCoords.getY() - 2.502, hubCoords.getX() - 3.322)));
+      }
+      if (angle < 0) {
+        return new Pose2d(
+            3.322,
+            5.522,
+            new Rotation2d(Math.atan2(hubCoords.getY() - 5.522, hubCoords.getX() - 3.322)));
+      }
+    }
+    return new Pose2d(x, y, new Rotation2d(angle));
   }
 }

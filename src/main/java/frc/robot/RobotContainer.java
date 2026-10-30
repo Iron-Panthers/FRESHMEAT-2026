@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
@@ -195,7 +196,6 @@ public class RobotContainer {
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
-          intakeRack = new IntakeRack(new IntakeRackIOSim());
 
           serializer = new Serializer(new SerializerIOSim());
           
@@ -243,9 +243,6 @@ public class RobotContainer {
 
     if (shooterAccelerator == null) {
       shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
-    }
-    if (serializer == null){
-      serializer = new Serializer(new SerializerIO() {});
     }
 
     if (shooterOmniwheels == null) {
@@ -352,7 +349,7 @@ public class RobotContainer {
     // }));
 
     // TODO: Test this eventually...
-    //driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -368,11 +365,11 @@ public class RobotContainer {
 
   private void configureDriverAButtons(){
 
-    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
     driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
@@ -382,9 +379,17 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld()
-    .alongWith(new AlignToShootCommand(swerve)))
-    .onFalse(shootCommandFactory.onRelease());
+    // driverA.a().whileTrue(shootCommandFactory.whileHeld())
+    // .onTrue(new AlignToShootCommand(swerve))
+    // .onFalse(shootCommandFactory.onRelease());
+
+    driverA
+        .a()
+        .whileTrue(
+            new AlignToPoseCommand(swerve, () -> RobotState.getInstance().getShootingPose())
+        .andThen(new AlignToShootCommand(swerve))
+        .alongWith(shootCommandFactory.whileHeld()))
+        .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
     // Currently it functions similarily to the above command except it doesn't look at the hub.
@@ -392,11 +397,11 @@ public class RobotContainer {
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
-    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //alright guys what is this
+    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
-    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //this too
+    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
 
@@ -542,7 +547,7 @@ public class RobotContainer {
                 && shooterAccelerator.getCurrentVelocity().in(RotationsPerSecond) > 1.0
                 && shooterOmniwheels.getCurrentVelocity().in(RotationsPerSecond) > 1.0,
             20.0,
-                new Transform3d(new Translation3d(0.2, 0, 0.2), new Rotation3d(0, 0, 0)),
+                new Transform3d(new Translation3d(0.2, 0, 0.2), new Rotation3d(0, 0, Math.PI)),
             shooterRollers.getCurrentVelocity(),
             Units.Inches.of(26));
 

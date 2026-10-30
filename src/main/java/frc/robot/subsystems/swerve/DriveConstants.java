@@ -289,6 +289,8 @@ public class DriveConstants {
 
   public static final double ADAPTIVE_AUTO_ERROR = 1.8;
 
+  public static final double DISTANCE_TARGET_TO_HUB = 2.154;
+
   public static final PPHolonomicDriveController HOLONOMIC_DRIVE_CONTROLLER =
       new PPHolonomicDriveController(
           TRAJECTORY_CONFIG.linearPID(),
