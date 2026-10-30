@@ -137,7 +137,7 @@ public class RobotContainer {
       switch (Constants.getRobotType()) {
         case COMP -> {
           intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
-          // intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
+          intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
           // swerve =
           //     new Drive(
           //         new GyroIOPigeon2(),

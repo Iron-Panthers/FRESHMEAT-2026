@@ -35,7 +35,7 @@ public class ShooterRollersConstants {
   public static final PIDGains GAINS =
       switch (Constants.getRobotType()) {
         case SIM -> new PIDGains(3, 0, 0, 0, .1, 0, 0);
-        default -> new PIDGains(0.1, 0, 0, 0.17, 0.1158, 0.12, 0);
+        default -> new PIDGains(0.3, 0, 0, 0.25, 0.1111111, 0.023800000548362732, 0);
       };
 
   public static final double VELOCITY_ADJUSTMENT = 0.98;

@@ -16,7 +16,7 @@ public class IntakePivotConstants {
         switch (Constants.getRobotType()) {
             case COMP -> new IntakePivotConfig(
                 CAN.at(34, "Intake Pivot"),
-                0.0145,
+                69,
                 InvertedValue.CounterClockwise_Positive,
                 false);
             case SIM -> new IntakePivotConfig(
@@ -33,14 +33,14 @@ public class IntakePivotConstants {
 
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
-            case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+            case COMP -> new PIDGains(81, 0, 0, 0, 8, 0, 0.5);
             case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };
 
     public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
         switch (Constants.getRobotType()) {
-            case COMP -> new MotionMagicConfig(400, 40);
+            case COMP -> new MotionMagicConfig(0, 9);
             case SIM -> new MotionMagicConfig(400, 40);
             default -> new MotionMagicConfig(0, 0);
         };
