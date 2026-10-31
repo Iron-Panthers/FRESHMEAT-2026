@@ -13,7 +13,7 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
     public enum ShooterRollersTarget implements GenericRollers.VelocityTarget{
         SHOOT(42, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         CONSTANT_SHOOT(42, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
-        IDLE(52, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        IDLE(5, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
         public double velocity;

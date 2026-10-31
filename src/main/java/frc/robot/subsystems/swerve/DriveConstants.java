@@ -104,10 +104,10 @@ public class DriveConstants {
           // TODO: Check that InvertedValue.(Counter)Clockwise_Positive is for true or false
         case COMP -> new ModuleConfig[] {
           new ModuleConfig(
-              CAN.at(18, "FL Drive"),
-              CAN.at(45, "FL Steer"), //TODO: fix
-              28,
-              new Rotation2d(-2.167515 + Math.PI),
+              CAN.at(11, "FL Drive"),
+              CAN.at(62, "FL Steer"), //TODO: fix
+              3,
+              new Rotation2d(2.218136  ),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(

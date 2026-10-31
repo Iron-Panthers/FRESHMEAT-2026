@@ -138,13 +138,13 @@ public class RobotContainer {
         case COMP -> {
           intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
           intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
-          // swerve =
-          //     new Drive(
-          //         new GyroIOPigeon2(),
-          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
-          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
-          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
-          //         new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
+          swerve =
+              new Drive(
+                  new GyroIOPigeon2(),
+                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[0]),
+                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[1]),
+                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[2]),
+                  new ModuleIOTalonFXReal(DriveConstants.MODULE_CONFIGS[3]));
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
@@ -333,13 +333,7 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    driverA.x().onTrue(new InstantCommand(() -> {
-      if (intakeController.getTargetState() != IntakeState.INTAKE) {
-        intakeController.setTargetState(IntakeState.INTAKE);
-      } else {
-        intakeController.setTargetState(IntakeState.IDLE);
-      }
-    }));
+
 
     // TODO: Test this eventually...
     // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
@@ -357,7 +351,13 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons(){
-
+    driverA.x().onTrue(new InstantCommand(() -> {
+      if (intakeController.getTargetState() != IntakeState.INTAKE) {
+        intakeController.setTargetState(IntakeState.INTAKE);
+      } else {
+        intakeController.setTargetState(IntakeState.IDLE);
+      }
+    }));
     driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
