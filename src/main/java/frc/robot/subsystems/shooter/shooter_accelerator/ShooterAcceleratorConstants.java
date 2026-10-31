@@ -20,7 +20,7 @@ public class ShooterAcceleratorConstants {
         case COMP -> new ShooterAcceleratorConfig(
             CAN.at(35, "Shooter Accelerator Right"),
             CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
-            0.9,
+            1.111111,
             false,
             false,
             true
@@ -38,7 +38,7 @@ public class ShooterAcceleratorConstants {
     public static final PIDGains GAINS =
     switch(Constants.getRobotType()){
         case SIM -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
-        case COMP -> new PIDGains(0.3, 0, 0, 0.19, 0.70588, 0.1791, 0);
+        case COMP -> new PIDGains(0.3, 0, 0, 0.18, 0.13, 0, 0);
         default -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 

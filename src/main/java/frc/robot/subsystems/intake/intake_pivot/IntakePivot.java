@@ -20,7 +20,7 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
     implements LoggableMechanism3d {
     public enum IntakePivotTarget implements GenericSuperstructure.PositionTarget {
         IDLE(0, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-        INTAKE(10, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+        INTAKE(0, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
         STOW(0, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());
 
         private static final double EPSILON = IntakePivotConstants.POSITION_TARGET_EPSILON;

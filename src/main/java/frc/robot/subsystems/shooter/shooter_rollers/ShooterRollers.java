@@ -11,9 +11,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollersTarget>{
     public enum ShooterRollersTarget implements GenericRollers.VelocityTarget{
-        SHOOT(40, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
-        CONSTANT_SHOOT(30 * 0.8, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
-        IDLE(0, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        SHOOT(42, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        CONSTANT_SHOOT(42, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
+        IDLE(52, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
         public double velocity;

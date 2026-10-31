@@ -21,7 +21,7 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.IDLE,
             ShooterAcceleratorTarget.IDLE,
             ShooterOmniwheelsTarget.IDLE,
-            ShooterRollersTarget.IDLE),
+            ShooterRollersTarget.SHOOT),
         SHOOT(
             SerializerTarget.SHOOT,
             ShooterAcceleratorTarget.SHOOT,
@@ -52,7 +52,7 @@ public class ShooterController extends SubsystemBase {
 
     private ShooterState targetState = ShooterState.IDLE;
     private boolean stopped = false;
-    private boolean constantRollersVelocity = true;
+    private boolean constantRollersVelocity = false;
 
     private final Serializer serializer;
     private final ShooterAccelerator shooterAccelerator;
@@ -83,11 +83,11 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
         Logger.recordOutput("Shooter/Target", targetState.toString());
-        if (constantRollersVelocity) {
-            shooterRollers.setVelocityTarget(ShooterRollersTarget.CONSTANT_SHOOT);
-        } else {
+        // if (constantRollersVelocity) {
+        //     shooterRollers.setVelocityTarget(ShooterRollersTarget.CONSTANT_SHOOT);
+        // } else {
             shooterRollers.setVelocityTarget(targetState.rollersTarget);
-        }
+        // }
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);
