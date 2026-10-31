@@ -33,14 +33,14 @@ public class IntakePivotConstants {
 
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
-            case COMP -> new PIDGains(81, 0, 0, 0, 8, 0, 0.5);
+            case COMP -> new PIDGains(0.3, 0, 0, 0,0.12 , 0, 0.5);
             case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };
 
     public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
         switch (Constants.getRobotType()) {
-            case COMP -> new MotionMagicConfig(0, 9);
+            case COMP -> new MotionMagicConfig(9, 9);
             case SIM -> new MotionMagicConfig(400, 40);
             default -> new MotionMagicConfig(0, 0);
         };
@@ -61,8 +61,8 @@ public class IntakePivotConstants {
 
     public static final double POSITION_TARGET_EPSILON = 3;
 
-    public static final double UPPER_VOLT_LIMIT = 0;
-    public static final double LOWER_VOLT_LIMIT = 0;
+    public static final double UPPER_VOLT_LIMIT = 16;
+    public static final double LOWER_VOLT_LIMIT = -16;
     public static final double SUPPLY_CURRENT_LIMIT_AMPS =
         switch (Constants.getRobotType()) {
             case SIM -> 40;

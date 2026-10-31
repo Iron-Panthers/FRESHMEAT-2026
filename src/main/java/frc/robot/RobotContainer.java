@@ -143,7 +143,7 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
-          intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
+          // intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
           intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
           swerve =
               new Drive(
@@ -363,18 +363,20 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons(){
-    driverA.x().onTrue(new InstantCommand(() -> {
-      if (intakeController.getTargetState() != IntakeState.INTAKE) {
-        intakeController.setTargetState(IntakeState.INTAKE);
-      } else {
-        intakeController.setTargetState(IntakeState.IDLE);
-      }
-    }));
+    // driverA.x().onTrue(new InstantCommand(() -> {
+    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
+    //     intakeController.setTargetState(IntakeState.INTAKE);
+    //   } else {
+    //     intakeController.setTargetState(IntakeState.IDLE);
+    //   }
+    // }));
+    driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
     driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
     
-    driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
+    driverA.leftBumper().whileTrue(shootCommandFactory.whileHeld())
+    .onFalse(shootCommandFactory.onRelease());
 
     driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
@@ -490,13 +492,13 @@ public class RobotContainer {
     }
     String serData = serializer.runTestLogger(testModeStartTime, currentTime, isNextTransition);
     String accData = shooterAccelerator.runTestLogger(testModeStartTime, currentTime, isNextTransition);
-    String rackData = intakeRack.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String pivotData = intakePivot.runTestLogger(testModeStartTime, currentTime, isNextTransition);
     String rolData = intakeRollers.runTestLogger(testModeStartTime, currentTime, isNextTransition);
 
     if (isNextTransition) {
       double relativeTime = currentTime - testModeStartTime;
       combinedTestData.add(
-          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + rackData + "," + rolData);
+          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + pivotData + "," + rolData);
     }
     
   }
@@ -565,7 +567,7 @@ public class RobotContainer {
         combinedTestData.clear();
         serializer.resetTestState();
         shooterAccelerator.resetTestState();
-        intakeRack.resetTestState();
+        intakePivot.resetTestState();
         intakeRollers.resetTestState();
     }
 }

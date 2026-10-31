@@ -17,6 +17,7 @@ import frc.robot.lib.generic_subsystems.rollers.GenericRollers.ControlMode;
 public class IntakeController extends SubsystemBase {
     public enum IntakeState {
         IDLE(IntakePivotTarget.IDLE, IntakeRollersTarget.IDLE),
+        STOW(IntakePivotTarget.STOW, IntakeRollersTarget.SLOW),
         INTAKE(IntakePivotTarget.INTAKE, IntakeRollersTarget.INTAKE),
         ZEROING(IntakePivotTarget.STOW, IntakeRollersTarget.IDLE),
         REVERSE(IntakePivotTarget.INTAKE, IntakeRollersTarget.REVERSE);

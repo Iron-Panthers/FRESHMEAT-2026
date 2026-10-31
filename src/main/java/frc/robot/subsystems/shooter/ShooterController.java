@@ -13,8 +13,11 @@ import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.Shoot
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels.ShooterOmniwheelsTarget;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers.ShooterRollersTarget;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.ShooterRollersConfig;
 import frc.robot.subsystems.swerve.DriveConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class ShooterController extends SubsystemBase {
@@ -23,7 +26,7 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.IDLE,
             ShooterAcceleratorTarget.IDLE,
             ShooterOmniwheelsTarget.IDLE,
-            ShooterRollersTarget.SHOOT),
+            ShooterRollersTarget.SPIN_UP),
         SHOOT(
             SerializerTarget.SHOOT,
             ShooterAcceleratorTarget.SHOOT,
@@ -33,17 +36,17 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
-            ShooterRollersTarget.INTAKE),
+            ShooterRollersTarget.SPIN_UP),
         TOTAL_SPIN_UP(
             SerializerTarget.INTAKE,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.INTAKE,  
-            ShooterRollersTarget.SHOOT),
+            ShooterRollersTarget.SPIN_UP),
         COMPACT_SPIN_UP(
             SerializerTarget.INTAKE,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.IDLE,
-            ShooterRollersTarget.SHOOT),
+            ShooterRollersTarget.SPIN_UP),
         ZEROING(
             SerializerTarget.IDLE,
             ShooterAcceleratorTarget.IDLE,
@@ -56,9 +59,9 @@ public class ShooterController extends SubsystemBase {
             ShooterRollersTarget.SHOOT),
         PASS(
             SerializerTarget.SHOOT,
-            ShooterAcceleratorTarget.PASS,
+            ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
-            ShooterRollersTarget.PASS
+            ShooterRollersTarget.SHOOT
         );
         
         
@@ -102,6 +105,7 @@ public class ShooterController extends SubsystemBase {
         this.shooterOmniwheels = shooterOmniwheels;
         this.shooterRollers = shooterRollers;
         initialize();
+        SmartDashboard.putNumber("Shoot Speed", 42);
     }
 
     public void initialize() {
@@ -114,11 +118,11 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
         Logger.recordOutput("Shooter/Target", targetState.toString());
-        // if (constantRollersVelocity) {
-        //     shooterRollers.setVelocityTarget(ShooterRollersTarget.CONSTANT_SHOOT);
-        // } else {
+        if (targetState.rollersTarget == ShooterRollersTarget.SHOOT) {
+            shooterRollers.setVelocityTargetManual(SmartDashboard.getNumber("Shoot Speed", 42), ShooterRollersConstants.CURRENT_LIMIT_AMPS);
+        } else {
             shooterRollers.setVelocityTarget(targetState.rollersTarget);
-        // }
+        }
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);
