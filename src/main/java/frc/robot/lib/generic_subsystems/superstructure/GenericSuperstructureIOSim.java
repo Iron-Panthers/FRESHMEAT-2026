@@ -28,10 +28,12 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
   public GenericSuperstructureIOSim(int id, double reduction) {
 
     talon = new TalonFX(id);
-    talon.setNeutralMode(NeutralModeValue.Brake);
     config =
         new TalonFXConfiguration()
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
+    config.Feedback.withSensorToMechanismRatio(reduction);
+    talon.getConfigurator().apply(config);
+    talon.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
@@ -91,6 +93,6 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
 
   @Override
   public void setMaxCruiseVelocity(double cruiseVelocity) {
-    positionControl.withVelocity(cruiseVelocity);
+    positionControl = positionControl.withVelocity(cruiseVelocity);
   }
 }

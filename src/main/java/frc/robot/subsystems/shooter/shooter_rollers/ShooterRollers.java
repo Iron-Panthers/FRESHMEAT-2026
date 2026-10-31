@@ -3,7 +3,6 @@ package frc.robot.subsystems.shooter.shooter_rollers;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.lib.generic_subsystems.rollers.*;
-import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 

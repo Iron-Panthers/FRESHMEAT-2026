@@ -116,7 +116,45 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
         this.loggableMechanism3dParent = parent;
     }
 
-    @AutoLogOutput(key = "Intake/Intake Pivot/Display Pose3d")
+
+    public void resetTestState() {
+        speedIntervalReadings.clear();
+        supplyCurrentIntervalReadings.clear();
+    }
+
+    // Returns "avgRot/s,avgCurrent" at each 5s transition, null otherwise
+    public String runTestLogger(double testStartTime, double currentTime, boolean isNextTransition) {
+        if (testStartTime == -1) {
+        testStartTime = currentTime;
+        }
+
+        double currentSpeed = inputs.velocityRotPerSec;
+        double currentSupplyCurrent = inputs.supplyCurrentAmps;
+        speedIntervalReadings.add(currentSpeed);
+        supplyCurrentIntervalReadings.add(currentSupplyCurrent);
+
+        if (isNextTransition) {
+        double sumSpeed = 0;
+        double sumSupplyCurrent = 0;
+        for (double val : speedIntervalReadings) {
+            sumSpeed += val;
+        }
+        for (double val : supplyCurrentIntervalReadings) {
+            sumSupplyCurrent += val;
+        }
+
+        double avgSpeed = speedIntervalReadings.isEmpty() ? 0 : sumSpeed / speedIntervalReadings.size();
+        double avgSupplyCurrent = supplyCurrentIntervalReadings.isEmpty() ? 0 : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
+
+        speedIntervalReadings.clear();
+        supplyCurrentIntervalReadings.clear();
+
+        return String.format("%.2f", avgSpeed) + "," + String.format("%.2f", avgSupplyCurrent);
+        }
+        return null;
+    }
+    
+    @AutoLogOutput(key = "Intake/Intake Rack/Display Pose3d")
     @Override
     public Pose3d getDisplayPose3d() {
         return getParentPosition()

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
@@ -33,11 +34,13 @@ import frc.robot.commands.AlignToTrenchCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootCommandFactory;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.commands.WaitUnitlRobotStuckCommand;
 import frc.robot.subsystems.can_watchdog.CANWatchdog;
 import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
+import frc.robot.subsystems.elastic_updater.ElasticUpdater;
 import frc.robot.subsystems.intake.IntakeController;
 import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.intake.intake_pivot.IntakePivot;
@@ -108,6 +111,8 @@ public class RobotContainer {
 
   private ElasticSetpoints elasticSetpoints = ElasticSetpoints.getInstance();
 
+  private ElasticUpdater matchTimerUpdater = new ElasticUpdater();
+
   private boolean defaultZeroing = false;
 
   // private SendableChooser<Command> autoChooser;
@@ -128,6 +133,8 @@ public class RobotContainer {
   private ShooterAccelerator shooterAccelerator;
   private ShooterOmniwheels shooterOmniwheels;
   private ShooterController shooterController;
+  private ShootCommand shootCommand;
+  private ShootCommandFactory shootCommandFactory;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -236,12 +243,11 @@ public class RobotContainer {
       shooterRollers = new ShooterRollers(new ShooterRollersIO() {});
     }
 
-    if (serializer == null) {
-      serializer = new Serializer(new SerializerIO() {});
-    }
-
     if (shooterAccelerator == null) {
       shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIO() {});
+    }
+    if (serializer == null){
+      serializer = new Serializer(new SerializerIO() {});
     }
 
     if (shooterOmniwheels == null) {
@@ -250,6 +256,12 @@ public class RobotContainer {
  
     intakeController = new IntakeController(intakePivot, intakeRollers);
     shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
+
+    shootCommandFactory = new ShootCommandFactory(
+      shooterController,
+      intakeController,
+      matchTimerUpdater,
+      swerve::getShootingError);
 
     nameCommands();
     configureAutos();
@@ -336,7 +348,7 @@ public class RobotContainer {
 
 
     // TODO: Test this eventually...
-    // driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    //driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -359,6 +371,8 @@ public class RobotContainer {
       }
     }));
     driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
+
+    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
@@ -371,22 +385,23 @@ public class RobotContainer {
 
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
-    driverA.a().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
-    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
-    .andThen(new AlignToShootCommand(swerve)))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
-    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
+  
+    driverA.a().whileTrue(shootCommandFactory.whileHeld()
+    .alongWith(new AlignToShootCommand(swerve)))
+    .onFalse(shootCommandFactory.onRelease());
+    
+    // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
+    // Currently it functions similarily to the above command except it doesn't look at the hub.
+    // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
     driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
 
-    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
-    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
+    driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //alright guys what is this
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
     .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
-    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT))
-    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(false)))
+    driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //this too
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
     .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
     .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
@@ -442,6 +457,57 @@ public class RobotContainer {
     swerve.setNeutralMode(NeutralModeValue.Brake);
   }
 
+
+  private double testModeStartTime = -1;
+  private final java.util.ArrayList<String> combinedTestData = new java.util.ArrayList<>();
+  public void testInit() {
+    Commands.sequence(
+            new IntakeCommand(intakeController, shooterController),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.SHOOT)),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.INTAKE)),
+            new WaitCommand(5.0),
+            Commands.runOnce(() -> shooterController.setTargetState(ShooterState.IDLE)),
+            Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)),
+            new WaitCommand(5.0))
+        .schedule();
+    
+    testModeStartTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    timeOfLastTransition = testModeStartTime;
+  }
+  private double timeOfLastTransition = 0;
+  public void testPeriodic() {
+    double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    boolean isNextTransition = false;
+    if (currentTime - testModeStartTime >= 25) {
+        return;
+    }
+    if (currentTime - timeOfLastTransition >= 5) {
+      isNextTransition = true;
+      timeOfLastTransition = currentTime;
+    }
+    String serData = serializer.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String accData = shooterAccelerator.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String rackData = intakeRack.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String rolData = intakeRollers.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+
+    if (isNextTransition) {
+      double relativeTime = currentTime - testModeStartTime;
+      combinedTestData.add(
+          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + rackData + "," + rolData);
+    }
+    
+  }
+
+  public void testExit() {
+    shooterController.setTargetState(ShooterState.IDLE);
+    intakeController.setTargetState(IntakeState.IDLE);
+    printAndClearStoredData();
+  }
+
+
   /** Ran when periodic disabled */
   public void updateDashboardStatus() {
     // TODO: Define all of the dashboard outputs here
@@ -482,11 +548,24 @@ public class RobotContainer {
                 && shooterAccelerator.getCurrentVelocity().in(RotationsPerSecond) > 1.0
                 && shooterOmniwheels.getCurrentVelocity().in(RotationsPerSecond) > 1.0,
             20.0,
-                new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.PI)),
+                new Transform3d(new Translation3d(0.2, 0, 0.2), new Rotation3d(0, 0, 0)),
             shooterRollers.getCurrentVelocity(),
             Units.Inches.of(26));
 
     // Handle automatic shooter firing
     RobotSimState.getInstance().periodicShooter();
   }
+
+    public void printAndClearStoredData() {
+        System.out.println("=== Test Mode Combined Data ===");
+        System.out.println("Timestamp(s),Ser AvgRad/s,Ser AvgCurrent(A),Acc AvgRad/s,Acc AvgCurrent(A),Rack AvgRot/s,Rack AvgCurrent(A),Rollers AvgRad/s,Rollers AvgCurrent(A)");
+        for (String row : combinedTestData) {
+            System.out.println(row);
+        }
+        combinedTestData.clear();
+        serializer.resetTestState();
+        shooterAccelerator.resetTestState();
+        intakeRack.resetTestState();
+        intakeRollers.resetTestState();
+    }
 }

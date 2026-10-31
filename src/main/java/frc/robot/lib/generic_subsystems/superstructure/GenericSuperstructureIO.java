@@ -15,8 +15,6 @@ public interface GenericSuperstructureIO {
     public boolean isZeroing = false;
   }
 
-  default void updateInputs(GenericSuperstructureIOInputs inputs) {}
-
   default void runPosition(double position) {}
 
   default void runCharacterization() {}
@@ -41,4 +39,6 @@ public interface GenericSuperstructureIO {
   default void setSupplyCurrentLimit(double amps) {}
 
   default void setMaxCruiseVelocity(double cruiseVelocity) {}
+
+  default void updateInputs(GenericSuperstructureIOInputs inputs) {}
 }

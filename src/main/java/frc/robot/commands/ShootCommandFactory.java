@@ -1,0 +1,136 @@
+package frc.robot.commands;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.subsystems.elastic_updater.ElasticUpdater;
+import frc.robot.subsystems.intake.IntakeController;
+import frc.robot.subsystems.intake.IntakeController.IntakeState;
+import frc.robot.subsystems.shooter.ShooterController;
+import frc.robot.subsystems.shooter.ShooterController.ShooterState;
+import java.util.function.Supplier;
+
+/**
+ * Handles the shooting sequence while held. Toggles between spin-up and shoot states, runs
+ * serializer intake, and cycles the intake up/down while shooting.
+ *
+ * <p>Use {@link #whileHeld()} for the whileTrue binding and {@link #onRelease()} for the onFalse
+ * binding.
+ */
+public class ShootCommandFactory {
+  private final ShooterController shooterController;
+  private final IntakeController intakeController;
+  private final ElasticUpdater matchTimerUpdater;
+  private final Supplier<Rotation2d> getHeadingError;
+  double time = Timer.getFPGATimestamp();
+  private boolean justShoot = false;
+    public ShootCommandFactory(
+      ShooterController shooterController,
+      IntakeController intakeController,
+      ElasticUpdater matchTimerUpdater,
+      Supplier<Rotation2d> getHeadingError) {
+        this.shooterController = shooterController;
+        this.intakeController = intakeController;
+        this.matchTimerUpdater = matchTimerUpdater;
+        this.getHeadingError = getHeadingError;
+        SmartDashboard.putNumber("Intake rack in time",5);
+      }
+
+    public Command setJustShootCommand(boolean justShoot) {
+        return new InstantCommand(() -> this.justShoot = justShoot);
+    }
+      
+      
+    public Command whileHeld() {
+    return new InstantCommand(() -> intakeController.setTargetState(IntakeState.INTAKE))
+                .andThen(
+                    new WaitCommand(1)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE)))
+                .andThen(
+                    new WaitCommand(0.2)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(() -> intakeController.setTargetState(IntakeState.INTAKE)))
+                .andThen(
+                    new WaitCommand(0.1)
+                        .andThen(
+                            new InstantCommand(
+                                () -> intakeController.setTargetState(IntakeState.STOW)))
+                        .andThen(new WaitCommand(0.1))
+                        .andThen(
+                            () ->
+                                intakeController.setTargetState(
+                                    IntakeState
+                                        .INTAKE)))
+            .alongWith(
+              new InstantCommand(()->{
+                shooterController.setTargetState(
+                  (shooterController.getTargetState()==ShooterState.TOTAL_SPIN_UP||
+                  shooterController.getTargetState()==ShooterState.SHOOT)
+                  &&shooterController.shooterRollersUpToSpeed()
+                  &&(matchTimerUpdater.isOurHubActive()
+                  ||matchTimerUpdater.getTimeUntilOurHubShifts()<=2
+                  ||matchTimerUpdater.getTimeUntilOurHubShifts()
+                  <=24)
+                  &&(getHeadingError.get().getDegrees()<6
+                  ||  getHeadingError.get().getDegrees()>354
+                  || justShoot )
+                  ?ShooterState.SHOOT
+                  :ShooterState.TOTAL_SPIN_UP
+                );
+
+              })
+              .repeatedly()
+              .alongWith( 
+                (new WaitUntilCommand(
+                    () -> shooterController.getTargetState() == ShooterState.SHOOT)
+                            .andThen(new InstantCommand(() -> time = Timer.getFPGATimestamp()))
+                            .andThen(
+                                new WaitUntilCommand(
+                                    () ->
+                                        ((SmartDashboard.getNumber("Intake Rack In Time", 2) + time)
+                                            < Timer.getFPGATimestamp())))
+                            .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))
+                            .withDeadline(
+                                new WaitUntilCommand(
+                                    () ->
+                                        (shooterController.getTargetState()
+                                            == ShooterState.TOTAL_SPIN_UP))))
+                        .repeatedly()));
+  }
+      
+    public Command onRelease(){
+                  return new InstantCommand(
+                    ()-> {
+                      if (shooterController.getTargetState() == ShooterState.SHOOT) {
+                        shooterController.setTargetState(ShooterState.COMPACT_SPIN_UP);
+                      }
+                    });
+                  }
+
+     public Command whileHeldPassing() {
+    return new InstantCommand(
+            () -> {
+              shooterController.setTargetState(
+                  (shooterController.getTargetState() == ShooterState.PASS_SPIN_UP
+                              || shooterController.getTargetState() == ShooterState.PASS)
+                          && shooterController.shooterRollersUpToSpeed() // time correct
+                      ? ShooterState.PASS
+                      : ShooterState.PASS_SPIN_UP);
+            })
+        .repeatedly()
+        .alongWith(
+            new WaitCommand(1.5).andThen(intakeController.setTargetStateCommand(IntakeState.STOW)));
+  }
+}
