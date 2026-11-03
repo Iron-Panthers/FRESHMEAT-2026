@@ -342,7 +342,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
     NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
     NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
-
+    NamedCommands.registerCommand("Shoot Command Factory",
+      shootCommandFactory.whileHeld()
+        .andThen(new WaitCommand(3))
+        .andThen(shootCommandFactory.onRelease()));
+    NamedCommands.registerCommand("Intake Command", new IntakeCommand(intakeController, shooterController));
   }
     
      
