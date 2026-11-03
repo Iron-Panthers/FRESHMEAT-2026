@@ -396,7 +396,8 @@ public class RobotContainer {
     // Currently it functions similarily to the above command except it doesn't look at the hub.
     // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
-    driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
+    driverA.povDown().onTrue(intakeController.zeroCommand());
+    driverA.povDown().onFalse(intakeController.stopZeroingCommand());
 
     driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //alright guys what is this
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
