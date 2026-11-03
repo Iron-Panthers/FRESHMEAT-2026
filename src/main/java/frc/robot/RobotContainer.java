@@ -412,7 +412,7 @@ public class RobotContainer {
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
   
     // Trench divider shoot
-    driverA.a().onTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TRENCH_DIVIDER))).onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP));));
+    driverA.a().onTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TRENCH_DIVIDER))).onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP)));
   }
   
 
