@@ -33,7 +33,7 @@ public class IntakePivotConstants {
 
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
-            case COMP -> new PIDGains(0.3, 0, 0, 0,0.12 , 0, 0.5);
+            case COMP -> new PIDGains(81, 0, 0, 0,8 , 0, 0.3);
             case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };
@@ -59,7 +59,7 @@ public class IntakePivotConstants {
 
     public static final GravityTypeValue GRAVITY_TYPE = GravityTypeValue.Arm_Cosine;
 
-    public static final double POSITION_TARGET_EPSILON = 3;
+    public static final double POSITION_TARGET_EPSILON = 0.001;
 
     public static final double UPPER_VOLT_LIMIT = 16;
     public static final double LOWER_VOLT_LIMIT = -16;

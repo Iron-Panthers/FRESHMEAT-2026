@@ -10,7 +10,7 @@ public class ShooterAccelerator extends GenericRollers<ShooterAccelerator.Shoote
     private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = new java.util.ArrayList<>();
 
     public enum ShooterAcceleratorTarget implements GenericRollers.VelocityTarget {
-        IDLE(40,ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
+        IDLE(0,ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
         SHOOT(30, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
         INTAKE(0, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS);
             
