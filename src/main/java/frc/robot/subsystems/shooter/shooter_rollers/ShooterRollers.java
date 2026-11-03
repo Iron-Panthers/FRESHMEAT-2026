@@ -16,7 +16,8 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
         CONSTANT_SHOOT(42, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         IDLE(5, ShooterRollersConstants.CURRENT_LIMIT_AMPS),
         SHOOT_0M(35, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
-        SHOOT_1POINT9M(48, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS);
+        SHOOT_1POINT9M(46, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS),
+        TRENCH_DIVIDER(47.2, ShooterAcceleratorConstants.CURRENT_LIMIT_AMPS);
 
         public double velocity;
         public double supplyCurrentLimit;

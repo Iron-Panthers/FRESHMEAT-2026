@@ -279,14 +279,13 @@ public class RobotState {
           addEntry(4.5, new HoodParams(28.98, 1.561));
       }
       default -> {
-          addEntry(1.3, new HoodParams(50.37, 1.09));
-          addEntry(2.0, new HoodParams(50.88, .97));
-          addEntry(2.5, new HoodParams(50.01, 1.14));
-          addEntry(3.0, new HoodParams(50.32, 1.15));
-          addEntry(3.5, new HoodParams(50.54, 1.22));
-          addEntry(4.0, new HoodParams(50.76, 1.3));
-          addEntry(4.5, new HoodParams(50.98, 1.34));
-          addEntry(5.2, new HoodParams(50.49, 1.39));
+          addEntry(0.5, new HoodParams(35, 1.09));
+          addEntry(1.0, new HoodParams(40, .97));
+          addEntry(1.5, new HoodParams(42, 1.14));
+          addEntry(1.9, new HoodParams(46, 1.15));
+          addEntry(2, new HoodParams(46.5, 1.22));
+          addEntry(2.5, new HoodParams(50, 1.3));
+          addEntry(3, new HoodParams(53.5, 1.34));
       }
     }
   }

@@ -4,6 +4,8 @@ import java.io.Serial;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
@@ -61,7 +63,12 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.SHOOT,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
-            ShooterRollersTarget.SHOOT
+            ShooterRollersTarget.SHOOT),
+        TRENCH_DIVIDER(
+            SerializerTarget.SHOOT,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.SHOOT,
+            ShooterRollersTarget.TRENCH_DIVIDER
         );
         
         

@@ -388,9 +388,9 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld()
-    .alongWith(new AlignToShootCommand(swerve)))
-    .onFalse(shootCommandFactory.onRelease());
+    // driverA.a().whileTrue(shootCommandFactory.whileHeld()
+    // .alongWith(new AlignToShootCommand(swerve)))
+    // .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
     // Currently it functions similarily to the above command except it doesn't look at the hub.
@@ -409,6 +409,9 @@ public class RobotContainer {
     .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+  
+    // Trench divider shoot
+    driverA.a().onTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TRENCH_DIVIDER))).onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP));));
   }
   
 
