@@ -4,27 +4,27 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radian;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.Interpolatable;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
@@ -33,21 +33,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.vision.VisionConstants;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /* based on wpimath/../PoseEstimator.java */
 public class RobotState {
@@ -268,6 +258,8 @@ public class RobotState {
 
   public void initializeShooterTable() {
     this.shooterTable.clear();
+    double hubCenterDistance = 0.9144;
+
     switch (Constants.getRobotType()) {
       case SIM -> {
           addEntry(1.3, new HoodParams(8.37, 1.621));
@@ -279,13 +271,13 @@ public class RobotState {
           addEntry(4.5, new HoodParams(28.98, 1.561));
       }
       default -> {
-          addEntry(0.5, new HoodParams(35, 1.09));
-          addEntry(1.0, new HoodParams(40, .97));
-          addEntry(1.5, new HoodParams(42, 1.14));
-          addEntry(1.9, new HoodParams(46, 1.15));
-          addEntry(2, new HoodParams(46.5, 1.22));
-          addEntry(2.5, new HoodParams(50, 1.3));
-          addEntry(3, new HoodParams(53.5, 1.34));
+          addEntry(0.5 + hubCenterDistance, new HoodParams(35, 1.09));
+          addEntry(1.0 + hubCenterDistance, new HoodParams(40, .97));
+          addEntry(1.5 + hubCenterDistance, new HoodParams(42, 1.14));
+          addEntry(1.9 + hubCenterDistance, new HoodParams(46, 1.15)); 
+          addEntry(2.0 + hubCenterDistance, new HoodParams(46.5, 1.22));
+          addEntry(2.5 + hubCenterDistance, new HoodParams(50, 1.3));
+          addEntry(3.0 + hubCenterDistance, new HoodParams(53.5, 1.34));
       }
     }
   }
