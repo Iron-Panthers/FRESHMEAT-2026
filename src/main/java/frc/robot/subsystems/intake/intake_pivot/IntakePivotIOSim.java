@@ -71,11 +71,8 @@ public class IntakePivotIOSim extends GenericSuperstructureIOSim implements Inta
             RobotController.getBatteryVoltage(),
             IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS);
 
-    double angleRadians = intakePivotSim.getPositionMeters()
-        / IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters();
     intakePivotSim.setInputVoltage(
-        frc.robot.utility.SimCurrentLimit.applyConstantLoad(
-            appliedVoltage, LOAD_VOLTS * Math.cos(angleRadians)));
+        frc.robot.utility.SimCurrentLimit.applyConstantLoad(appliedVoltage, LOAD_VOLTS));
     intakePivotSim.update(0.02);
 
     // Mechanism units, converted to rotor units for the sensor.
@@ -110,9 +107,9 @@ public class IntakePivotIOSim extends GenericSuperstructureIOSim implements Inta
 
     // update the Sim State to match if it is up or down
     if (mechanismRotations < .1) {
-      RobotSimState.getInstance().setIntakeState(true);
-    } else {
       RobotSimState.getInstance().setIntakeState(false);
+    } else {
+      RobotSimState.getInstance().setIntakeState(true);
     }
   }
 
