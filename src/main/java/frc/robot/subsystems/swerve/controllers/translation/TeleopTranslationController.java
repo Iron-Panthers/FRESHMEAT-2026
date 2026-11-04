@@ -75,7 +75,7 @@ public class TeleopTranslationController extends BaseTranslationController {
   }
 
   private double getMaxLinearVelocity() {
-      return DRIVE_CONFIG.maxLinearVelocity();
+    return DRIVE_CONFIG.maxLinearVelocity();
   }
 
   public Translation2d calculateLinearVelocity(double x, double y) {

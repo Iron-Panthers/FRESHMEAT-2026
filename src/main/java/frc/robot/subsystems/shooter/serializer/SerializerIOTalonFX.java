@@ -3,14 +3,14 @@ package frc.robot.subsystems.shooter.serializer;
 import static frc.robot.subsystems.shooter.serializer.SerializerConstants.*;
 
 import com.ctre.phoenix6.signals.InvertedValue;
-
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersConfiguration;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOTalonFX;
 
 public class SerializerIOTalonFX extends GenericRollersIOTalonFX implements SerializerIO {
-    public SerializerIOTalonFX() {
-        super(new GenericRollersConfiguration()
-        .withID(SerializerConstants.SERIALIZER_CONFIG.motorID1())
+  public SerializerIOTalonFX() {
+    super(
+        new GenericRollersConfiguration()
+            .withID(SerializerConstants.SERIALIZER_CONFIG.motorID1())
             .withMotorDirection(
                 SerializerConstants.SERIALIZER_CONFIG.inverted()
                     ? InvertedValue.CounterClockwise_Positive
@@ -19,8 +19,9 @@ public class SerializerIOTalonFX extends GenericRollersIOTalonFX implements Seri
             .withReduction(SerializerConstants.SERIALIZER_CONFIG.reduction())
             .withNeutralMode(SerializerConstants.SERIALIZER_CONFIG.brake())
             .withAdditionalFollowerMotor(
-                SerializerConstants.SERIALIZER_CONFIG.motorID2(), SerializerConstants.SERIALIZER_CONFIG.opposeMotor())
+                SerializerConstants.SERIALIZER_CONFIG.motorID2(),
+                SerializerConstants.SERIALIZER_CONFIG.opposeMotor())
             .withStatorCurrentLimit(SerializerConstants.STATOR_CURRENT_LIMIT));
-        super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
-    }
+    super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
+  }
 }

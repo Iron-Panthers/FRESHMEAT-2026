@@ -4,18 +4,9 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.FlippingUtil;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -38,6 +29,12 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.subsystems.vision.VisionConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /* based on wpimath/../PoseEstimator.java */
 public class RobotState {
@@ -85,8 +82,7 @@ public class RobotState {
 
   private boolean isAutoUnderTrench = true;
 
-
-    @AutoLogOutput(key = "PathPlanner/Dynamic Obstacles")
+  @AutoLogOutput(key = "PathPlanner/Dynamic Obstacles")
   private List<Pair<Translation2d, Translation2d>> dynamicObstacles =
       new ArrayList<Pair<Translation2d, Translation2d>>();
 
@@ -159,7 +155,6 @@ public class RobotState {
     return translateByVector(pose, mag, theta).transformBy(new Transform2d(0, 0, theta));
   }
 
-
   public void addRobotSpeeds(ChassisSpeeds chassisSpeeds) {
     this.robotSpeeds = chassisSpeeds;
   }
@@ -184,9 +179,7 @@ public class RobotState {
    * @return
    */
   public Command getPathPlannerApproachPoseCommand(
-      Pose2d approachPose2d,
-      boolean underTrench,
-      boolean stayOnCurrentSide) {
+      Pose2d approachPose2d, boolean underTrench, boolean stayOnCurrentSide) {
     Logger.recordOutput("Robot State/Estimated Pose", estimatedPose);
     Logger.recordOutput("Robot State/Approach Pose", approachPose2d);
 
@@ -217,7 +210,7 @@ public class RobotState {
     return finalPathfindingCommand;
   }
 
-    public void setIsAutoAdaptive(boolean isAutoAdaptive) {
+  public void setIsAutoAdaptive(boolean isAutoAdaptive) {
     this.isAutoAdaptive = isAutoAdaptive;
   }
 
@@ -238,7 +231,7 @@ public class RobotState {
     this.isAutoUnderTrench = isAutoUnderTrench;
   }
 
-    @AutoLogOutput(key = "Robot State/is auto adaptive")
+  @AutoLogOutput(key = "Robot State/is auto adaptive")
   public boolean isAutoAdaptive() {
     return isAutoAdaptive;
   }
@@ -254,7 +247,7 @@ public class RobotState {
   }
 
   private final InterpolatingTreeMap<Double, HoodParams> shooterTable =
-    new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), HoodParams::interpolate);
+      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), HoodParams::interpolate);
 
   public void initializeShooterTable() {
     this.shooterTable.clear();
@@ -262,22 +255,22 @@ public class RobotState {
 
     switch (Constants.getRobotType()) {
       case SIM -> {
-          addEntry(1.3, new HoodParams(26, 1.621)); // good
-          addEntry(2.0, new HoodParams(30, 1.621)); // good
-          addEntry(2.5, new HoodParams(33, 1.601));
-          addEntry(3.0, new HoodParams(35, 1.602));
-          addEntry(3.5, new HoodParams(38, 1.581));
-          addEntry(4.0, new HoodParams(40, 1.561));
-          addEntry(4.5, new HoodParams(42, 1.561));
+        addEntry(1.3, new HoodParams(26, 1.621)); // good
+        addEntry(2.0, new HoodParams(30, 1.621)); // good
+        addEntry(2.5, new HoodParams(33, 1.601));
+        addEntry(3.0, new HoodParams(35, 1.602));
+        addEntry(3.5, new HoodParams(38, 1.581));
+        addEntry(4.0, new HoodParams(40, 1.561));
+        addEntry(4.5, new HoodParams(42, 1.561));
       }
       default -> {
-          addEntry(0.5 + hubCenterDistance, new HoodParams(35, 1.09));
-          addEntry(1.0 + hubCenterDistance, new HoodParams(40, .97));
-          addEntry(1.5 + hubCenterDistance, new HoodParams(42, 1.14));
-          addEntry(1.9 + hubCenterDistance, new HoodParams(46, 1.15)); 
-          addEntry(2.0 + hubCenterDistance, new HoodParams(46.5, 1.22));
-          addEntry(2.5 + hubCenterDistance, new HoodParams(50, 1.3));
-          addEntry(3.0 + hubCenterDistance, new HoodParams(53.5, 1.34));
+        addEntry(0.5 + hubCenterDistance, new HoodParams(35, 1.09));
+        addEntry(1.0 + hubCenterDistance, new HoodParams(40, .97));
+        addEntry(1.5 + hubCenterDistance, new HoodParams(42, 1.14));
+        addEntry(1.9 + hubCenterDistance, new HoodParams(46, 1.15));
+        addEntry(2.0 + hubCenterDistance, new HoodParams(46.5, 1.22));
+        addEntry(2.5 + hubCenterDistance, new HoodParams(50, 1.3));
+        addEntry(3.0 + hubCenterDistance, new HoodParams(53.5, 1.34));
       }
     }
   }
@@ -300,12 +293,13 @@ public class RobotState {
     return ntLutEntries.computeIfAbsent(key, k -> new LoggedNetworkNumber(k, defaultValue));
   }
 
-  public record HoodParams(double shooterSpeed, double timeOfFlight) implements Interpolatable<HoodParams> {
+  public record HoodParams(double shooterSpeed, double timeOfFlight)
+      implements Interpolatable<HoodParams> {
     @Override
     public HoodParams interpolate(HoodParams endValue, double t) {
       return new HoodParams(
-        MathUtil.interpolate(this.shooterSpeed, endValue.shooterSpeed, t),
-        MathUtil.interpolate(this.timeOfFlight, endValue.timeOfFlight, t));
+          MathUtil.interpolate(this.shooterSpeed, endValue.shooterSpeed, t),
+          MathUtil.interpolate(this.timeOfFlight, endValue.timeOfFlight, t));
     }
   }
 }

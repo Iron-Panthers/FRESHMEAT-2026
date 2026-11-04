@@ -1,6 +1,64 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.diffplug.spotless" version "8.4.0"
+}
+
+// ---------------------------------------------------------------------------
+// Spotless – Java formatting
+//
+//   ./gradlew spotlessApply   – auto-fix all files
+//   ./gradlew spotlessCheck   – CI-friendly check (fails on violations)
+//
+// Customise the rules below to match your team's style.  Every option is
+// commented so you can tweak, add, or remove steps without leaving Gradle.
+// ---------------------------------------------------------------------------
+spotless {
+    java {
+        // Which files to format (defaults to java sourcesets, so usually fine)
+        target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+        targetExclude '**/BuildConstants.java', '**/generated/**'
+
+        // ---- Import ordering ----
+        // Groups are separated by blank lines.  Use '|' to join groups
+        // *without* a blank line.  Prefix with '\\#' for static imports.
+        // An empty string '' means "everything else".
+        importOrder('com', 'edu', 'frc', 'java', 'javax', 'org', '', '\\#')
+        removeUnusedImports()
+
+        // ---- Code formatting engine ----
+        // google-java-format: opinionated, deterministic, zero-config.
+        //   .aosp()              → 4-space indent (Android style) instead of 2
+        //   .reflowLongStrings() → break long string literals
+        //   .formatJavadoc(false)→ leave Javadoc untouched
+        //   .reorderImports(false)→ let importOrder() handle imports instead
+        googleJavaFormat('1.17.0')
+            .reflowLongStrings()
+            .reorderImports(false)
+
+        // ---- Annotations ----
+        // Ensures type annotations (@Nullable, etc.) stay on the same line
+        // as the type they qualify.
+        formatAnnotations()
+
+        // ---- Trailing whitespace & final newline ----
+        trimTrailingWhitespace()
+        endWithNewline()
+
+        // ---- Escape hatch ----
+        // Wrap any hand-formatted block with:
+        //   // spotless:off
+        //   ...
+        //   // spotless:on
+        toggleOffOn()
+
+        // custom 'no johns', { text ->
+        //     if (text =~ /john/) {
+        //         throw new AssertionError('Johns are not allowed')
+        //     }
+        //     return text
+        // }
+    }
 }
 
 java {
@@ -13,6 +71,69 @@ def ROBOT_MAIN_CLASS = "frc.robot.Main"
 task(replayWatch, type: JavaExec) {
     mainClass = "org.littletonrobotics.junction.ReplayWatch"
     classpath = sourceSets.main.runtimeClasspath
+}
+
+// Task to mirror PathPlanner paths across field centerline
+task mirrorPaths(type: JavaExec) {
+    description = 'Mirrors PathPlanner paths across field centerline'
+    group = 'build'
+    
+    mainClass = 'frc.robot.utility.MirrorPathUtil'
+    classpath = sourceSets.main.runtimeClasspath
+    
+    def pathDir = file('src/main/deploy/pathplanner/paths')
+    
+    // Find all .path files (excluding already generated left ones)
+    def pathFiles = fileTree(pathDir) {
+        include '*.path'
+        exclude '* Left.path'
+    }
+    
+    // Only run if path files exist
+    onlyIf {
+        pathFiles.files.size() > 0
+    }
+    
+    // Pass all path files as arguments
+    args = pathFiles.files.collect { it.absolutePath }
+}
+
+// Task to mirror PathPlanner autos to use mirrored paths
+task mirrorAutos(type: JavaExec) {
+    description = 'Mirrors PathPlanner autos to use mirrored paths'
+    group = 'build'
+    
+    mainClass = 'frc.robot.utility.MirrorAutoUtil'
+    classpath = sourceSets.main.runtimeClasspath
+    
+    // Must run after mirrorPaths so mirrored paths exist
+    dependsOn mirrorPaths
+    
+    def autoDir = file('src/main/deploy/pathplanner/autos')
+    
+    // Find all .auto files (excluding already generated left ones)
+    def autoFiles = fileTree(autoDir) {
+        include '*.auto'
+        exclude '* Left.auto'
+    }
+    
+    // Only run if auto files exist
+    onlyIf {
+        autoFiles.files.size() > 0
+    }
+    
+    // Pass all auto files as arguments
+    args = autoFiles.files.collect { it.absolutePath }
+}
+
+// Make build and deploy depend on mirrorAutos (which depends on mirrorPaths)
+tasks.named('build').configure {
+    dependsOn mirrorAutos
+    dependsOn spotlessApply
+}
+tasks.named('deploy').configure {
+    dependsOn mirrorAutos
+    dependsOn spotlessApply
 }
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -52,7 +173,7 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = false
+def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
@@ -88,8 +209,70 @@ test {
 }
 
 // Simulation configuration (e.g. environment variables).
-wpi.sim.addGui().defaultEnabled = true
+// Pass -Pheadless to suppress the GUI window (used by AI tooling and CI).
+// Pass -Pai.logging to write a .wpilog to build/ai-logs/ for AI log analysis.
+if (!project.hasProperty('headless')) {
+    wpi.sim.addGui().defaultEnabled = true
+}
 wpi.sim.addDriverstation()
+
+// Inject JVM system properties when AI logging is requested.
+// Usage: ./gradlew simulateJava -Pheadless -Pai.logging -Pauto.name=2x4TRight
+tasks.withType(JavaExec).configureEach {
+    if (project.hasProperty('ai.logging') || project.hasProperty('aiLogging')) {
+        jvmArgs '-Dai.logging=true'
+        jvmArgs "-Dai.log.dir=${buildDir}/ai-logs"
+    }
+    if (project.hasProperty('auto.name')) {
+        jvmArgs "-Dai.auto.name=${project.getProperty('auto.name')}"
+    }
+    if (project.hasProperty('teleop.duration')) {
+        jvmArgs "-Dai.teleop.duration=${project.getProperty('teleop.duration')}"
+    }
+    if (project.hasProperty('teleop.buttons')) {
+        jvmArgs "-Dai.teleop.buttons=${project.getProperty('teleop.buttons')}"
+    }
+    if (project.hasProperty('teleop.axes')) {
+        jvmArgs "-Dai.teleop.axes=${project.getProperty('teleop.axes')}"
+    }
+    // Log-driven replay: feed a real match's driver inputs through the sim.
+    // Usage: ./gradlew simulateJava -Pheadless -Pai.logging -Preplay.inputs=<path.wpilog>
+    if (project.hasProperty('replay.inputs')) {
+        jvmArgs "-Dai.replay.inputs=${project.getProperty('replay.inputs')}"
+    }
+    if (project.hasProperty('replay.anchor')) {
+        jvmArgs "-Dai.replay.anchor=${project.getProperty('replay.anchor')}"
+    }
+    // -Preplay.battery=<nominalVolts>:<ohms>[:<droopVoltsPerMinute>]
+    if (project.hasProperty('replay.battery')) {
+        jvmArgs "-Dai.replay.battery=${project.getProperty('replay.battery')}"
+    }
+    if (project.hasProperty('replay.teleopOnly')) {
+        jvmArgs '-Dai.replay.teleopOnly=true'
+    }
+    // A/B testing. See /ab-test and scripts/ab_test.py.
+    // -Psim.seed makes simulation randomness reproducible so two runs of different code
+    // can be compared against the same noise. -Pbench selects a scoring benchmark.
+    if (project.hasProperty('sim.seed')) {
+        jvmArgs "-Dab.sim.seed=${project.getProperty('sim.seed')}"
+    }
+    if (project.hasProperty('bench')) {
+        jvmArgs "-Dab.bench=${project.getProperty('bench')}"
+    }
+    if (project.hasProperty('bench.count')) {
+        jvmArgs "-Dab.bench.count=${project.getProperty('bench.count')}"
+    }
+    if (project.hasProperty('bench.dwell')) {
+        jvmArgs "-Dab.bench.dwell=${project.getProperty('bench.dwell')}"
+    }
+    if (project.hasProperty('bench.distances')) {
+        jvmArgs "-Dab.bench.distances=${project.getProperty('bench.distances')}"
+    }
+    if (project.hasProperty('bench.timeout')) {
+        jvmArgs "-Dab.bench.timeout=${project.getProperty('bench.timeout')}"
+    }
+}
+
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
@@ -112,3 +295,4 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
