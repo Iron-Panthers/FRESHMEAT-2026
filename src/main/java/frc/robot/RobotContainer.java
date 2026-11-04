@@ -422,8 +422,8 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld())
-    .onTrue(new AlignToShootCommand(swerve, shooterController))
+    driverA.a().whileTrue(shootCommandFactory.whileHeld()
+    .alongWith(new AlignToShootCommand(swerve)))
     .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
