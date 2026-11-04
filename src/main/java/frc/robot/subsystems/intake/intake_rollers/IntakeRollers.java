@@ -12,7 +12,7 @@ public class IntakeRollers extends GenericRollers<IntakeRollers.IntakeRollersTar
         INTAKE(10, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
         SHOOT(0, IntakeRollersConstants.CURRENT_LIMIT_AMPS), //replace with actual value
         REVERSE(-10, IntakeRollersConstants.CURRENT_LIMIT_AMPS);
-
+        
         private double velocity;
         private double supplyCurrentLimit;
 

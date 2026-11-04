@@ -4,6 +4,8 @@ import java.io.Serial;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
@@ -29,6 +31,12 @@ public class ShooterController extends SubsystemBase {
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
             ShooterRollersTarget.SHOOT),
+        SPIN_UP(
+            SerializerTarget.SPIN_UP,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.IDLE,
+            ShooterRollersTarget.SHOOT
+        ),
         INTAKE(
             SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
@@ -83,6 +91,7 @@ public class ShooterController extends SubsystemBase {
 
     private ShooterState targetState = ShooterState.IDLE;
     private boolean stopped = false;
+    private boolean autoAim = false;
 
     private final Serializer serializer;
     private final ShooterAccelerator shooterAccelerator;
@@ -133,6 +142,18 @@ public class ShooterController extends SubsystemBase {
 
     public void setStopped(boolean stopped) {
         this.stopped = stopped;
+    }
+
+    public Command setTargetStateCommand(ShooterState targetState) {
+        return new InstantCommand(() -> setTargetState(targetState));
+    }
+
+    public void setAutoAim(boolean autoAim) {
+        this.autoAim = autoAim;
+    }
+
+    public Command setAutoAimCommand(boolean autoAim) {
+    return new InstantCommand(() -> setAutoAim(autoAim));
     }
 
     public boolean shooterRollersUpToSpeed() {

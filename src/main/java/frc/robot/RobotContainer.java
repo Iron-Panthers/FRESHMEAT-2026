@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -275,9 +276,27 @@ public class RobotContainer {
   /** Use this method to define the named commands for all of the autos */
   private void nameCommands() {
     // Register Command Names in this method
-
-    NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
-
+    new EventTrigger("Intake down")
+        .onTrue(
+          new InstantCommand(() -> {
+            intakeController.setTargetState(IntakeState.INTAKE);
+            shooterController.setTargetState(ShooterState.INTAKE);
+          }));
+    new EventTrigger("Intake off")
+          .onTrue(
+            new InstantCommand(() -> {
+              intakeController.setTargetState(IntakeState.IDLE);
+            }));
+    new EventTrigger("Intake stow")
+            .onTrue(
+              new InstantCommand(() -> {
+                intakeController.setTargetState(IntakeState.STOW);
+              }));
+    new EventTrigger("Spin up shooter")
+            .onTrue(
+              new InstantCommand(() -> {
+                shooterController.setTargetState(ShooterState.SPIN_UP);
+              }));
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
@@ -319,7 +338,22 @@ public class RobotContainer {
                       new InstantCommand(() -> RobotState.getInstance().setIsAutoAdaptive(false)));
             },
             Set.of(swerve)));
+    NamedCommands.registerCommand("Align To Pose", new AlignToPoseCommand(swerve, ()->RobotState.getInstance().getAlignPose()));
+    NamedCommands.registerCommand("Intake Down", intakeController .setTargetStateCommand(IntakeState.INTAKE) .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
+    NamedCommands.registerCommand("Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
+    NamedCommands.registerCommand("Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
+    NamedCommands.registerCommand("Align To Shoot", new AlignToShootCommand(swerve, shooterController)); //doesn't work
+    NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
+    NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+    NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+    NamedCommands.registerCommand("Shoot Command Factory",
+      shootCommandFactory.whileHeld()
+        .andThen(new WaitCommand(3))
+        .andThen(shootCommandFactory.onRelease()));
+    NamedCommands.registerCommand("Intake Command", new IntakeCommand(intakeController, shooterController));
   }
+    
+     
 
   private void configureBindings() {
     // -----Driver Controls-----
@@ -352,7 +386,7 @@ public class RobotContainer {
     // }));
 
     // TODO: Test this eventually...
-    //driverA.b().whileTrue(new AlignToShootCommand(swerve).repeatedly());
+    driverA.b().whileTrue(new AlignToShootCommand(swerve, shooterController).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() -> shooterRollers.setVelocityTarget(ShooterRollersTarget.SHOOT)));
@@ -372,7 +406,7 @@ public class RobotContainer {
     
     driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
 
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, new Pose2d(12.9, 4, new Rotation2d(3.14))));
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, ()-> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
     driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
@@ -382,8 +416,8 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld()
-    .alongWith(new AlignToShootCommand(swerve)))
+    driverA.a().whileTrue(shootCommandFactory.whileHeld())
+    .onTrue(new AlignToShootCommand(swerve, shooterController))
     .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
