@@ -63,11 +63,13 @@ public class IntakeController extends SubsystemBase {
     } else if (intakePivot.getControlMode() == GenericSuperstructure.ControlMode.ZEROING) {
       Logger.recordOutput("Intake/Intake State Test", "zeroing");
       intakeRollers.setVelocityTarget(targetState.getIntakeRollersTarget());
-    } else if (targetState == IntakeState.IDLE && !intakePivot.reachedTarget()) {
-      Logger.recordOutput("Intake/Intake State Test", "idle");
-      intakeRollers.setVelocityTarget(IntakeRollersTarget.INTAKE);
-      intakePivot.setPositionTarget(targetState.getIntakePivotTarget());
-    } else {
+    }
+    // else if (targetState == IntakeState.IDLE && !intakePivot.reachedTarget()) {
+    //   Logger.recordOutput("Intake/Intake State Test", "idle");
+    //   intakeRollers.setVelocityTarget(IntakeRollersTarget.INTAKE);
+    //   intakePivot.setPositionTarget(targetState.getIntakePivotTarget());
+    // }
+     else {
       Logger.recordOutput("Intake/Intake State Test", "other");
       // set target states to those in the current controller state
       intakePivot.setPositionTarget(targetState.getIntakePivotTarget());

@@ -269,13 +269,11 @@ public class RobotContainer {
   /** Use this method to define the named commands for all of the autos */
   private void nameCommands() {
     // Register Command Names in this method
-    new EventTrigger("Intake down")
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  intakeController.setTargetState(IntakeState.INTAKE);
-                  shooterController.setTargetState(ShooterState.INTAKE);
-                }));
+    new EventTrigger("Intake Down")
+        .onTrue(new InstantCommand(() -> {
+          intakeController.setTargetState(IntakeState.INTAKE);
+          shooterController.setTargetState(ShooterState.INTAKE);})
+                );
     new EventTrigger("Intake off")
         .onTrue(
             new InstantCommand(
@@ -348,7 +346,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot", shooterController.setTargetStateCommand(ShooterState.SHOOT));
     NamedCommands.registerCommand(
-        "Align To Shoot", new AlignToShootCommand(swerve, shooterController)); // doesn't work
+        "Align To Shoot", new AlignToShootCommand(swerve)); // doesn't work
     NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
     NamedCommands.registerCommand(
         "Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
@@ -356,16 +354,23 @@ public class RobotContainer {
         "Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
     NamedCommands.registerCommand(
         "Shoot Command Factory",
-        new AlignToShootCommand(swerve, shooterController)
-            .withDeadline(
-                new WaitCommand(0.2)
-                    .andThen(
-                        shootCommandFactory
-                            .whileHeld()
-                            .raceWith(new WaitCommand(3.25))
-                            .andThen(shootCommandFactory.onRelease()))));
+        shootCommandFactory
+            .setJustShootCommand(true)
+            .andThen(
+                new AlignToShootCommand(swerve)
+                    .withDeadline(
+                        new WaitCommand(0.2)
+                            .andThen(
+                                shootCommandFactory
+                                    .whileHeld()
+                                    .raceWith(new WaitCommand(3.25))
+                                    .andThen(shootCommandFactory.onRelease()))))
+            .andThen(shootCommandFactory.setJustShootCommand(false)));
     NamedCommands.registerCommand(
-        "Intake Command", new IntakeCommand(intakeController, shooterController));
+        "Intake Command", 
+         new InstantCommand(() -> {
+          intakeController.setTargetState(IntakeState.INTAKE);
+          shooterController.setTargetState(ShooterState.INTAKE);}));
   }
 
   private void configureBindings() {
@@ -392,7 +397,7 @@ public class RobotContainer {
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     // TODO: Test this eventually...
-    driverA.b().whileTrue(new AlignToShootCommand(swerve, shooterController).repeatedly());
+    // driverA.b().whileTrue(new AlignToShootCommand(swerve, shooterController).repeatedly());
 
     // TODO: Test
     // driverA.y().whileTrue(new InstantCommand(() ->
@@ -432,7 +437,10 @@ public class RobotContainer {
 
     driverA
         .b()
-        .onTrue(new IntakeCommand(intakeController, shooterController))
+        .onTrue(new InstantCommand(() -> {
+          intakeController.setTargetState(IntakeState.INTAKE);
+          shooterController.setTargetState(ShooterState.INTAKE);
+        }))
         .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
 
     driverA
@@ -441,10 +449,7 @@ public class RobotContainer {
 
     driverA
         .a()
-        .whileTrue(
-            shootCommandFactory
-                .whileHeld()
-                .alongWith(new AlignToShootCommand(swerve, shooterController)))
+        .whileTrue(shootCommandFactory.whileHeld().alongWith(new AlignToShootCommand(swerve)))
         .onFalse(shootCommandFactory.onRelease());
 
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.

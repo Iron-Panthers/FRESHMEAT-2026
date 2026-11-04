@@ -1,31 +1,28 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.ShooterController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.swerve.Drive;
+import frc.robot.subsystems.swerve.DriveConstants;
 
 public class AlignToShootCommand extends Command {
 
   private Drive swerve;
-  private ShooterController shooterController;
 
-  public AlignToShootCommand(Drive swerve, ShooterController shooterController) {
+  public AlignToShootCommand(Drive swerve) {
     this.swerve = swerve;
-    this.shooterController = shooterController;
   }
 
-  public void initialize() {
+  @Override
+  public void execute() {
     swerve.setMovementScoped(true);
-    shooterController.setAutoAimCommand(true);
-  }
 
-  public void execute() { // WORLDS CHANGE
-    swerve.setMovementScoped(true);
-    shooterController.setAutoAim(true);
+    CommandScheduler.getInstance()
+        .schedule(
+            new AlignToPassCommand(swerve, (DriveConstants.RED_HUB_ORIGIN.toTranslation2d())));
   }
 
   public void end(boolean interrupted) {
     swerve.setMovementScoped(false);
-    shooterController.setAutoAimCommand(false);
   }
 }

@@ -9,12 +9,10 @@ import frc.robot.subsystems.shooter.ShooterController.ShooterState;
 
 public class IntakeCommand extends SequentialCommandGroup {
   public IntakeCommand(IntakeController intakeController, ShooterController shooterController) {
-    {
-      addCommands(
-          intakeController
-              .setTargetStateCommand(IntakeState.INTAKE)
-              .alongWith(
-                  new InstantCommand(() -> shooterController.setTargetState(ShooterState.INTAKE))));
-    }
+    addCommands(
+        intakeController
+            .setTargetStateCommand(IntakeState.INTAKE)
+            .alongWith(
+                new InstantCommand(() -> shooterController.setTargetState(ShooterState.INTAKE))));
   }
 }
