@@ -78,7 +78,7 @@ public class ShootCommandFactory {
                 shooterController.setTargetState(
                   (shooterController.getTargetState()==ShooterState.TOTAL_SPIN_UP||
                   shooterController.getTargetState()==ShooterState.SHOOT)
-                  // &&shooterController.shooterRollersUpToSpeed()
+                  && shooterController.shooterRollersUpToSpeed()
                   &&(matchTimerUpdater.isOurHubActive()
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()<=2
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()
