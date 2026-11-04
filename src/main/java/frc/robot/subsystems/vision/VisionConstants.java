@@ -34,8 +34,14 @@ public class VisionConstants {
         case SIM -> new Transform3d[] {// new Transform3d(new Translation3d(), new Rotation3d())
           // arducam-7 (front in rollers)
           new Transform3d(
-              new Translation3d(-13.584, 11.234, 21.405),
+              new Translation3d(0.33493633, 0, 0.422076702),
               new Rotation3d(0.00776866, -0.5635942421, 0)),
+          new Transform3d(
+              new Translation3d(0.373037, -0.295926, 0.485082),
+              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(-90)))),
+          new Transform3d(
+              new Translation3d(0.373037, 0.295926, 0.485082),
+              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(90))))
           };
         default -> new Transform3d[0];
       };
