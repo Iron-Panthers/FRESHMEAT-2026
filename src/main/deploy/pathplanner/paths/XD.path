@@ -64,11 +64,11 @@
     },
     {
       "anchor": {
-        "x": 3.320771055753263,
+        "x": 3.4283629893238445,
         "y": 3.9865836298932384
       },
       "prevControl": {
-        "x": 3.251518976934479,
+        "x": 3.3591109105050605,
         "y": 4.226800510189518
       },
       "nextControl": null,
@@ -93,6 +93,12 @@
       "name": "Shoot Command Factory",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 1.0438695163104619,
+      "endWaypointRelativePos": 2.0697412823397263,
       "command": null
     }
   ],
