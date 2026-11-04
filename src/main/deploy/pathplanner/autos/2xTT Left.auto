@@ -1,67 +1,57 @@
 {
-  "version": "2025.0",
-  "command": {
-    "type": "sequential",
-    "data": {
-      "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "Smart zero"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1xTT Left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Smart zero"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Command Factory"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "xTT Left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Smart zero"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Command Factory"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "xT Left"
-          }
+  "version" : "2025.0",
+  "command" : {
+    "type" : "sequential",
+    "data" : {
+      "commands" : [ {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
         }
-      ]
+      }, {
+        "type" : "wait",
+        "data" : {
+          "waitTime" : 1.5
+        }
+      }, {
+        "type" : "path",
+        "data" : {
+          "pathName" : "1xTT Left"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Shoot Command Factory"
+        }
+      }, {
+        "type" : "path",
+        "data" : {
+          "pathName" : "xTT Left"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Shoot Command Factory"
+        }
+      }, {
+        "type" : "path",
+        "data" : {
+          "pathName" : "xT Left"
+        }
+      } ]
     }
   },
-  "resetOdom": true,
-  "folder": "Left Autos (auto generated)",
-  "choreoAuto": false
+  "resetOdom" : true,
+  "folder" : "Left Autos (auto generated)",
+  "choreoAuto" : false
 }
