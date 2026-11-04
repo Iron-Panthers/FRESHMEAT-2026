@@ -27,21 +27,16 @@ public class VisionConstants {
       switch (getRobotType()) {
         case COMP -> new Transform3d[] {
           new Transform3d(
-              new Translation3d(13.584, 11.234, 21.405),
-              new Rotation3d(0.00776866, -0.5635942421, 0)),
+              new Translation3d(0.28538, -0.345021, 0.543688),
+              new Rotation3d(0, Math.toRadians(-27.815982), Math.PI)),
         };
         case VISION -> new Transform3d[] {};
         case SIM -> new Transform3d[] {// new Transform3d(new Translation3d(), new Rotation3d())
           // arducam-7 (front in rollers)
           new Transform3d(
-              new Translation3d(13.584, 11.234, 21.405),
+              new Translation3d(-13.584, 11.234, 21.405),
               new Rotation3d(0.00776866, -0.5635942421, 0)),
-          new Transform3d(
-              new Translation3d(13.584, 11.234, 21.405),
-              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(-90)))),
-          new Transform3d(
-              new Translation3d(13.584, 11.234, 21.405),
-              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(90)))),};
+          };
         default -> new Transform3d[0];
       };
 
