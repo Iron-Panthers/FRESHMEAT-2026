@@ -262,13 +262,13 @@ public class RobotState {
 
     switch (Constants.getRobotType()) {
       case SIM -> {
-          addEntry(0.5 + hubCenterDistance, new HoodParams(35, 1.09));
-          addEntry(1.0 + hubCenterDistance, new HoodParams(40, .97));
-          addEntry(1.5 + hubCenterDistance, new HoodParams(42, 1.14));
-          addEntry(1.9 + hubCenterDistance, new HoodParams(46, 1.15)); 
-          addEntry(2.0 + hubCenterDistance, new HoodParams(46.5, 1.22));
-          addEntry(2.5 + hubCenterDistance, new HoodParams(50, 1.3));
-          addEntry(3.0 + hubCenterDistance, new HoodParams(53.5, 1.34));
+          addEntry(1.3, new HoodParams(26, 1.621)); // good
+          addEntry(2.0, new HoodParams(30, 1.621)); // good
+          addEntry(2.5, new HoodParams(33, 1.601));
+          addEntry(3.0, new HoodParams(35, 1.602));
+          addEntry(3.5, new HoodParams(38, 1.581));
+          addEntry(4.0, new HoodParams(40, 1.561));
+          addEntry(4.5, new HoodParams(42, 1.561));
       }
       default -> {
           addEntry(0.5 + hubCenterDistance, new HoodParams(35, 1.09));

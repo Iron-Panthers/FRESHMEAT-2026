@@ -130,7 +130,8 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d());        
         double shooterSpeed = RobotState.getInstance().getShooterSpeed(robotDistanceFromHub);
 
-        if (targetState.rollersTarget == ShooterRollersTarget.SHOOT) {
+        if (targetState.rollersTarget == ShooterRollersTarget.SHOOT
+                || targetState == ShooterState.TOTAL_SPIN_UP) {
             shooterRollers.setVelocityTargetManual(shooterSpeed, ShooterRollersConstants.CURRENT_LIMIT_AMPS);
         } else {
             shooterRollers.setVelocityTarget(targetState.rollersTarget);
