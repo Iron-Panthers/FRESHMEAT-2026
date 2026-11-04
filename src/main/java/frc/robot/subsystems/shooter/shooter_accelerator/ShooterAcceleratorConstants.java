@@ -10,7 +10,7 @@ public class ShooterAcceleratorConstants {
     public static final ShooterAcceleratorConfig SHOOTER_ACCELERATOR_CONFIG =
     switch(Constants.getRobotType()) { 
         case SIM -> new ShooterAcceleratorConfig(
-            CAN.at(35, "Shooter Accelerator Right"),
+            CAN.at(22, "Shooter Accelerator Right"),
             CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
             1.5,
             false,

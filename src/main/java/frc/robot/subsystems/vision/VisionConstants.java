@@ -1,6 +1,8 @@
 package frc.robot.subsystems.vision;
 
-import static frc.robot.Constants.*;
+import static frc.robot.Constants.getRobotType;
+
+import java.util.List;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -12,8 +14,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
-import java.util.List;
 
 public class VisionConstants {
   public static final double AMBIGUITY_CUTOFF = 0.1;
@@ -29,18 +29,23 @@ public class VisionConstants {
           new Transform3d(
               new Translation3d(13.584, 11.234, 21.405),
               new Rotation3d(0.00776866, -0.5635942421, 0)),
-        };
-        case VISION -> new Transform3d[] {};
-        case SIM -> new Transform3d[] {// new Transform3d(new Translation3d(), new Rotation3d())
-          // arducam-7 (front in rollers)
-          new Transform3d(
-              new Translation3d(13.584, 11.234, 21.405),
-              new Rotation3d(0.00776866, -0.5635942421, 0)),
           new Transform3d(
               new Translation3d(13.584, 11.234, 21.405),
               new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(-90)))),
           new Transform3d(
               new Translation3d(13.584, 11.234, 21.405),
+              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(90)))),};
+        case VISION -> new Transform3d[] {};
+        case SIM -> new Transform3d[] {// new Transform3d(new Translation3d(), new Rotation3d())
+          // arducam-7 (front in rollers)
+          new Transform3d(
+              new Translation3d(0.33493633, 0, 0.422076702),
+              new Rotation3d(0.00776866, -0.5635942421, 0)),
+          new Transform3d(
+              new Translation3d(0.373037, -0.295926, 0.485082),
+              new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(-90)))),
+          new Transform3d(
+              new Translation3d(0.373037, 0.295926, 0.485082),
               new Rotation3d(0, (Math.toRadians(-11)), (Math.toRadians(90)))),};
         default -> new Transform3d[0];
       };
