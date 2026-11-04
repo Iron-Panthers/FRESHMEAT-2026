@@ -82,6 +82,10 @@ public abstract class GenericSuperstructureIOTalonFX implements GenericSuperstru
       config.SoftwareLimitSwitch.withForwardSoftLimitThreshold(
           superstructureConfig.upperExtensionLimit);
     }
+
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
+
     talon = new TalonFX(superstructureConfig.id);
 
     if (superstructureConfig.canCoderID != -1) { // TODO: Make default -1 or use Optional

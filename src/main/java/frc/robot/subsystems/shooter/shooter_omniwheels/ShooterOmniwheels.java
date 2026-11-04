@@ -8,8 +8,8 @@ import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 public class ShooterOmniwheels extends GenericRollers<ShooterOmniwheels.ShooterOmniwheelsTarget> {
     public enum ShooterOmniwheelsTarget implements GenericRollers.VelocityTarget{
-        IDLE(-10, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
-        SHOOT(10, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
+        IDLE(-5, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
+        SHOOT(40, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
         private double velocity;

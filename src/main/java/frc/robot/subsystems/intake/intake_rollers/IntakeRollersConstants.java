@@ -4,21 +4,20 @@ import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
 
 // I really like this idea but sadly now is just not the time :( Also I am a bit too drunk rn to decide whether or not to keep this so... :P
-// import frc.robot.subsystems.intake.intake_rack.IntakeRackConstants.PIDGains;
 
 public class IntakeRollersConstants {
     public static final IntakeRollersConfig INTAKE_ROLLERS_CONFIG =
         switch (Constants.getRobotType()) {
             case COMP -> new IntakeRollersConfig(
-                CAN.at(5, "Intake Rollers 1"),  // TODO: change CAN ids
-                CAN.at(7, "Intake Rollers 2"),  // TODO: change CAN ids
-                1,
+                CAN.at(27, "Intake Rollers 1"),  // TODO: change CAN ids
+                CAN.at(20, "Intake Rollers 2"),  // TODO: change CAN ids
+                0.4167,
                 false,
                 false,
-                false);
+                true);
             case SIM -> new IntakeRollersConfig(
                 CAN.at(5, "Intake Rollers 1"),
-                CAN.at(7, "Intake Rollers 2"),
+                CAN.at(29, "Intake Rollers 2"),
                 1,
                 false,
                 false,
@@ -34,7 +33,7 @@ public class IntakeRollersConstants {
 
     public static final PIDGains GAINS =
         switch (Constants.getRobotType()) {
-            case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+            case COMP -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             case SIM ->  new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
             default ->   new PIDGains(0, 0, 0, 0, 0, 0, 0);
         };

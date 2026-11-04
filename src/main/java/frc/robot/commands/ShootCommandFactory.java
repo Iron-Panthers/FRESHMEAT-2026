@@ -28,7 +28,7 @@ public class ShootCommandFactory {
   private final ElasticUpdater matchTimerUpdater;
   private final Supplier<Rotation2d> getHeadingError;
   double time = Timer.getFPGATimestamp();
-  private boolean justShoot = false;
+  private boolean justShoot = true;
     public ShootCommandFactory(
       ShooterController shooterController,
       IntakeController intakeController,
@@ -78,7 +78,7 @@ public class ShootCommandFactory {
                 shooterController.setTargetState(
                   (shooterController.getTargetState()==ShooterState.TOTAL_SPIN_UP||
                   shooterController.getTargetState()==ShooterState.SHOOT)
-                  &&shooterController.shooterRollersUpToSpeed()
+                  // &&shooterController.shooterRollersUpToSpeed()
                   &&(matchTimerUpdater.isOurHubActive()
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()<=2
                   ||matchTimerUpdater.getTimeUntilOurHubShifts()
@@ -99,7 +99,7 @@ public class ShootCommandFactory {
                             .andThen(
                                 new WaitUntilCommand(
                                     () ->
-                                        ((SmartDashboard.getNumber("Intake Rack In Time", 2) + time)
+                                        ((SmartDashboard.getNumber("Intake Pivot In Time", 2) + time)
                                             < Timer.getFPGATimestamp())))
                             .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))
                             .withDeadline(

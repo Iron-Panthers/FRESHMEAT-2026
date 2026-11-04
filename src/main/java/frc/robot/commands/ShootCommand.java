@@ -15,7 +15,7 @@ public class ShootCommand extends Command {
         this.intakeController = intakeController;
     }
     public Command whileHeld() {
-        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.SHOOT)), 
+        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.STOW)), 
                 (Commands.runOnce(() -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
     } 
     public Command whenReleased() {

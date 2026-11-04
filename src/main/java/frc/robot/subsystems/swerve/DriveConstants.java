@@ -105,30 +105,30 @@ public class DriveConstants {
         case COMP -> new ModuleConfig[] {
           new ModuleConfig(
               CAN.at(11, "FL Drive"),
-              CAN.at(62, "FL Steer"),
+              CAN.at(62, "FL Steer"), //TODO: fix
               3,
-              new Rotation2d(2.210466),
+              new Rotation2d(2.218136  ),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
-              CAN.at(35, "FR Drive"),
-              CAN.at(6, "FR Steer"),
-              12,
-              new Rotation2d(2.118427),
+              CAN.at(44, "FR Drive"),
+              CAN.at(4, "FR Steer"), //TODO: fix
+              9,
+              new Rotation2d(0.418777),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.CounterClockwise_Positive),
           new ModuleConfig(
-              CAN.at(3, "BL Drive"),
-              CAN.at(4, "BL Steer"),
-              9,
-              new Rotation2d(2.828661),
+              CAN.at(8, "BL Drive"),
+              CAN.at(7, "BL Steer"),
+              29,
+              new Rotation2d(-0.80534 + Math.PI),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
-              CAN.at(2, "BR Drive"),
-              CAN.at(1, "BR Steer"),
-              6,
-              new Rotation2d(1.509437),
+              CAN.at(6, "BR Drive"),
+              CAN.at(46, "BR Steer"),
+              25,
+              new Rotation2d(1.383651),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.CounterClockwise_Positive)
         };
@@ -171,7 +171,7 @@ public class DriveConstants {
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
-              CAN.at(35, "FR Drive"),
+              CAN.at(85, "FR Drive"),
               CAN.at(6, "FR Steer"),
               12,
               new Rotation2d(2.118427),
@@ -247,7 +247,7 @@ public class DriveConstants {
                       1.4));
 
   public static final DriveTrainSimulationConfig obstacleConfig =
-        DriveTrainSimulationConfig.Default().withRobotMass(Kilograms.of(1000000000));
+        DriveTrainSimulationConfig.Default().withRobotMass(Kilograms.of(10000));
 
   public static final TrajectoryFollowerConstants TRAJECTORY_CONFIG =
       switch (getRobotType()) {

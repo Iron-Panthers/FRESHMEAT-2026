@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake.intake_rack;
+package frc.robot.subsystems.intake.intake_pivot;
 
 import java.util.Optional;
 
@@ -16,19 +16,16 @@ import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIO;
 import frc.robot.utility.LoggableMechanism3d;
 
-public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarget>
+public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTarget>
     implements LoggableMechanism3d {
-    // for logging the VelocityRotPerSec and SupplyCurrentAmps every 5 seconds in test mode
     private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
     private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = new java.util.ArrayList<>();
+    public enum IntakePivotTarget implements GenericSuperstructure.PositionTarget {
+        IDLE(0.02, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+        INTAKE(0.02, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+        STOW(0.25, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());
 
-    public enum IntakeRackTarget implements GenericSuperstructure.PositionTarget {
-        IDLE(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-        INTAKE(10, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-        STOW(0, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-        SHOOT(5, IntakeRackConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());//replace with actual value
-
-        private static final double EPSILON = IntakeRackConstants.POSITION_TARGET_EPSILON;
+        private static final double EPSILON = IntakePivotConstants.POSITION_TARGET_EPSILON;
         private double position;
         private double supplyCurrentLimit;
     private Optional<Double> maxCruiseVelocity;
@@ -49,58 +46,58 @@ public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarge
             return maxCruiseVelocity;
         }
 
-        private IntakeRackTarget(double position, double supplyCurrentLimit, Optional<Double> maxCruiseVelocity) {
+        private IntakePivotTarget(double position, double supplyCurrentLimit, Optional<Double> maxCruiseVelocity) {
             this.position = position;
             this.supplyCurrentLimit = supplyCurrentLimit;
             this.maxCruiseVelocity = maxCruiseVelocity;
         }
     }
 
-    public IntakeRack(GenericSuperstructureIO io) {
-        super("Intake/Intake Rack", io);
-        setPositionTarget(IntakeRackTarget.STOW);
+    public IntakePivot(GenericSuperstructureIO io) {
+        super("Intake/Intake Pivot", io);
+        setPositionTarget(IntakePivotTarget.STOW);
         setControlMode(ControlMode.STOP);
     }
 
     public LoggableMechanism3d loggableMechanism3dParent = null;
     public ProfiledPIDController pidController =
         new ProfiledPIDController(
-            IntakeRackConstants.GAINS.kP(),
-            IntakeRackConstants.GAINS.kI(),
-            IntakeRackConstants.GAINS.kD(),
+            IntakePivotConstants.GAINS.kP(),
+            IntakePivotConstants.GAINS.kI(),
+            IntakePivotConstants.GAINS.kD(),
             new Constraints(
-                IntakeRackConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
-                IntakeRackConstants.MOTION_MAGIC_CONFIG.acceleration()));
+                IntakePivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
+                IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
 
-    private IntakeRackTarget lastTarget = null;
+    private IntakePivotTarget lastTarget = null;
 
-    @Override
-    public void setPositionTarget(IntakeRackTarget target) {
-        if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
-        pidController.reset(getPosition());
-        }
-        lastTarget = target;
-        super.setPositionTarget(target);
-    }
+    // @Override
+    // public void setPositionTarget(IntakePivotTarget target) {
+    //     if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
+    //     pidController.reset(getPosition());
+    //     }
+    //     lastTarget = target;
+    //     super.setPositionTarget(target);
+    // }
 
-    @Override
-    public void periodic() {
-        super.periodic();
-        if (getPositionTarget().getMaxCruiseVelocity().isPresent()
-            && getControlMode() != ControlMode.ZEROING) {
-        pidController.setConstraints(
-            new Constraints(
-                getPositionTarget().getMaxCruiseVelocity().get(),
-                IntakeRackConstants.MOTION_MAGIC_CONFIG.acceleration()));
-        pidController.setGoal(getPositionTarget().getPosition());
-        pidController.calculate(getPosition());
-        superstructureIO.runPosition(pidController.getSetpoint().position);
-        }
-        Logger.recordOutput(
-            "Intake/Intake Rack/Position Target Rotations", getPositionTarget().getPosition());
-        Logger.recordOutput(
-            "Intake/Intake Rack/Position Target Rotations Pid", pidController.getSetpoint().position);
-    }
+    // @Override
+    // public void periodic() {
+    //     super.periodic();
+    //     // if (getPositionTarget().getMaxCruiseVelocity().isPresent()
+    //     //     && getControlMode() != ControlMode.ZEROING) {
+    //     // pidController.setConstraints(
+    //     //     new Constraints(
+    //     //         getPositionTarget().getMaxCruiseVelocity().get(),
+    //     //         IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+    //     // pidController.setGoal(getPositionTarget().getPosition());
+    //     // pidController.calculate(getPosition());
+    //     superstructureIO.runPosition(getPositionTarget().getPosition());
+    //     // }
+    //     Logger.recordOutput(
+    //         "Intake/Intake Pivot/Position Target Rotations", getPositionTarget().getPosition());
+    //     Logger.recordOutput(
+    //         "Intake/Intake Pivot/Position Target Rotations Pid", pidController.getSetpoint().position);
+    // }
 
     @Override
     public Pose3d getParentPosition() {
@@ -159,11 +156,11 @@ public class IntakeRack extends GenericSuperstructure<IntakeRack.IntakeRackTarge
         return null;
     }
     
-    @AutoLogOutput(key = "Intake/Intake Rack/Display Pose3d")
+    @AutoLogOutput(key = "Intake/Intake Pivot/Display Pose3d")
     @Override
     public Pose3d getDisplayPose3d() {
         return getParentPosition()
-            .plus(IntakeRackConstants.BASE_TO_INTAKE_RACK_TRANSFORM)
+            .plus(IntakePivotConstants.BASE_TO_INTAKE_PIVOT_TRANSFORM)
             .plus(
                 new Transform3d(
                     new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));
