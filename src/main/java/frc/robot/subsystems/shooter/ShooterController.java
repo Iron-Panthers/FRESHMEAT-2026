@@ -125,8 +125,13 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
         Logger.recordOutput("Shooter/Target", targetState.toString());
+        double robotDistanceFromHub = RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(RobotState.isAllianceRed() ?
+        DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
+        DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d());        
+        double shooterSpeed = RobotState.getInstance().getShooterSpeed(robotDistanceFromHub);
+
         if (targetState.rollersTarget == ShooterRollersTarget.SHOOT) {
-            shooterRollers.setVelocityTargetManual(SmartDashboard.getNumber("Shoot Speed", 42), ShooterRollersConstants.CURRENT_LIMIT_AMPS);
+            shooterRollers.setVelocityTargetManual(shooterSpeed, ShooterRollersConstants.CURRENT_LIMIT_AMPS);
         } else {
             shooterRollers.setVelocityTarget(targetState.rollersTarget);
         }
