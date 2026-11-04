@@ -373,8 +373,11 @@ public class RobotContainer {
     driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
     driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
 
+    // driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
-    
+
+
     driverA.leftBumper().whileTrue(shootCommandFactory.whileHeld())
     .onFalse(shootCommandFactory.onRelease());
 
