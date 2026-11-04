@@ -13,7 +13,7 @@ public class Serializer extends GenericRollers<Serializer.SerializerTarget> {
 
     public enum SerializerTarget implements GenericRollers.VelocityTarget{
         IDLE(0, SerializerConstants.CURRENT_LIMIT_AMPS),
-        SHOOT(10, SerializerConstants.CURRENT_LIMIT_AMPS),
+        SHOOT(60, SerializerConstants.CURRENT_LIMIT_AMPS),
         SPIN_UP(5, SerializerConstants.CURRENT_LIMIT_AMPS),
         INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 

@@ -44,10 +44,10 @@ import frc.robot.subsystems.can_watchdog.CANWatchdogIO;
 import frc.robot.subsystems.elastic_updater.ElasticUpdater;
 import frc.robot.subsystems.intake.IntakeController;
 import frc.robot.subsystems.intake.IntakeController.IntakeState;
-import frc.robot.subsystems.intake.intake_rack.IntakeRack;
-import frc.robot.subsystems.intake.intake_rack.IntakeRackIO;
-import frc.robot.subsystems.intake.intake_rack.IntakeRackIOSim;
-import frc.robot.subsystems.intake.intake_rack.IntakeRackIOTalonFX;
+import frc.robot.subsystems.intake.intake_pivot.IntakePivot;
+import frc.robot.subsystems.intake.intake_pivot.IntakePivotIO;
+import frc.robot.subsystems.intake.intake_pivot.IntakePivotIOSim;
+import frc.robot.subsystems.intake.intake_pivot.IntakePivotIOTalonFX;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
@@ -63,9 +63,11 @@ import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIO;
 import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOSim;
+import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIO;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOSim;
+import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheelsIOTalonFX;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIO;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersIOSim;
@@ -126,7 +128,7 @@ public class RobotContainer {
   private RGB rgb;
   private CANWatchdog canWatchdog;
   private IntakeController intakeController;
-  private IntakeRack intakeRack;
+  private IntakePivot intakePivot;
   private IntakeRollers intakeRollers;
   private ShooterRollers shooterRollers;
   private ShooterAccelerator shooterAccelerator;
@@ -142,7 +144,7 @@ public class RobotContainer {
     if (Constants.getRobotMode() != Mode.REPLAY) {
       switch (Constants.getRobotType()) {
         case COMP -> {
-          intakeRack = new IntakeRack(new IntakeRackIOTalonFX());
+          intakePivot = new IntakePivot(new IntakePivotIOTalonFX());
           intakeRollers = new IntakeRollers(new IntakeRollersIOTalonFX());
           swerve =
               new Drive(
@@ -154,13 +156,16 @@ public class RobotContainer {
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          vision =
-              new Vision(
-                  new VisionIOPhotonvision("CamC", 0),
-                  new VisionIOPhotonvision("CamA", 1),
-                  new VisionIOPhotonvision("CamB", 2));
+          // vision =
+          //     new Vision(
+          //         new VisionIOPhotonvision("CamC", 0),
+          //         new VisionIOPhotonvision("CamA", 1),
+          //         new VisionIOPhotonvision("CamB", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
+          shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
+          shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOTalonFX());
+          
         }
         case VISION -> {
           swerve =
@@ -196,10 +201,7 @@ public class RobotContainer {
                       "arducam-3", 1, driveSimulation::getSimulatedDriveTrainPose));
           new VisionIOPhotonvisionSim("arducam-4", 2, driveSimulation::getSimulatedDriveTrainPose);
           intakeRollers = new IntakeRollers(new IntakeRollersIOSim());
-          intakeRack = new IntakeRack(new IntakeRackIOSim());
-
-          serializer = new Serializer(new SerializerIOSim());
-          
+          intakePivot = new IntakePivot(new IntakePivotIOSim());
           SimulatedArena.getInstance().resetFieldForAuto();
           serializer = new Serializer(new SerializerIOSim());
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
@@ -230,8 +232,8 @@ public class RobotContainer {
       rgb = new RGB(new RGBIO() {});
     }
     
-    if (intakeRack == null) {
-      intakeRack = new IntakeRack(new IntakeRackIO() {});
+    if (intakePivot == null) {
+      intakePivot = new IntakePivot(new IntakePivotIO() {});
     }
 
     if (intakeRollers == null) {
@@ -252,8 +254,8 @@ public class RobotContainer {
     if (shooterOmniwheels == null) {
       shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIO() {});
     }
-
-    intakeController = new IntakeController(intakeRack, intakeRollers);
+ 
+    intakeController = new IntakeController(intakePivot, intakeRollers);
     shooterController = new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
 
     shootCommandFactory = new ShootCommandFactory(
@@ -377,13 +379,7 @@ public class RobotContainer {
     driverA.start().onTrue(swerve.zeroGyroCommand());
 
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
-    // driverA.x().onTrue(new InstantCommand(() -> {
-    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
-    //     intakeController.setTargetState(IntakeState.INTAKE);
-    //   } else {
-    //     intakeController.setTargetState(IntakeState.IDLE);
-    //   }
-    // }));
+
 
     // TODO: Test this eventually...
     driverA.b().whileTrue(new AlignToShootCommand(swerve, shooterController).repeatedly());
@@ -401,14 +397,24 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons(){
+    // driverA.x().onTrue(new InstantCommand(() -> {
+    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
+    //     intakeController.setTargetState(IntakeState.INTAKE);
+    //   } else {
+    //     intakeController.setTargetState(IntakeState.IDLE);
+    //   }
+    // }));
+    driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
+    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
     
-    driverA.leftBumper().whileTrue(new AlignToTrenchCommand(swerve));
+    driverA.leftBumper().whileTrue(shootCommandFactory.whileHeld())
+    .onFalse(shootCommandFactory.onRelease());
 
-    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, ()-> new Pose2d(12.9, 4, new Rotation2d(3.14))));
+    driverA.rightBumper().whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    // driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
     
     driverA.b().onTrue(new IntakeCommand(intakeController, shooterController))
     .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
@@ -416,25 +422,31 @@ public class RobotContainer {
     driverA.y().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
 
   
-    driverA.a().whileTrue(shootCommandFactory.whileHeld())
-    .onTrue(new AlignToShootCommand(swerve, shooterController))
-    .onFalse(shootCommandFactory.onRelease());
+    // driverA.a().whileTrue(shootCommandFactory.whileHeld()
+    // .alongWith(new AlignToShootCommand(swerve)))
+    // .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.
     // Currently it functions similarily to the above command except it doesn't look at the hub.
     // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
-    driverA.povDown().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.ZEROING)));
+    driverA.povDown().onTrue(intakeController.zeroCommand());
+    driverA.povDown().onFalse(intakeController.stopZeroingCommand());
 
     driverA.povLeft().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //alright guys what is this
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.povRight().whileTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.SHOOT)) //this too
     .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
-    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE)));
+    .onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
+    .andThen(new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+  
+    // Trench divider shoot
+    driverA.a().onTrue(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TRENCH_DIVIDER))).onFalse(new InstantCommand(() -> shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP)));
   }
   
 
@@ -518,13 +530,13 @@ public class RobotContainer {
     }
     String serData = serializer.runTestLogger(testModeStartTime, currentTime, isNextTransition);
     String accData = shooterAccelerator.runTestLogger(testModeStartTime, currentTime, isNextTransition);
-    String rackData = intakeRack.runTestLogger(testModeStartTime, currentTime, isNextTransition);
+    String pivotData = intakePivot.runTestLogger(testModeStartTime, currentTime, isNextTransition);
     String rolData = intakeRollers.runTestLogger(testModeStartTime, currentTime, isNextTransition);
 
     if (isNextTransition) {
       double relativeTime = currentTime - testModeStartTime;
       combinedTestData.add(
-          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + rackData + "," + rolData);
+          String.format("%.1f", relativeTime) + "," + serData + "," + accData + "," + pivotData + "," + rolData);
     }
     
   }
@@ -593,7 +605,7 @@ public class RobotContainer {
         combinedTestData.clear();
         serializer.resetTestState();
         shooterAccelerator.resetTestState();
-        intakeRack.resetTestState();
+        intakePivot.resetTestState();
         intakeRollers.resetTestState();
     }
 }

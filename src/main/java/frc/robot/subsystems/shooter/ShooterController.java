@@ -4,6 +4,8 @@ import java.io.Serial;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,8 +17,11 @@ import frc.robot.subsystems.shooter.shooter_accelerator.ShooterAccelerator.Shoot
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels;
 import frc.robot.subsystems.shooter.shooter_omniwheels.ShooterOmniwheels.ShooterOmniwheelsTarget;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants;
 import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollers.ShooterRollersTarget;
+import frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.ShooterRollersConfig;
 import frc.robot.subsystems.swerve.DriveConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class ShooterController extends SubsystemBase {
@@ -25,7 +30,7 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.IDLE,
             ShooterAcceleratorTarget.IDLE,
             ShooterOmniwheelsTarget.IDLE,
-            ShooterRollersTarget.IDLE),
+            ShooterRollersTarget.SPIN_UP),
         SHOOT(
             SerializerTarget.SHOOT,
             ShooterAcceleratorTarget.SHOOT,
@@ -41,17 +46,17 @@ public class ShooterController extends SubsystemBase {
             SerializerTarget.INTAKE, 
             ShooterAcceleratorTarget.INTAKE,
             ShooterOmniwheelsTarget.INTAKE,
-            ShooterRollersTarget.INTAKE),
+            ShooterRollersTarget.SPIN_UP),
         TOTAL_SPIN_UP(
             SerializerTarget.INTAKE,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.INTAKE,  
-            ShooterRollersTarget.SHOOT),
+            ShooterRollersTarget.SPIN_UP),
         COMPACT_SPIN_UP(
             SerializerTarget.INTAKE,
             ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.IDLE,
-            ShooterRollersTarget.SHOOT),
+            ShooterRollersTarget.SPIN_UP),
         ZEROING(
             SerializerTarget.IDLE,
             ShooterAcceleratorTarget.IDLE,
@@ -64,9 +69,14 @@ public class ShooterController extends SubsystemBase {
             ShooterRollersTarget.SHOOT),
         PASS(
             SerializerTarget.SHOOT,
-            ShooterAcceleratorTarget.PASS,
+            ShooterAcceleratorTarget.SHOOT,
             ShooterOmniwheelsTarget.SHOOT,
-            ShooterRollersTarget.PASS
+            ShooterRollersTarget.SHOOT),
+        TRENCH_DIVIDER(
+            SerializerTarget.SHOOT,
+            ShooterAcceleratorTarget.SHOOT,
+            ShooterOmniwheelsTarget.SHOOT,
+            ShooterRollersTarget.TRENCH_DIVIDER
         );
         
         
@@ -91,12 +101,14 @@ public class ShooterController extends SubsystemBase {
 
     private ShooterState targetState = ShooterState.IDLE;
     private boolean stopped = false;
+    private boolean constantRollersVelocity = false;
     private boolean autoAim = false;
 
     private final Serializer serializer;
     private final ShooterAccelerator shooterAccelerator;
     private final ShooterOmniwheels shooterOmniwheels;
     private final ShooterRollers shooterRollers;
+
 
     public ShooterController(
         Serializer serializer,
@@ -109,6 +121,7 @@ public class ShooterController extends SubsystemBase {
         this.shooterOmniwheels = shooterOmniwheels;
         this.shooterRollers = shooterRollers;
         initialize();
+        SmartDashboard.putNumber("Shoot Speed", 42);
     }
 
     public void initialize() {
@@ -121,7 +134,11 @@ public class ShooterController extends SubsystemBase {
         DriveConstants.RED_HUB_ORIGIN.toTranslation2d() :
         DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d())));
         Logger.recordOutput("Shooter/Target", targetState.toString());
-        shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        if (targetState.rollersTarget == ShooterRollersTarget.SHOOT) {
+            shooterRollers.setVelocityTargetManual(SmartDashboard.getNumber("Shoot Speed", 42), ShooterRollersConstants.CURRENT_LIMIT_AMPS);
+        } else {
+            shooterRollers.setVelocityTarget(targetState.rollersTarget);
+        }
         shooterOmniwheels.setVelocityTarget(targetState.omniwheelsTarget);
         shooterAccelerator.setVelocityTarget(targetState.acceleratorTarget);
         serializer.setVelocityTarget(targetState.serializerTarget);
@@ -130,6 +147,7 @@ public class ShooterController extends SubsystemBase {
         shooterAccelerator.periodic();
         shooterOmniwheels.periodic();
         shooterRollers.periodic();
+        Logger.recordOutput("Shooter/Use Constant Roller Velocity", constantRollersVelocity);
     }
 
     public ShooterState getTargetState() {
@@ -158,5 +176,9 @@ public class ShooterController extends SubsystemBase {
 
     public boolean shooterRollersUpToSpeed() {
         return shooterRollers.reachedVelocityTarget();
+    }
+
+    public void setConstantRollersVelocity(boolean constantRollersVelocity) {
+        this.constantRollersVelocity = constantRollersVelocity;
     }
 }

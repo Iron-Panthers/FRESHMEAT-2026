@@ -9,27 +9,27 @@ import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
 public class ShooterAcceleratorConstants {
     public static final ShooterAcceleratorConfig SHOOTER_ACCELERATOR_CONFIG =
     switch(Constants.getRobotType()) { 
-        case SIM -> new ShooterAcceleratorConfig( 
-            CAN.at(40, "Shooter Accelerator 1"), 
-            CAN.at(41, "Shooter Accelerator 2"), // Matches COMP. 
-            1.5, 
-            true, 
-            false, 
+        case SIM -> new ShooterAcceleratorConfig(
+            CAN.at(35, "Shooter Accelerator Right"),
+            CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
+            1.5,
+            false,
+            false,
             true
         ); 
-        case COMP -> new ShooterAcceleratorConfig( 
-            CAN.at(38, "Shooter Accelerator 1"), 
-            CAN.at(39, "Shooter Accelerator 2"), // Matches COMP. 
-            1.5, 
-            true, 
-            false, 
+        case COMP -> new ShooterAcceleratorConfig(
+            CAN.at(35, "Shooter Accelerator Right"),
+            CAN.at(23, "Shooter Accelerator Left"), // Matches COMP.
+            1.111111,
+            false,
+            false,
             true
         ); 
         default -> new ShooterAcceleratorConfig( 
-            CAN.at(25, "Shooter Accelerator Left"), 
-            CAN.at(13, "Shooter Accelerator Right"), 
+            CAN.at(35, "Shooter Accelerator Right"), 
+            CAN.at(23, "Shooter Accelerator Left"), 
             1.5, 
-            true, 
+            false, 
             true, 
             true
         );
@@ -38,7 +38,7 @@ public class ShooterAcceleratorConstants {
     public static final PIDGains GAINS =
     switch(Constants.getRobotType()){
         case SIM -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
-        case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        case COMP -> new PIDGains(0.3, 0, 0, 0.18, 0.13, 0, 0);
         default -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0);
     };
 
