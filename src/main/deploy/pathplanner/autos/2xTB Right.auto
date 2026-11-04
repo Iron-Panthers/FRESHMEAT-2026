@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Smart zero"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1xTB Right "
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Smart zero"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1xTB 2 Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Smart zero"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "xT"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
