@@ -35,6 +35,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootCommandFactory;
+import frc.robot.commands.TrenchShotPoseCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.commands.WaitUnitlRobotStuckCommand;
@@ -375,7 +376,7 @@ public class RobotContainer {
 
     // driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
 
-    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+    driverA.povUp().whileTrue(new TrenchShotPoseCommand(swerve));
 
 
     driverA.leftBumper().whileTrue(shootCommandFactory.whileHeld())

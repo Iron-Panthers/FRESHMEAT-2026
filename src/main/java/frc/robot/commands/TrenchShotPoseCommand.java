@@ -13,8 +13,8 @@ import frc.robot.subsystems.swerve.DriveConstants;
 
 public class TrenchShotPoseCommand extends Command {
     private Drive swerve;
-    private Rotation2d targetAngle;
-    private Translation2d pointTarget;
+
+    private Pose2d underTrenchPosition = new Pose2d(12.5, 0.8, new Rotation2d(1.59));
 
     public TrenchShotPoseCommand(Drive swerve) {
         this.swerve = swerve;
@@ -22,13 +22,7 @@ public class TrenchShotPoseCommand extends Command {
 
     @Override
     public void initialize() {
-        
-        Pose2d underTrench = new Pose2d(12.5,0.8, new Rotation2d(1.59));
-        
-        Pose2d estimatedPose = underTrench;
-        
-
-
+        RobotState.getInstance().resetPose(underTrenchPosition);
     }
 }
 
