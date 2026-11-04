@@ -3,15 +3,10 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
@@ -23,7 +18,8 @@ import frc.robot.Constants.RobotType;
 import frc.robot.subsystems.swerve.DriveConstants;
 import frc.robot.utility.FuelSim;
 import frc.robot.utility.TrenchTerrainSim;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.dyn4j.geometry.Vector2;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -80,7 +76,7 @@ public class RobotSimState {
     fuelSim.setLoggingFrequency(20);
     fuelSim.start();
 
-    //addObstacleToSim(new Pose2d(new Translation2d(9.8, 5.385), new Rotation2d()));
+    // addObstacleToSim(new Pose2d(new Translation2d(9.8, 5.385), new Rotation2d()));
   }
 
   // Get sim state from RobotContainer
@@ -116,7 +112,6 @@ public class RobotSimState {
   private TrenchTerrainSim.TerrainContactState terrainState =
       new TrenchTerrainSim.TerrainContactState(
           DriveConstants.DRIVE_CONFIG.wheelRadius(), 0.0, 0.0, 0.0, new double[4]);
-
 
   public SwerveDriveSimulation getDriveSimulation() {
     return driveSimulation;
@@ -216,7 +211,7 @@ public class RobotSimState {
   public int getFuelCount() {
     return fuelCount;
   }
-  
+
   public void logScoring() {
     int blue = FuelSim.Hub.BLUE_HUB.getScore();
     int red = FuelSim.Hub.RED_HUB.getScore();
@@ -274,14 +269,14 @@ public class RobotSimState {
     }
 
     // Store the shooting parameters for use in periodic
-    
+
     this.currentShooterTransform = shooterTransform3d;
     this.currentLaunchVelocity = launchVelocity;
     this.currentShooterWidth = shooterWidth;
   }
 
   // Store current shooting parameters
-  final private Angle PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE = Units.Degrees.of(75);
+  private final Angle PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE = Units.Degrees.of(75);
   private Transform3d currentShooterTransform = new Transform3d();
   private LinearVelocity currentLaunchVelocity = MetersPerSecond.of(0);
   private Distance currentShooterWidth = Meters.of(0);
@@ -300,7 +295,10 @@ public class RobotSimState {
       Logger.recordOutput("THISISATESTTESTTEST", 1);
       // Time to shoot another ball
       shootFuel(
-          PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE, currentShooterTransform, currentLaunchVelocity, currentShooterWidth);
+          PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE,
+          currentShooterTransform,
+          currentLaunchVelocity,
+          currentShooterWidth);
       lastShootTime = currentTime;
       Logger.recordOutput("Robot Sim State/Auto Shooter Active", true);
     }

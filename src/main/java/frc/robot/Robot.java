@@ -54,7 +54,6 @@ public class Robot extends LoggedRobot {
         (path) ->
             Logger.recordOutput("Path Planner/Active Path", path.toArray(new Pose2d[path.size()])));
 
-
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);

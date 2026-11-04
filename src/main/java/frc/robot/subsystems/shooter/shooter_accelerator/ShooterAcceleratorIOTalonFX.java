@@ -1,15 +1,17 @@
 package frc.robot.subsystems.shooter.shooter_accelerator;
 
-import com.ctre.phoenix6.signals.InvertedValue;
-
 import static frc.robot.subsystems.shooter.shooter_accelerator.ShooterAcceleratorConstants.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersConfiguration;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOTalonFX;
 
-public class ShooterAcceleratorIOTalonFX extends GenericRollersIOTalonFX implements ShooterAcceleratorIO {
-    public ShooterAcceleratorIOTalonFX() {
-        super(new GenericRollersConfiguration().withID(SHOOTER_ACCELERATOR_CONFIG.motorID1())
+public class ShooterAcceleratorIOTalonFX extends GenericRollersIOTalonFX
+    implements ShooterAcceleratorIO {
+  public ShooterAcceleratorIOTalonFX() {
+    super(
+        new GenericRollersConfiguration()
+            .withID(SHOOTER_ACCELERATOR_CONFIG.motorID1())
             .withSupplyCurrentLimit(CURRENT_LIMIT_AMPS)
             .withMotorDirection(
                 SHOOTER_ACCELERATOR_CONFIG.inverted()
@@ -20,5 +22,5 @@ public class ShooterAcceleratorIOTalonFX extends GenericRollersIOTalonFX impleme
             .withAdditionalFollowerMotor(
                 SHOOTER_ACCELERATOR_CONFIG.motorID2(), SHOOTER_ACCELERATOR_CONFIG.oppose_motor()));
     super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
-    }
+  }
 }

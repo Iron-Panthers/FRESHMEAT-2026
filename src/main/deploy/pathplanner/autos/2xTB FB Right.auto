@@ -13,31 +13,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1xTBF"
+            "pathName": "1xTBF Right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot to start"
+            "pathName": "shoot to start Right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1xTB Right "
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "xT"
+            "pathName": "xT Right"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right Autos (make these)",
   "choreoAuto": false
 }

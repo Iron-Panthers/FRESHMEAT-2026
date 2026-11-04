@@ -1,4 +1,5 @@
 package frc.robot.subsystems.shooter.shooter_rollers;
+
 import static frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.*;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -6,16 +7,16 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.lib.generic_subsystems.rollers.*;
 
 public class ShooterRollersIOTalonFX extends GenericRollersIOTalonFX implements ShooterRollersIO {
-    protected TalonFX talon1;
-    protected TalonFX talon2;
-    protected TalonFX talon3;
-    protected TalonFX talon4;
-    
-    public ShooterRollersIOTalonFX() {
-        super(
-            new GenericRollersConfiguration()
-                .withID(SHOOTER_ROLLERS_CONFIG.motorID1())
-                .withSupplyCurrentLimit(CURRENT_LIMIT_AMPS)
+  protected TalonFX talon1;
+  protected TalonFX talon2;
+  protected TalonFX talon3;
+  protected TalonFX talon4;
+
+  public ShooterRollersIOTalonFX() {
+    super(
+        new GenericRollersConfiguration()
+            .withID(SHOOTER_ROLLERS_CONFIG.motorID1())
+            .withSupplyCurrentLimit(CURRENT_LIMIT_AMPS)
             .withMotorDirection(
                 SHOOTER_ROLLERS_CONFIG.inverted()
                     ? InvertedValue.CounterClockwise_Positive
@@ -31,5 +32,3 @@ public class ShooterRollersIOTalonFX extends GenericRollersIOTalonFX implements 
     super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
   }
 }
-
-

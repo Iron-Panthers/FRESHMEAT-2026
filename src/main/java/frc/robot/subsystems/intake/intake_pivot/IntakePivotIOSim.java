@@ -4,15 +4,17 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.RobotSimState;
-import frc.robot.utility.*;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIOSim;
+import frc.robot.utility.*;
 
 public class IntakePivotIOSim extends GenericSuperstructureIOSim implements IntakePivotIO {
 
   private final ElevatorSim intakePivotSim;
   private final double reduction;
 
-  /** Holding load toward stow: median applied voltage while the real pivot is deployed and still. */
+  /**
+   * Holding load toward stow: median applied voltage while the real pivot is deployed and still.
+   */
   private static final double LOAD_VOLTS = 0.61;
 
   private static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
@@ -71,8 +73,9 @@ public class IntakePivotIOSim extends GenericSuperstructureIOSim implements Inta
             RobotController.getBatteryVoltage(),
             IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS);
 
-    double angleRadians = intakePivotSim.getPositionMeters()
-        / IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters();
+    double angleRadians =
+        intakePivotSim.getPositionMeters()
+            / IntakePivotConstants.PHYSICAL_CONSTANTS.drumRadiusMeters();
     intakePivotSim.setInputVoltage(
         frc.robot.utility.SimCurrentLimit.applyConstantLoad(
             appliedVoltage, LOAD_VOLTS * Math.cos(angleRadians)));

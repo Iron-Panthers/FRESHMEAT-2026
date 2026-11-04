@@ -16,7 +16,7 @@ public class ShooterRollersConstants {
             false,
             false,
             true,
-            false, //TODO: Sus
+            false, // TODO: Sus
             false);
         default -> new ShooterRollersConfig(
             CAN.at(0, "Shooter Roller Left Bottom"),
@@ -70,4 +70,3 @@ public class ShooterRollersConstants {
   public static record ShooterRollersPhysicalConstants(
       double momentOfInertia, double circumferenceMeters) {}
 }
-

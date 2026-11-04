@@ -7,19 +7,25 @@ import frc.robot.subsystems.intake.IntakeController.IntakeState;
 import frc.robot.subsystems.shooter.ShooterController;
 
 public class ShootCommand extends Command {
-    private final ShooterController shooterController;
-    private final IntakeController intakeController;
+  private final ShooterController shooterController;
+  private final IntakeController intakeController;
 
-    public ShootCommand(ShooterController shooterController, IntakeController intakeController) {
-        this.shooterController = shooterController;
-        this.intakeController = intakeController;
-    }
-    public Command whileHeld() {
-        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.STOW)), 
-                (Commands.runOnce(() -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
-    } 
-    public Command whenReleased() {
-        return Commands.sequence(Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)), 
-                (Commands.runOnce(() -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
-    }   
+  public ShootCommand(ShooterController shooterController, IntakeController intakeController) {
+    this.shooterController = shooterController;
+    this.intakeController = intakeController;
+  }
+
+  public Command whileHeld() {
+    return Commands.sequence(
+        Commands.runOnce(() -> intakeController.setTargetState(IntakeState.STOW)),
+        (Commands.runOnce(
+            () -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
+  }
+
+  public Command whenReleased() {
+    return Commands.sequence(
+        Commands.runOnce(() -> intakeController.setTargetState(IntakeState.IDLE)),
+        (Commands.runOnce(
+            () -> shooterController.setTargetState(ShooterController.ShooterState.SHOOT))));
+  }
 }

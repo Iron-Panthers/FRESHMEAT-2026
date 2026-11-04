@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1xTBF"
+            "pathName": "1xTBF Right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1xTB 2 Right"
+            "pathName": "1xTB.2 Right"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right Autos (make these)",
   "choreoAuto": false
 }

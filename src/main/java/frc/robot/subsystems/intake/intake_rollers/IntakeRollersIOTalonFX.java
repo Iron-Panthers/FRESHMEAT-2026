@@ -4,13 +4,13 @@ import static frc.robot.subsystems.intake.intake_rollers.IntakeRollersConstants.
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersConfiguration;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOTalonFX;
 
 public class IntakeRollersIOTalonFX extends GenericRollersIOTalonFX implements IntakeRollersIO {
-    public IntakeRollersIOTalonFX() {
-        super(new GenericRollersConfiguration()
+  public IntakeRollersIOTalonFX() {
+    super(
+        new GenericRollersConfiguration()
             .withID(INTAKE_ROLLERS_CONFIG.motorID1())
             .withSupplyCurrentLimit(CURRENT_LIMIT_AMPS)
             .withStatorCurrentLimit(STATOR_CURRENT_LIMIT)
@@ -22,7 +22,9 @@ public class IntakeRollersIOTalonFX extends GenericRollersIOTalonFX implements I
             .withReduction(INTAKE_ROLLERS_CONFIG.reduction())
             .withAdditionalFollowerMotor(
                 INTAKE_ROLLERS_CONFIG.motorID2(),
-                INTAKE_ROLLERS_CONFIG.opposeMotor() ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned));
-        super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
-    }
+                INTAKE_ROLLERS_CONFIG.opposeMotor()
+                    ? MotorAlignmentValue.Opposed
+                    : MotorAlignmentValue.Aligned));
+    super.setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
+  }
 }

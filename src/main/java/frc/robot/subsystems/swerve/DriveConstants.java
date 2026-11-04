@@ -105,14 +105,14 @@ public class DriveConstants {
         case COMP -> new ModuleConfig[] {
           new ModuleConfig(
               CAN.at(11, "FL Drive"),
-              CAN.at(62, "FL Steer"), //TODO: fix
+              CAN.at(62, "FL Steer"), // TODO: fix
               3,
-              new Rotation2d(2.218136  ),
+              new Rotation2d(2.218136),
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
               CAN.at(44, "FR Drive"),
-              CAN.at(4, "FR Steer"), //TODO: fix
+              CAN.at(4, "FR Steer"), // TODO: fix
               9,
               new Rotation2d(0.418777),
               InvertedValue.CounterClockwise_Positive,
@@ -194,7 +194,6 @@ public class DriveConstants {
         };
       };
 
-
   public static final ModuleConstants MODULE_CONSTANTS =
       switch (getRobotType()) {
         case COMP -> new ModuleConstants(
@@ -247,7 +246,7 @@ public class DriveConstants {
                       1.4));
 
   public static final DriveTrainSimulationConfig obstacleConfig =
-        DriveTrainSimulationConfig.Default().withRobotMass(Kilograms.of(10000));
+      DriveTrainSimulationConfig.Default().withRobotMass(Kilograms.of(10000));
 
   public static final TrajectoryFollowerConstants TRAJECTORY_CONFIG =
       switch (getRobotType()) {
@@ -456,5 +455,4 @@ public class DriveConstants {
           new GoalEndState(0, getAlliancePose().getRotation()));
     }
   }
-
 }

@@ -4,21 +4,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drive;
 
 public class LowPowerModeCommand extends Command {
-    private Drive swerve;
-    
-    public LowPowerModeCommand(Drive swerve) {
-        this.swerve = swerve;
-    }
+  private Drive swerve;
 
-    // lowers supply current limit
-    @Override
-    public void initialize() {
-        swerve.setLowPowerMode(true);
-    }
+  public LowPowerModeCommand(Drive swerve) {
+    this.swerve = swerve;
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        swerve.setLowPowerMode(false);
-    }
-    
+  // lowers supply current limit
+  @Override
+  public void initialize() {
+    swerve.setLowPowerMode(true);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    swerve.setLowPowerMode(false);
+  }
 }

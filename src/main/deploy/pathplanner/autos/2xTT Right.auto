@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "xTT"
+            "pathName": "xTT Right"
           }
         },
         {
@@ -55,13 +55,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "xT"
+            "pathName": "xT Right"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right Autos (make these)",
   "choreoAuto": false
 }

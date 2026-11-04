@@ -6,19 +6,19 @@ import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim;
 import frc.robot.lib.generic_subsystems.rollers.GenericRollersIOSim.RollerSim;
 
 public class ShooterOmniwheelsIOSim extends GenericRollersIOSim implements ShooterOmniwheelsIO {
-    public ShooterOmniwheelsIOSim() {
-        super(
-            SHOOTER_OMNIWHEELS_CONFIG.motorID1(),
-            SUPPLY_CURRENT_LIMIT,
-            SHOOTER_OMNIWHEELS_CONFIG.inverted(),
-            SHOOTER_OMNIWHEELS_CONFIG.brake(),
-            SHOOTER_OMNIWHEELS_CONFIG.reduction(),
-            new RollerSim(2, 2, PHYSICAL_CONSTANTS.momentOfInertia(), 0.0267));
-        setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
-    }
+  public ShooterOmniwheelsIOSim() {
+    super(
+        SHOOTER_OMNIWHEELS_CONFIG.motorID1(),
+        SUPPLY_CURRENT_LIMIT,
+        SHOOTER_OMNIWHEELS_CONFIG.inverted(),
+        SHOOTER_OMNIWHEELS_CONFIG.brake(),
+        SHOOTER_OMNIWHEELS_CONFIG.reduction(),
+        new RollerSim(2, 2, PHYSICAL_CONSTANTS.momentOfInertia(), 0.0267));
+    setSlot0(GAINS.kP(), GAINS.kI(), GAINS.kD(), GAINS.kS(), GAINS.kV(), GAINS.kA());
+  }
 
-    @Override
-    public void updateInputs(GenericRollersIOInputs inputs) {
-        super.updateInputs(inputs);
-    }
+  @Override
+  public void updateInputs(GenericRollersIOInputs inputs) {
+    super.updateInputs(inputs);
+  }
 }
