@@ -29,9 +29,9 @@ public class AlignToPoseCommand extends Command {
   public AlignToPoseCommand(Drive swerve, Supplier<Pose2d> approachPose, boolean endOnAccurate) {
     this.swerve = swerve;
     this.approachPose = approachPose;
-    RobotState.getInstance().isAutoUnderTrench();
     this.endOnAccurate = endOnAccurate;
     this.stayOnCurrentSide = true;
+    addRequirements(swerve);
   }
 
   @Override
@@ -54,6 +54,7 @@ public class AlignToPoseCommand extends Command {
 
   @Override
   public void execute() {
+    if (poseAlignCommand == null) return;
     if (!poseAlignCommand.isFinished()
         && RobotState.getInstance()
                 .getEstimatedPose()
@@ -70,7 +71,7 @@ public class AlignToPoseCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    poseAlignCommand.end(interrupted);
+    if (poseAlignCommand != null) poseAlignCommand.end(interrupted);
     swerve.clearTargetPositionController();
   }
 
