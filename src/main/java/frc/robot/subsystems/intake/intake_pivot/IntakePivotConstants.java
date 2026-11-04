@@ -69,8 +69,8 @@ public class IntakePivotConstants {
             default -> 40;
         };
 
-    public static final double ZEROING_VOLTS = -3;
-    public static final double ZEROING_OFFSET = 0;
+    public static final double ZEROING_VOLTS = 3;
+    public static final double ZEROING_OFFSET = 0.369;
 
     public static final Transform3d BASE_TO_INTAKE_PIVOT_TRANSFORM =
         switch (Constants.getRobotType()) {

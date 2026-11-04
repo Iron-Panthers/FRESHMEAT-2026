@@ -28,7 +28,7 @@ public class ShootCommandFactory {
   private final ElasticUpdater matchTimerUpdater;
   private final Supplier<Rotation2d> getHeadingError;
   double time = Timer.getFPGATimestamp();
-  private boolean justShoot = false;
+  private boolean justShoot = true;
     public ShootCommandFactory(
       ShooterController shooterController,
       IntakeController intakeController,
