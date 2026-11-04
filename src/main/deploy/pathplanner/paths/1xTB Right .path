@@ -95,24 +95,37 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0877192982456116,
-      "rotationDegrees": -102.17058641720068
+      "rotationDegrees": -102.17099999999999
     },
     {
       "waypointRelativePos": 1.9649122807017432,
-      "rotationDegrees": -91.26148281457803
+      "rotationDegrees": -91.26099999999997
     },
     {
       "waypointRelativePos": 3.605263157894743,
-      "rotationDegrees": -172.7121068825582
+      "rotationDegrees": -172.712
     },
     {
       "waypointRelativePos": 4.493783303730043,
-      "rotationDegrees": -177.25507275573645
+      "rotationDegrees": -177.255
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 0.4406067565247251,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Spin up shooter",
+      "waypointRelativePos": 3.62261761675824,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.75,
@@ -123,7 +136,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,

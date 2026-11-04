@@ -348,10 +348,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
     NamedCommands.registerCommand("Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
     NamedCommands.registerCommand("Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
-    NamedCommands.registerCommand("Shoot Command Factory",
-      shootCommandFactory.whileHeld()
-        .andThen(new WaitCommand(3))
-        .andThen(shootCommandFactory.onRelease()));
+    NamedCommands.registerCommand("Shoot Command Factory", 
+        new AlignToShootCommand(swerve, shooterController)
+        .withDeadline(new WaitCommand(0.2)
+        .andThen(shootCommandFactory.whileHeld()
+        .raceWith(new WaitCommand(3.25))
+        .andThen(shootCommandFactory.onRelease()))));
     NamedCommands.registerCommand("Intake Command", new IntakeCommand(intakeController, shooterController));
   }
     
@@ -423,7 +425,7 @@ public class RobotContainer {
 
   
     driverA.a().whileTrue(shootCommandFactory.whileHeld()
-    .alongWith(new AlignToShootCommand(swerve)))
+    .alongWith(new AlignToShootCommand(swerve, shooterController)))
     .onFalse(shootCommandFactory.onRelease());
     
     // Shoot command that uses the Shoot Command Factory. This is from the shoot command branch.

@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 5.64513956860713,
-        "y": 0.39429321441695264
+        "y": 0.3942932144169526
       },
       "nextControl": {
         "x": 6.85213509064057,
@@ -89,7 +89,7 @@
       },
       "nextControl": {
         "x": 6.115370017424529,
-        "y": 1.9593384439260078
+        "y": 1.9593384439260075
       },
       "isLocked": false,
       "linkedName": null
@@ -115,15 +115,15 @@
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": -88.36342295838321
+      "rotationDegrees": -88.363
     },
     {
       "waypointRelativePos": 3.0,
-      "rotationDegrees": -109.44003482892569
+      "rotationDegrees": -109.44
     },
     {
       "waypointRelativePos": 4.0,
-      "rotationDegrees": 131.4677054161527
+      "rotationDegrees": 131.46800000000002
     },
     {
       "waypointRelativePos": 5.2539964476021535,
@@ -131,12 +131,25 @@
     },
     {
       "waypointRelativePos": 5.701598579040868,
-      "rotationDegrees": 179.21345105571615
+      "rotationDegrees": 179.213
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 1.679773351648353,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Spin up shooter",
+      "waypointRelativePos": 5.421563787774725,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.75,
@@ -147,13 +160,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

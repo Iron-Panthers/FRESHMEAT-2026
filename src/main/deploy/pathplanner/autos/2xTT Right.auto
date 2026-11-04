@@ -29,6 +29,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Command Factory"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "xTT"
@@ -38,6 +44,12 @@
           "type": "named",
           "data": {
             "name": "Smart zero"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Command Factory"
           }
         },
         {
