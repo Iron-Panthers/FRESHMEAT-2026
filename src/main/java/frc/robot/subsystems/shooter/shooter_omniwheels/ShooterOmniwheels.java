@@ -7,34 +7,34 @@ import frc.robot.lib.generic_subsystems.rollers.GenericRollersIO;
 import frc.robot.subsystems.shooter.serializer.SerializerConstants;
 
 public class ShooterOmniwheels extends GenericRollers<ShooterOmniwheels.ShooterOmniwheelsTarget> {
-    public enum ShooterOmniwheelsTarget implements GenericRollers.VelocityTarget{
-        IDLE(-5, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
-        SHOOT(40, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
-        INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
+  public enum ShooterOmniwheelsTarget implements GenericRollers.VelocityTarget {
+    IDLE(-5, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
+    SHOOT(40, ShooterOmniwheelsConstants.SUPPLY_CURRENT_LIMIT),
+    INTAKE(-10, SerializerConstants.CURRENT_LIMIT_AMPS);
 
-        private double velocity;
-        private double supplyCurrentLimit;
+    private double velocity;
+    private double supplyCurrentLimit;
 
-        private ShooterOmniwheelsTarget(double velocity, double supplyCurrentLimit) {
-            this.velocity = velocity;
-            this.supplyCurrentLimit = supplyCurrentLimit;
-        }
-
-        public double getVelocity() {
-            return velocity;
-        }
-
-        public double getSupplyCurrentLimit() {
-            return supplyCurrentLimit;
-        }
+    private ShooterOmniwheelsTarget(double velocity, double supplyCurrentLimit) {
+      this.velocity = velocity;
+      this.supplyCurrentLimit = supplyCurrentLimit;
     }
 
-    public ShooterOmniwheels(GenericRollersIO io) {
-        super("Shooter/Shooter Omniwheels", io);
-        setVelocityTarget(ShooterOmniwheelsTarget.IDLE);
+    public double getVelocity() {
+      return velocity;
     }
 
-    public AngularVelocity getCurrentVelocity() {
-        return Units.RadiansPerSecond.of(inputs.velocityRadsPerSec);
+    public double getSupplyCurrentLimit() {
+      return supplyCurrentLimit;
     }
+  }
+
+  public ShooterOmniwheels(GenericRollersIO io) {
+    super("Shooter/Shooter Omniwheels", io);
+    setVelocityTarget(ShooterOmniwheelsTarget.IDLE);
+  }
+
+  public AngularVelocity getCurrentVelocity() {
+    return Units.RadiansPerSecond.of(inputs.velocityRadsPerSec);
+  }
 }

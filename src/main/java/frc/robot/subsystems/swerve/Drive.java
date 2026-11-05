@@ -139,11 +139,15 @@ public class Drive extends SubsystemBase {
           }
         }
         isFromTeleop = true;
-        
-        ChassisSpeeds vSpeeds = new ChassisSpeeds(-targetSpeeds.omegaRadiansPerSecond * centerOfRotation.getY(), targetSpeeds.omegaRadiansPerSecond * centerOfRotation.getX(), 0.0);
+
+        ChassisSpeeds vSpeeds =
+            new ChassisSpeeds(
+                -targetSpeeds.omegaRadiansPerSecond * centerOfRotation.getY(),
+                targetSpeeds.omegaRadiansPerSecond * centerOfRotation.getX(),
+                0.0);
         targetSpeeds = targetSpeeds.plus(vSpeeds);
-        }
-        
+      }
+
       case TRAJECTORY -> {
         Logger.recordOutput(
             "Swerve/Distance From Setpoint",
@@ -280,7 +284,9 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("Swerve/PID/Velocity Y", axisAssistController.getYVel());
     }
 
-    Logger.recordOutput("Swerve/Low Power Mode Test", modules[0].getDriveSupplyCurrentLimit() <= DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS);
+    Logger.recordOutput(
+        "Swerve/Low Power Mode Test",
+        modules[0].getDriveSupplyCurrentLimit() <= DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS);
   }
 
   public void setDefenseMode() {
@@ -450,9 +456,8 @@ public class Drive extends SubsystemBase {
   }
 
   public void setIsBeingDefended(boolean isBeingDefended) {
-    this.isBeingDefended = isBeingDefended; 
+    this.isBeingDefended = isBeingDefended;
   }
-  
 
   /**
    * Sets the defense mode and sets the defense type to that supplied in the params
@@ -511,7 +516,10 @@ public class Drive extends SubsystemBase {
   }
 
   public void setLowPowerMode(boolean lowPowerMode) {
-      setDriveSupplyCurrentLimits(lowPowerMode ? DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS : DriveConstants.DRIVE_CURRENT_LIMIT_AMPS); 
+    setDriveSupplyCurrentLimits(
+        lowPowerMode
+            ? DriveConstants.LOW_POWER_CURRENT_LIMIT_AMPS
+            : DriveConstants.DRIVE_CURRENT_LIMIT_AMPS);
   }
 
   public Rotation2d getShootingError() {

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swerve.controllers.heading;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.RobotState;
 import frc.robot.subsystems.swerve.DriveConstants.HeadingControllerConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;

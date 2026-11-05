@@ -39,7 +39,7 @@ public class MirrorAutoUtil {
       JsonNode data = cmdObj.get("data");
       if (data != null && data.isObject() && data.has("pathName")) {
         ObjectNode dataObj = (ObjectNode) data;
-        String pathName = dataObj.get("pathName").asText();
+        String pathName = dataObj.get("pathName").asText().trim();
         // Only add " Left" if not already a left variant
         if (!pathName.endsWith(" Left")) {
           // Strip " Right" suffix if present before appending " Left"

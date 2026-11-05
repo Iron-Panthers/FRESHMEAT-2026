@@ -82,10 +82,11 @@ public abstract class GenericSuperstructureIOSim implements GenericSuperstructur
     motionMagicConfig.MotionMagicCruiseVelocity = motionMagicCruiseVelocity;
     motionMagicConfig.MotionMagicJerk = motionMagicJerk;
 
-    positionControl = positionControl
-        .withAcceleration(motionMagicAcceleration)
-        .withVelocity(motionMagicCruiseVelocity)
-        .withJerk(motionMagicJerk);
+    positionControl =
+        positionControl
+            .withAcceleration(motionMagicAcceleration)
+            .withVelocity(motionMagicCruiseVelocity)
+            .withJerk(motionMagicJerk);
 
     talon.getConfigurator().apply(gainsConfig);
     talon.getConfigurator().apply(motionMagicConfig);
