@@ -87,7 +87,7 @@ public class ShooterController extends SubsystemBase {
     }
   }
 
-  private ShooterState targetState = ShooterState.IDLE;
+  private ShooterState targetState = ShooterState.INTAKE;
   private boolean stopped = false;
   private boolean constantRollersVelocity = false;
   private boolean autoAim = false;

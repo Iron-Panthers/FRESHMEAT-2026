@@ -33,7 +33,7 @@ import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootCommandFactory;
+import frc.robot.commands.ShootStatorCommandFactory;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.VisionTuningCommands;
 import frc.robot.commands.WaitUnitlRobotStuckCommand;
@@ -80,6 +80,7 @@ import frc.robot.subsystems.swerve.ModuleIOTalonFXReal;
 import frc.robot.subsystems.swerve.ModuleIOTalonFXSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 import frc.robot.utility.ElasticSetpoints;
 import frc.robot.utility.SimBattery;
@@ -129,7 +130,7 @@ public class RobotContainer {
   private ShooterOmniwheels shooterOmniwheels;
   private ShooterController shooterController;
   private ShootCommand shootCommand;
-  private ShootCommandFactory shootCommandFactory;
+  private ShootStatorCommandFactory shootCommandFactory;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -150,9 +151,7 @@ public class RobotContainer {
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          // vision =
-          //     new Vision(
-          //         new VisionIOPhotonvision("CamC", 0),
+          vision = new Vision(new VisionIOPhotonvision("camB", 0));
           //         new VisionIOPhotonvision("CamA", 1),
           //         new VisionIOPhotonvision("CamB", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
@@ -253,8 +252,15 @@ public class RobotContainer {
         new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
 
     shootCommandFactory =
-        new ShootCommandFactory(
-            shooterController, intakeController, matchTimerUpdater, swerve::getShootingError);
+        new ShootStatorCommandFactory(
+            shooterController,
+            intakeController,
+            intakePivot,
+            matchTimerUpdater,
+            swerve::getShootingError,
+            0.05,
+            10,
+            0.9);
 
     nameCommands();
     configureAutos();
@@ -270,10 +276,12 @@ public class RobotContainer {
   private void nameCommands() {
     // Register Command Names in this method
     new EventTrigger("Intake Down")
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);})
-                );
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }));
     new EventTrigger("Intake off")
         .onTrue(
             new InstantCommand(
@@ -367,10 +375,12 @@ public class RobotContainer {
                                     .andThen(shootCommandFactory.onRelease()))))
             .andThen(shootCommandFactory.setJustShootCommand(false)));
     NamedCommands.registerCommand(
-        "Intake Command", 
-         new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);}));
+        "Intake Command",
+        new InstantCommand(
+            () -> {
+              intakeController.setTargetState(IntakeState.INTAKE);
+              shooterController.setTargetState(ShooterState.INTAKE);
+            }));
   }
 
   private void configureBindings() {
@@ -437,10 +447,12 @@ public class RobotContainer {
 
     driverA
         .b()
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);
-        }))
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }))
         .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
 
     driverA

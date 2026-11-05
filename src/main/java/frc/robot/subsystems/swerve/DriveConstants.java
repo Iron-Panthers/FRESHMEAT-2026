@@ -125,7 +125,7 @@ public class DriveConstants {
               InvertedValue.CounterClockwise_Positive,
               InvertedValue.Clockwise_Positive),
           new ModuleConfig(
-              CAN.at(6, "BR Drive"),
+              CAN.at(3, "BR Drive"),
               CAN.at(1, "BR Steer"),
               6,
               new Rotation2d(1.512913),

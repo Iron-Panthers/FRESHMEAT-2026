@@ -14,6 +14,16 @@
           "pathName" : "1xTBF Left"
         }
       }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Shoot Command Factory"
+        }
+      }, {
         "type" : "path",
         "data" : {
           "pathName" : "shoot to start Left"
@@ -22,6 +32,16 @@
         "type" : "path",
         "data" : {
           "pathName" : "1xTB Left"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Shoot Command Factory"
         }
       }, {
         "type" : "path",

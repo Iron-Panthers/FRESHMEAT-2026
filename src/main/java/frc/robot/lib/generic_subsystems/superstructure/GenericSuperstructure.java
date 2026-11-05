@@ -136,6 +136,10 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
     return inputs.positionRotations;
   }
 
+  public void setMaxCruiseVelocity(double cruiseVelocity) {
+    superstructureIO.setMaxCruiseVelocity(cruiseVelocity);
+  }
+
   /**
    * This function returns whether or not the subsystem has reached its position target
    *

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter.shooter_rollers;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static frc.robot.subsystems.shooter.shooter_rollers.ShooterRollersConstants.SHOOTER_ROLLERS_CONFIG;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -48,14 +49,18 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
             * ShooterRollersConstants.PHYSICAL_CONSTANTS.circumferenceMeters());
   }
 
+  @AutoLogOutput(key = "Shooter/Shooter Rollers/Reached Velocity Target")
   public boolean reachedVelocityTarget() {
     if (super.useManualVelocity) {
-      return Math.abs(super.inputs.velocityRadsPerSec - Units.rotationsToRadians(manualVelocityRPS))
+      return Math.abs(
+              super.inputs.velocityRadsPerSec * SHOOTER_ROLLERS_CONFIG.reduction()
+                  - Units.rotationsToRadians(manualVelocityRPS))
           < 40;
     } else {
       if (velocityTarget == null) return false;
       return Math.abs(
-              super.inputs.velocityRadsPerSec - Units.rotationsToRadians(velocityTarget.velocity))
+              super.inputs.velocityRadsPerSec * SHOOTER_ROLLERS_CONFIG.reduction()
+                  - Units.rotationsToRadians(velocityTarget.velocity))
           < 40;
     }
   }
