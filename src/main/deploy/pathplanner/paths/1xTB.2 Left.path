@@ -14,16 +14,16 @@
     "linkedName" : "shooting position right"
   }, {
     "anchor" : {
-      "x" : 3.2024199288261754,
-      "y" : 7.440284697509442
+      "x" : 3.2884934756820883,
+      "y" : 7.580154211150653
     },
     "prevControl" : {
-      "x" : 2.6656475793822723,
-      "y" : 7.257631661153724
+      "x" : 2.6214234875439324,
+      "y" : 7.504839857650703
     },
     "nextControl" : {
-      "x" : 3.515864751921029,
-      "y" : 7.546943784415779
+      "x" : 3.617498059975065,
+      "y" : 7.617299890022678
     },
     "isLocked" : false,
     "linkedName" : null
@@ -78,12 +78,12 @@
       "y" : 5.751091340450771
     },
     "prevControl" : {
-      "x" : 7.807354685646501,
-      "y" : 5.546666666666667
+      "x" : 7.837443735003969,
+      "y" : 5.6880165295968705
     },
     "nextControl" : {
-      "x" : 6.115370017424529,
-      "y" : 6.1106615560739925
+      "x" : 6.09664294187426,
+      "y" : 5.858683274021352
     },
     "isLocked" : false,
     "linkedName" : null
@@ -142,13 +142,13 @@
   },
   "goalEndState" : {
     "velocity" : 0,
-    "rotation" : -45.0
+    "rotation" : 146.97613244420347
   },
   "reversed" : false,
   "folder" : "Left Paths (auto generated)",
   "idealStartingState" : {
     "velocity" : 0,
-    "rotation" : -45.0
+    "rotation" : 146.97613244420347
   },
   "useDefaultConstraints" : true
 }

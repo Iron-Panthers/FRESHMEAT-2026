@@ -55,6 +55,7 @@ import frc.robot.subsystems.rgb.RGBIO;
 import frc.robot.subsystems.shooter.ShooterController;
 import frc.robot.subsystems.shooter.ShooterController.ShooterState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
+import frc.robot.subsystems.shooter.serializer.Serializer.SerializerTarget;
 import frc.robot.subsystems.shooter.serializer.SerializerIO;
 import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
@@ -303,11 +304,11 @@ public class RobotContainer {
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
-                ? new Pose2d(3.891, 0.823, new Rotation2d(77.005 * Math.PI / 180))
+                ? new Pose2d(2.901, 2.523, new Rotation2d(126.715 * Math.PI / 180))
                 : new Pose2d(
-                    3.891,
-                    FlippingUtil.fieldSizeY - 0.823,
-                    new Rotation2d((-77.005) * Math.PI / 180));
+                    2.901,
+                    FlippingUtil.fieldSizeY - 2.523,
+                    new Rotation2d((-126.715) * Math.PI / 180));
 
     NamedCommands.registerCommand(
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier));
@@ -422,16 +423,6 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons() {
-    // driverA.x().onTrue(new InstantCommand(() -> {
-    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
-    //     intakeController.setTargetState(IntakeState.INTAKE);
-    //   } else {
-    //     intakeController.setTargetState(IntakeState.IDLE);
-    //   }
-    // }));
-    driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
-    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
-
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA
@@ -443,7 +434,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    // driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     driverA
         .b()
@@ -457,7 +448,11 @@ public class RobotContainer {
 
     driverA
         .y()
-        .onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
+        .onTrue(
+            new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE))
+                .alongWith(
+                    new InstantCommand(
+                        () -> serializer.setVelocityTarget(SerializerTarget.INTAKE))));
 
     driverA
         .a()
