@@ -15,13 +15,15 @@ public class AlignToPassCommand extends Command {
 
   public AlignToPassCommand(Drive swerve, Translation2d pointTarget) {
     this.swerve = swerve;
-    this.pointTarget =
-        RobotState.isAllianceRed() ? pointTarget : FlippingUtil.flipFieldPosition(pointTarget);
+    this.pointTarget = pointTarget;
+    addRequirements(swerve);
   }
 
   @Override
   public void initialize() {
     Pose2d estimatedPose = RobotState.getInstance().getEstimatedPose();
+    pointTarget =
+        RobotState.isAllianceRed() ? pointTarget : FlippingUtil.flipFieldPosition(pointTarget);
 
     targetAngle = pointTarget.minus(estimatedPose.getTranslation()).getAngle().plus(Rotation2d.kPi);
 

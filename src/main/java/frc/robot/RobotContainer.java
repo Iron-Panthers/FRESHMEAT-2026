@@ -469,7 +469,7 @@ public class RobotContainer {
         .whileTrue(
             shootCommandFactory
                 .whileHeld()
-                .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
+                .alongWith(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
         .onFalse(shootCommandFactory.onRelease());
 
     driverA
@@ -477,7 +477,7 @@ public class RobotContainer {
         .whileTrue(
             shootCommandFactory
                 .whileHeld()
-                .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
+                .alongWith(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
         .onFalse(shootCommandFactory.onRelease());
 
     //driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
