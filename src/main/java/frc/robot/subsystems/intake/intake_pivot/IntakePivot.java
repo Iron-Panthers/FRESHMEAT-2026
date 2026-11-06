@@ -23,7 +23,7 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
   public enum IntakePivotTarget implements GenericSuperstructure.PositionTarget {
     IDLE(0.07, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
     INTAKE(0.07, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-    STOW(0.35, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());
+    STOW(0.35, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
 
     private static final double EPSILON = IntakePivotConstants.POSITION_TARGET_EPSILON;
     private double position;
