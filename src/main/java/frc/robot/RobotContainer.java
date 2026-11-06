@@ -474,11 +474,13 @@ public class RobotContainer {
 
     driverA
         .povRight()
-        .whileTrue(shootCommandFactory.whileHeld()
-        .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
+        .whileTrue(
+            shootCommandFactory
+                .whileHeld()
+                .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
         .onFalse(shootCommandFactory.onRelease());
 
-    driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+    //driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
 
     // Trench divider shoot
     // driverA.a().onTrue(new InstantCommand(() ->
@@ -497,17 +499,21 @@ public class RobotContainer {
 
     var passRobotConfig = robotConfig; // workaround TODO: is it necessary?
 
-    AutoBuilder.configure(
-        () -> RobotState.getInstance().getEstimatedPose(),
-        (pose) -> RobotState.getInstance().resetPose(pose),
-        () -> swerve.getRobotSpeeds(),
-        (speeds) -> {
-          swerve.setTrajectorySpeeds(speeds);
-        },
-        DriveConstants.HOLONOMIC_DRIVE_CONTROLLER,
-        passRobotConfig,
-        () -> RobotState.isAllianceRed(),
-        swerve);
+    if (passRobotConfig != null) {
+      AutoBuilder.configure(
+          () -> RobotState.getInstance().getEstimatedPose(),
+          (pose) -> RobotState.getInstance().resetPose(pose),
+          () -> swerve.getRobotSpeeds(),
+          (speeds) -> {
+            swerve.setTrajectorySpeeds(speeds);
+          },
+          DriveConstants.HOLONOMIC_DRIVE_CONTROLLER,
+          passRobotConfig,
+          () -> RobotState.isAllianceRed(),
+          swerve);
+    } else {
+      System.err.println("[RobotContainer] RobotConfig failed to load — AutoBuilder not configured, autos disabled.");
+    }
 
     autoChooser =
         new LoggedDashboardChooser<Command>("Auto Chooser", AutoBuilder.buildAutoChooser());
