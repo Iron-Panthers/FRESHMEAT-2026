@@ -27,8 +27,8 @@ public class AlignToPassCommand extends Command {
     // .plus(Rotation2d.kPi)
     ;
 
-    // I have zero idea why it needs to be flipped for red...
-    if (RobotState.isAllianceRed()) {
+    // I have zero idea why it needs to be flipped for blue...
+    if (!RobotState.isAllianceRed()) {
       targetAngle = targetAngle.plus(Rotation2d.kPi);
     }
 

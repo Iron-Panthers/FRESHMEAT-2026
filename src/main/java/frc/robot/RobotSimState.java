@@ -65,8 +65,8 @@ public class RobotSimState {
     double halfWidth = DriveConstants.mapleSimConfig.bumperWidthY.in(Meters) / 2.0;
     double intakeReach = 0.1; // meters beyond bumper
     fuelSim.registerIntake(
-        halfLength,
-        halfLength + intakeReach,
+        -halfLength - intakeReach,
+        -halfLength,
         -halfWidth,
         halfWidth,
         () -> intakeActive && fuelCount < 60,
@@ -292,7 +292,6 @@ public class RobotSimState {
 
     double currentTime = Timer.getFPGATimestamp();
     if (currentTime - lastShootTime >= shootIntervalSeconds) {
-      Logger.recordOutput("THISISATESTTESTTEST", 1);
       // Time to shoot another ball
       shootFuel(
           PERMANENT_UNCHANGEABLE_SHOOTER_ANGLE,
