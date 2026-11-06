@@ -432,7 +432,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
 
     driverA
         .b()
@@ -467,26 +467,15 @@ public class RobotContainer {
     driverA
         .povLeft()
         .whileTrue(
-            new InstantCommand(
-                    () ->
-                        shooterController.setTargetState(
-                            ShooterState.SHOOT)) // alright guys what is this
+            shootCommandFactory
+                .whileHeld()
                 .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
-        .onFalse(
-            new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
-                .andThen(
-                    new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
+        .onFalse(shootCommandFactory.onRelease());
 
     driverA
         .povRight()
-        .whileTrue(
-            new InstantCommand(
-                    () -> shooterController.setTargetState(ShooterState.SHOOT)) // this too
-                .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.3))))
-        .onFalse(
-            new InstantCommand(() -> shooterController.setTargetState(ShooterState.IDLE))
-                .andThen(
-                    new InstantCommand(() -> shooterController.setConstantRollersVelocity(true))));
+        .whileTrue(shootCommandFactory.whileHeld())
+        .onFalse(shootCommandFactory.onRelease());
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
 
