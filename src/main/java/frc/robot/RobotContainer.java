@@ -474,7 +474,8 @@ public class RobotContainer {
 
     driverA
         .povRight()
-        .whileTrue(shootCommandFactory.whileHeld())
+        .whileTrue(shootCommandFactory.whileHeld()
+        .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
         .onFalse(shootCommandFactory.onRelease());
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
