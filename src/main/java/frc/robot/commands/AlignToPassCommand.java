@@ -16,7 +16,6 @@ public class AlignToPassCommand extends Command {
   public AlignToPassCommand(Drive swerve, Translation2d pointTarget) {
     this.swerve = swerve;
     this.pointTarget = pointTarget;
-    addRequirements(swerve);
   }
 
   @Override

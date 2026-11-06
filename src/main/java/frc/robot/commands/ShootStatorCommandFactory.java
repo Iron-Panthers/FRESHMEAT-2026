@@ -67,16 +67,24 @@ public class ShootStatorCommandFactory {
 
   public Command whileHeld() {
     Command statorAdaptiveStow =
-        Commands.run(
+        new InstantCommand(
                 () -> {
-                  if (intakePivot.getStatorCurrentAmps() > statorLimit) {
-                    currentVelocity *= velocityRatio;
-                  } else {
-                    currentVelocity = Math.min(currentVelocity / velocityRatio, initialVelocity);
-                  }
+                  currentVelocity = initialVelocity;
                   intakePivot.setMaxCruiseVelocity(currentVelocity);
+                  intakeController.setTargetState(IntakeState.STOW);
                 })
-            .until(() -> intakePivot.reachedTarget());
+            .andThen(
+                Commands.run(
+                        () -> {
+                          if (intakePivot.getStatorCurrentAmps() > statorLimit) {
+                            currentVelocity *= velocityRatio;
+                          } else {
+                            currentVelocity =
+                                Math.min(currentVelocity / velocityRatio, initialVelocity);
+                          }
+                          intakePivot.setMaxCruiseVelocity(currentVelocity);
+                        })
+                    .until(() -> intakePivot.reachedTarget()));
 
     return statorAdaptiveStow
         .repeatedly()
