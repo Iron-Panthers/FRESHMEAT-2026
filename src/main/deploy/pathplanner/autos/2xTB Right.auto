@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Command Factory"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "1xTB.2 Right"
@@ -32,6 +38,12 @@
           "type": "named",
           "data": {
             "name": "Smart zero"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Command Factory"
           }
         },
         {

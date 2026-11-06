@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.90055753262159,
-        "y": 1.3183036773428227
+        "x": 1.9005575326215902,
+        "y": 1.318303677342823
       },
       "isLocked": false,
       "linkedName": "shooting position right"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": -130.97173633351494
   },
   "useDefaultConstraints": true
 }

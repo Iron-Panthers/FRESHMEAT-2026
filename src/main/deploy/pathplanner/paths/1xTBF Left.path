@@ -121,7 +121,7 @@
   },
   "goalEndState" : {
     "velocity" : 0,
-    "rotation" : -45.0
+    "rotation" : 130.97173633351497
   },
   "reversed" : false,
   "folder" : "Left Paths (auto generated)",

@@ -270,10 +270,12 @@ public class RobotContainer {
   private void nameCommands() {
     // Register Command Names in this method
     new EventTrigger("Intake Down")
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);})
-                );
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }));
     new EventTrigger("Intake off")
         .onTrue(
             new InstantCommand(
@@ -367,10 +369,12 @@ public class RobotContainer {
                                     .andThen(shootCommandFactory.onRelease()))))
             .andThen(shootCommandFactory.setJustShootCommand(false)));
     NamedCommands.registerCommand(
-        "Intake Command", 
-         new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);}));
+        "Intake Command",
+        new InstantCommand(
+            () -> {
+              intakeController.setTargetState(IntakeState.INTAKE);
+              shooterController.setTargetState(ShooterState.INTAKE);
+            }));
   }
 
   private void configureBindings() {
@@ -437,10 +441,12 @@ public class RobotContainer {
 
     driverA
         .b()
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);
-        }))
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }))
         .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
 
     driverA
