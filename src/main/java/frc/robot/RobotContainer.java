@@ -299,7 +299,7 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  shooterController.setTargetState(ShooterState.SPIN_UP);
+                  shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP);
                 }));
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
@@ -349,7 +349,7 @@ public class RobotContainer {
         "Intake Down",
         intakeController
             .setTargetStateCommand(IntakeState.INTAKE)
-            .alongWith(shooterController.setTargetStateCommand(ShooterState.SPIN_UP)));
+            .alongWith(shooterController.setTargetStateCommand(ShooterState.TOTAL_SPIN_UP)));
     NamedCommands.registerCommand(
         "Intake Stow", intakeController.setTargetStateCommand(IntakeState.STOW));
     NamedCommands.registerCommand(
@@ -358,9 +358,9 @@ public class RobotContainer {
         "Align To Shoot", new AlignToShootCommand(swerve)); // doesn't work
     NamedCommands.registerCommand("Smart zero", new InstantCommand(() -> swerve.smartZeroGyro()));
     NamedCommands.registerCommand(
-        "Spin up shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+        "Spin up shooter", shooterController.setTargetStateCommand(ShooterState.TOTAL_SPIN_UP));
     NamedCommands.registerCommand(
-        "Stop shooter", shooterController.setTargetStateCommand(ShooterState.SPIN_UP));
+        "Stop shooter", shooterController.setTargetStateCommand(ShooterState.TOTAL_SPIN_UP));
     NamedCommands.registerCommand(
         "Shoot Command Factory",
         shootCommandFactory
