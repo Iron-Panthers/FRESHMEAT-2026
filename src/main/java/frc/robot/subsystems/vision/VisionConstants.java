@@ -28,6 +28,13 @@ public class VisionConstants {
           new Transform3d(
               new Translation3d(0.28538, -0.345021, 0.543688),
               new Rotation3d(0, Math.toRadians(-27.815982), Math.PI)),
+          new Transform3d(
+              new Translation3d(0.234, 0.365, 0.345),
+              new Rotation3d(0, Math.toRadians(-23), Math.PI / 2)),
+          new Transform3d(
+              new Translation3d(0.234, -0.365, 0.345),
+              new Rotation3d(0, Math.toRadians(-23), -Math.PI / 2)),
+          // forwards, left, up
         };
         case VISION -> new Transform3d[] {};
         case SIM -> new Transform3d[] { // new Transform3d(new Translation3d(), new Rotation3d())

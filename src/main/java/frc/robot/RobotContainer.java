@@ -152,9 +152,11 @@ public class RobotContainer {
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          vision = new Vision(new VisionIOPhotonvision("camB", 0));
-          //         new VisionIOPhotonvision("CamA", 1),
-          //         new VisionIOPhotonvision("CamB", 2));
+          vision =
+              new Vision(
+                  new VisionIOPhotonvision("camB", 0),
+                  new VisionIOPhotonvision("camA", 1),
+                  new VisionIOPhotonvision("camC", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
           shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
@@ -304,11 +306,11 @@ public class RobotContainer {
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
-                ? new Pose2d(2.901, 2.523, new Rotation2d(-147.031 * Math.PI / 180))
+                ? new Pose2d(2.901, 2.523, new Rotation2d(-135.000 * Math.PI / 180))
                 : new Pose2d(
                     2.901,
                     FlippingUtil.fieldSizeY - 2.523,
-                    new Rotation2d((-147.031) * Math.PI / 180));
+                    new Rotation2d((135.000) * Math.PI / 180));
 
     NamedCommands.registerCommand(
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier));
@@ -480,7 +482,7 @@ public class RobotContainer {
                 .alongWith(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
         .onFalse(shootCommandFactory.onRelease());
 
-    //driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+    // driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
 
     // Trench divider shoot
     // driverA.a().onTrue(new InstantCommand(() ->
@@ -512,7 +514,9 @@ public class RobotContainer {
           () -> RobotState.isAllianceRed(),
           swerve);
     } else {
-      System.err.println("[RobotContainer] RobotConfig failed to load — AutoBuilder not configured, autos disabled.");
+      System.err.println(
+          "[RobotContainer] RobotConfig failed to load — AutoBuilder not configured, autos"
+              + " disabled.");
     }
 
     autoChooser =
