@@ -69,7 +69,7 @@ public class IntakeController extends SubsystemBase {
     //   intakeRollers.setVelocityTarget(IntakeRollersTarget.INTAKE);
     //   intakePivot.setPositionTarget(targetState.getIntakePivotTarget());
     // }
-     else {
+    else {
       Logger.recordOutput("Intake/Intake State Test", "other");
       // set target states to those in the current controller state
       intakePivot.setPositionTarget(targetState.getIntakePivotTarget());

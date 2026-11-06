@@ -103,11 +103,12 @@ public class ShootCommandFactory {
 
   public Command onRelease() {
     return new InstantCommand(
-        () -> {
-          if (shooterController.getTargetState() == ShooterState.SHOOT) {
-            shooterController.setTargetState(ShooterState.COMPACT_SPIN_UP);
-          }
-        }).andThen(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
+            () -> {
+              if (shooterController.getTargetState() == ShooterState.SHOOT) {
+                shooterController.setTargetState(ShooterState.COMPACT_SPIN_UP);
+              }
+            })
+        .andThen(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
   }
 
   public Command whileHeldPassing() {

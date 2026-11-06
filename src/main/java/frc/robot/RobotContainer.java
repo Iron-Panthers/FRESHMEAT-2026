@@ -55,6 +55,7 @@ import frc.robot.subsystems.rgb.RGBIO;
 import frc.robot.subsystems.shooter.ShooterController;
 import frc.robot.subsystems.shooter.ShooterController.ShooterState;
 import frc.robot.subsystems.shooter.serializer.Serializer;
+import frc.robot.subsystems.shooter.serializer.Serializer.SerializerTarget;
 import frc.robot.subsystems.shooter.serializer.SerializerIO;
 import frc.robot.subsystems.shooter.serializer.SerializerIOSim;
 import frc.robot.subsystems.shooter.serializer.SerializerIOTalonFX;
@@ -270,10 +271,12 @@ public class RobotContainer {
   private void nameCommands() {
     // Register Command Names in this method
     new EventTrigger("Intake Down")
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);})
-                );
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }));
     new EventTrigger("Intake off")
         .onTrue(
             new InstantCommand(
@@ -367,10 +370,12 @@ public class RobotContainer {
                                     .andThen(shootCommandFactory.onRelease()))))
             .andThen(shootCommandFactory.setJustShootCommand(false)));
     NamedCommands.registerCommand(
-        "Intake Command", 
-         new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);}));
+        "Intake Command",
+        new InstantCommand(
+            () -> {
+              intakeController.setTargetState(IntakeState.INTAKE);
+              shooterController.setTargetState(ShooterState.INTAKE);
+            }));
   }
 
   private void configureBindings() {
@@ -412,16 +417,6 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons() {
-    // driverA.x().onTrue(new InstantCommand(() -> {
-    //   if (intakeController.getTargetState() != IntakeState.INTAKE) {
-    //     intakeController.setTargetState(IntakeState.INTAKE);
-    //   } else {
-    //     intakeController.setTargetState(IntakeState.IDLE);
-    //   }
-    // }));
-    driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
-    driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
-
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA
@@ -433,19 +428,25 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    // driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
+    driverA.x().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     driverA
         .b()
-        .onTrue(new InstantCommand(() -> {
-          intakeController.setTargetState(IntakeState.INTAKE);
-          shooterController.setTargetState(ShooterState.INTAKE);
-        }))
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  intakeController.setTargetState(IntakeState.INTAKE);
+                  shooterController.setTargetState(ShooterState.INTAKE);
+                }))
         .onFalse(new InstantCommand(() -> intakeController.setTargetState(IntakeState.IDLE)));
 
     driverA
         .y()
-        .onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE)));
+        .onTrue(
+            new InstantCommand(() -> intakeController.setTargetState(IntakeState.REVERSE))
+                .alongWith(
+                    new InstantCommand(
+                        () -> serializer.setVelocityTarget(SerializerTarget.INTAKE))));
 
     driverA
         .a()
