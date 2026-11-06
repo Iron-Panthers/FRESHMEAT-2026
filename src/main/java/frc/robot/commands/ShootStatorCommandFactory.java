@@ -67,60 +67,52 @@ public class ShootStatorCommandFactory {
 
   public Command whileHeld() {
     Command statorAdaptiveStow =
-        new WaitUntilCommand(0.1)
-            .andThen(
-                Commands.runOnce(
-                    () -> {
-                      currentVelocity = initialVelocity;
-                      intakePivot.setMaxCruiseVelocity(currentVelocity);
-                      intakeController.setTargetState(IntakeState.STOW);
-                    }));
-    // .andThen(
-    //     Commands.run(
-    //             () -> {
-    //               if (intakePivot.getStatorCurrentAmps() > statorLimit) {
-    //                 currentVelocity *= velocityRatio;
-    //               } else {
-    //                 currentVelocity =
-    //                     Math.min(currentVelocity / velocityRatio, initialVelocity);
-    //               }
-    //               intakePivot.setMaxCruiseVelocity(currentVelocity);
-    //             })
-    //         .until(() -> intakePivot.reachedTarget())));
-
-    return statorAdaptiveStow.alongWith(
-        new InstantCommand(
+        Commands.run(
                 () -> {
-                  shooterController.setTargetState(
-                      (shooterController.getTargetState() == ShooterState.TOTAL_SPIN_UP
-                                  || shooterController.getTargetState() == ShooterState.SHOOT)
-                              && shooterController.shooterRollersUpToSpeed()
-                              && (matchTimerUpdater.isOurHubActive()
-                                  || matchTimerUpdater.getTimeUntilOurHubShifts() <= 2
-                                  || matchTimerUpdater.getTimeUntilOurHubShifts() <= 24)
-                              && (getHeadingError.get().getDegrees() < 6
-                                  || getHeadingError.get().getDegrees() > 354
-                                  || justShoot)
-                          ? ShooterState.SHOOT
-                          : ShooterState.TOTAL_SPIN_UP);
+                  if (intakePivot.getStatorCurrentAmps() > statorLimit) {
+                    currentVelocity *= velocityRatio;
+                  } else {
+                    currentVelocity = Math.min(currentVelocity / velocityRatio, initialVelocity);
+                  }
+                  intakePivot.setMaxCruiseVelocity(currentVelocity);
                 })
-            .repeatedly()
-            .alongWith(
-                (new WaitUntilCommand(
-                            () -> shooterController.getTargetState() == ShooterState.SHOOT)
-                        .andThen(new InstantCommand(() -> time = Timer.getFPGATimestamp()))
-                        .andThen(
-                            new WaitUntilCommand(
-                                () ->
-                                    (SmartDashboard.getNumber("Intake Pivot In Time", 0) + time)
-                                        < Timer.getFPGATimestamp()))
-                        .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))
-                        .withDeadline(
-                            new WaitUntilCommand(
-                                () ->
-                                    shooterController.getTargetState()
-                                        == ShooterState.TOTAL_SPIN_UP)))
-                    .repeatedly()));
+            .until(() -> intakePivot.reachedTarget());
+
+    return statorAdaptiveStow
+        .repeatedly()
+        .alongWith(
+            new InstantCommand(
+                    () -> {
+                      shooterController.setTargetState(
+                          (shooterController.getTargetState() == ShooterState.TOTAL_SPIN_UP
+                                      || shooterController.getTargetState() == ShooterState.SHOOT)
+                                  && shooterController.shooterRollersUpToSpeed()
+                                  && (matchTimerUpdater.isOurHubActive()
+                                      || matchTimerUpdater.getTimeUntilOurHubShifts() <= 2
+                                      || matchTimerUpdater.getTimeUntilOurHubShifts() <= 24)
+                                  && (getHeadingError.get().getDegrees() < 6
+                                      || getHeadingError.get().getDegrees() > 354
+                                      || justShoot)
+                              ? ShooterState.SHOOT
+                              : ShooterState.TOTAL_SPIN_UP);
+                    })
+                .repeatedly()
+                .alongWith(
+                    (new WaitUntilCommand(
+                                () -> shooterController.getTargetState() == ShooterState.SHOOT)
+                            .andThen(new InstantCommand(() -> time = Timer.getFPGATimestamp()))
+                            .andThen(
+                                new WaitUntilCommand(
+                                    () ->
+                                        (SmartDashboard.getNumber("Intake Pivot In Time", 0) + time)
+                                            < Timer.getFPGATimestamp()))
+                            .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))
+                            .withDeadline(
+                                new WaitUntilCommand(
+                                    () ->
+                                        shooterController.getTargetState()
+                                            == ShooterState.TOTAL_SPIN_UP)))
+                        .repeatedly()));
   }
 
   public Command onRelease() {
