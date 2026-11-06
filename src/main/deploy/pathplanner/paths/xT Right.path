@@ -68,7 +68,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 0.13498312710911858,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.75,
@@ -85,7 +92,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -146.97613244420347
+    "rotation": -135.0
   },
   "useDefaultConstraints": true
 }

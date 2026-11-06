@@ -1,91 +1,89 @@
 {
-  "version": "2025.0",
-  "waypoints": [
-    {
-      "anchor": {
-        "x": 2.901162514827996,
-        "y": 2.5233333333333325
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.5783867141162524,
-        "y": 3.835954922894423
-      },
-      "isLocked": false,
-      "linkedName": "shooting position right"
+  "version" : "2025.0",
+  "waypoints" : [ {
+    "anchor" : {
+      "x" : 2.901162514827996,
+      "y" : 5.546666666666668
     },
-    {
-      "anchor": {
-        "x": 3.7188612099644134,
-        "y": 7.515599051008303
-      },
-      "prevControl": {
-        "x": 3.0034488885317696,
-        "y": 7.47301498425636
-      },
-      "nextControl": {
-        "x": 4.622633451957296,
-        "y": 7.569395017793594
-      },
-      "isLocked": false,
-      "linkedName": null
+    "prevControl" : null,
+    "nextControl" : {
+      "x" : 2.5783867141162524,
+      "y" : 6.859288256227758
     },
-    {
-      "anchor": {
-        "x": 6.4516963226571775,
-        "y": 7.386488730723607
-      },
-      "prevControl": {
-        "x": 6.0213285883748515,
-        "y": 7.547876631079478
-      },
-      "nextControl": {
-        "x": 7.086275464341143,
-        "y": 7.148521552592121
-      },
-      "isLocked": false,
-      "linkedName": null
+    "isLocked" : false,
+    "linkedName" : "shooting position right"
+  }, {
+    "anchor" : {
+      "x" : 3.7188612099644134,
+      "y" : 7.515599051008303
     },
-    {
-      "anchor": {
-        "x": 8.56049822064057,
-        "y": 4.09417556346382
-      },
-      "prevControl": {
-        "x": 7.839632265717675,
-        "y": 5.568185053380784
-      },
-      "nextControl": null,
-      "isLocked": false,
-      "linkedName": null
-    }
-  ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.2,
-      "rotationDegrees": 179.8044125702528
-    }
-  ],
-  "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
-  "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.75,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
+    "prevControl" : {
+      "x" : 3.0034488885317696,
+      "y" : 7.47301498425636
+    },
+    "nextControl" : {
+      "x" : 4.622633451957296,
+      "y" : 7.569395017793594
+    },
+    "isLocked" : false,
+    "linkedName" : null
+  }, {
+    "anchor" : {
+      "x" : 6.587974322396576,
+      "y" : 7.237318116975748
+    },
+    "prevControl" : {
+      "x" : 6.15760658811425,
+      "y" : 7.3987060173316195
+    },
+    "nextControl" : {
+      "x" : 7.2225534640805416,
+      "y" : 6.9993509388442625
+    },
+    "isLocked" : false,
+    "linkedName" : null
+  }, {
+    "anchor" : {
+      "x" : 8.56049822064057,
+      "y" : 4.09417556346382
+    },
+    "prevControl" : {
+      "x" : 7.839632265717675,
+      "y" : 5.568185053380784
+    },
+    "nextControl" : null,
+    "isLocked" : false,
+    "linkedName" : null
+  } ],
+  "rotationTargets" : [ {
+    "waypointRelativePos" : 1.2,
+    "rotationDegrees" : 179.8044125702528
+  } ],
+  "constraintZones" : [ ],
+  "pointTowardsZones" : [ ],
+  "eventMarkers" : [ {
+    "name" : "Intake Down",
+    "waypointRelativePos" : 0.13498312710911858,
+    "endWaypointRelativePos" : null,
+    "command" : null
+  } ],
+  "globalConstraints" : {
+    "maxVelocity" : 3.0,
+    "maxAcceleration" : 2.75,
+    "maxAngularVelocity" : 540.0,
+    "maxAngularAcceleration" : 720.0,
+    "nominalVoltage" : 12.0,
+    "unlimited" : false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": 57.0022948987837
+  "goalEndState" : {
+    "velocity" : 0,
+    "rotation" : 57.0022948987837
   },
-  "reversed": false,
-  "folder": null,
-  "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": -146.97613244420347
+  "reversed" : false,
+  "folder" : "Left Paths (auto generated)",
+  "idealStartingState" : {
+    "velocity" : 0.0,
+    "rotation" : 135.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints" : true
 }

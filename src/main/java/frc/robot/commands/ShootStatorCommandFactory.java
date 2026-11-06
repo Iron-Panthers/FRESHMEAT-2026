@@ -58,7 +58,7 @@ public class ShootStatorCommandFactory {
     this.statorLimit = statorLimit;
     this.velocityRatio = velocityRatio;
     this.currentVelocity = initialVelocity;
-    SmartDashboard.putNumber("Intake rack in time", 5);
+    SmartDashboard.putNumber("Intake Pivot In Time", 0);
   }
 
   public Command setJustShootCommand(boolean justShoot) {
@@ -67,26 +67,26 @@ public class ShootStatorCommandFactory {
 
   public Command whileHeld() {
     Command statorAdaptiveStow =
-        new WaitUntilCommand(1)
+        new WaitUntilCommand(0.1)
             .andThen(
                 Commands.runOnce(
-                        () -> {
-                          currentVelocity = initialVelocity;
-                          intakePivot.setMaxCruiseVelocity(currentVelocity);
-                          intakeController.setTargetState(IntakeState.STOW);
-                        })
-                    .andThen(
-                        Commands.run(
-                                () -> {
-                                  if (intakePivot.getStatorCurrentAmps() > statorLimit) {
-                                    currentVelocity *= velocityRatio;
-                                  } else {
-                                    currentVelocity =
-                                        Math.min(currentVelocity / velocityRatio, initialVelocity);
-                                  }
-                                  intakePivot.setMaxCruiseVelocity(currentVelocity);
-                                })
-                            .until(() -> intakePivot.reachedTarget())));
+                    () -> {
+                      currentVelocity = initialVelocity;
+                      intakePivot.setMaxCruiseVelocity(currentVelocity);
+                      intakeController.setTargetState(IntakeState.STOW);
+                    }));
+    // .andThen(
+    //     Commands.run(
+    //             () -> {
+    //               if (intakePivot.getStatorCurrentAmps() > statorLimit) {
+    //                 currentVelocity *= velocityRatio;
+    //               } else {
+    //                 currentVelocity =
+    //                     Math.min(currentVelocity / velocityRatio, initialVelocity);
+    //               }
+    //               intakePivot.setMaxCruiseVelocity(currentVelocity);
+    //             })
+    //         .until(() -> intakePivot.reachedTarget())));
 
     return statorAdaptiveStow.alongWith(
         new InstantCommand(
@@ -112,7 +112,7 @@ public class ShootStatorCommandFactory {
                         .andThen(
                             new WaitUntilCommand(
                                 () ->
-                                    (SmartDashboard.getNumber("Intake Pivot In Time", 2) + time)
+                                    (SmartDashboard.getNumber("Intake Pivot In Time", 0) + time)
                                         < Timer.getFPGATimestamp()))
                         .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))
                         .withDeadline(

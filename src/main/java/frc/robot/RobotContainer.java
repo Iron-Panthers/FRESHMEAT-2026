@@ -259,7 +259,7 @@ public class RobotContainer {
             intakePivot,
             matchTimerUpdater,
             swerve::getShootingError,
-            0.05,
+            1.3,
             10,
             0.9);
 
@@ -304,11 +304,11 @@ public class RobotContainer {
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
-                ? new Pose2d(2.901, 2.523, new Rotation2d(126.715 * Math.PI / 180))
+                ? new Pose2d(2.901, 2.523, new Rotation2d(-147.031 * Math.PI / 180))
                 : new Pose2d(
                     2.901,
                     FlippingUtil.fieldSizeY - 2.523,
-                    new Rotation2d((-126.715) * Math.PI / 180));
+                    new Rotation2d((-147.031) * Math.PI / 180));
 
     NamedCommands.registerCommand(
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier));
@@ -322,9 +322,6 @@ public class RobotContainer {
         "Translate To Shoot",
         Commands.defer(
             () -> {
-              if (!RobotState.getInstance().isAutoAdaptive()) {
-                return new InstantCommand();
-              }
               return ((new AlignToPoseCommand(swerve, flippedShootingPoseSupplier, true)
                           .raceWith(new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier)))
                       .repeatedly())
@@ -363,17 +360,18 @@ public class RobotContainer {
         "Stop shooter", shooterController.setTargetStateCommand(ShooterState.TOTAL_SPIN_UP));
     NamedCommands.registerCommand(
         "Shoot Command Factory",
-        shootCommandFactory
-            .setJustShootCommand(true)
-            .andThen(
-                new AlignToShootCommand(swerve)
-                    .withDeadline(
-                        new WaitCommand(0.2)
-                            .andThen(
-                                shootCommandFactory
-                                    .whileHeld()
-                                    .raceWith(new WaitCommand(3.25))
-                                    .andThen(shootCommandFactory.onRelease()))))
+        (shootCommandFactory
+                .setJustShootCommand(true)
+                .andThen(
+                    new AlignToShootCommand(swerve)
+                        .withDeadline(
+                            new WaitCommand(0.1)
+                                .andThen(
+                                    shootCommandFactory
+                                        .whileHeld()
+                                        .withDeadline(new WaitCommand(2.25)))
+                                .andThen(
+                                    shooterController.setTargetStateCommand(ShooterState.INTAKE)))))
             .andThen(shootCommandFactory.setJustShootCommand(false)));
     NamedCommands.registerCommand(
         "Intake Command",

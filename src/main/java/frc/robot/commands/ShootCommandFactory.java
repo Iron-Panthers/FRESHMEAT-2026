@@ -38,7 +38,7 @@ public class ShootCommandFactory {
     this.intakeController = intakeController;
     this.matchTimerUpdater = matchTimerUpdater;
     this.getHeadingError = getHeadingError;
-    SmartDashboard.putNumber("Intake rack in time", 5);
+    SmartDashboard.putNumber("Intake Pivot In Time", 0.5);
   }
 
   public Command setJustShootCommand(boolean justShoot) {
@@ -89,7 +89,7 @@ public class ShootCommandFactory {
                             .andThen(
                                 new WaitUntilCommand(
                                     () ->
-                                        ((SmartDashboard.getNumber("Intake Pivot In Time", 2)
+                                        ((SmartDashboard.getNumber("Intake Pivot In Time", 0.5)
                                                 + time)
                                             < Timer.getFPGATimestamp())))
                             .andThen(intakeController.setTargetStateCommand(IntakeState.STOW))

@@ -21,8 +21,8 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
       new java.util.ArrayList<>();
 
   public enum IntakePivotTarget implements GenericSuperstructure.PositionTarget {
-    IDLE(0.07, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-    INTAKE(0.07, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+    IDLE(-0.03, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+    INTAKE(-0.03, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
     STOW(0.35, IntakePivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
 
     private static final double EPSILON = IntakePivotConstants.POSITION_TARGET_EPSILON;
