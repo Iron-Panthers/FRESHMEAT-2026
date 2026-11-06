@@ -286,7 +286,7 @@ public abstract class GenericMechanismConfiguration {
    *   <li><b>Units:</b> V
    * </ul>
    */
-  public double lowerVoltLimit = 16;
+  public double lowerVoltLimit = -16;
 
   /**
    * The lower voltage limit for the motor.

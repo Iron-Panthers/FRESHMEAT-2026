@@ -13,6 +13,16 @@
         "data" : {
           "pathName" : "XD Left"
         }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Smart zero"
+        }
+      }, {
+        "type" : "named",
+        "data" : {
+          "name" : "Shoot Command Factory"
+        }
       } ]
     }
   },

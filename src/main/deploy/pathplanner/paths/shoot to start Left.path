@@ -14,12 +14,12 @@
     "linkedName" : "shooting position right"
   }, {
     "anchor" : {
-      "x" : 4.407449584816133,
-      "y" : 7.601672597864769
+      "x" : 4.385931198102018,
+      "y" : 7.41876631079478
     },
     "prevControl" : {
-      "x" : 3.0302728351126933,
-      "y" : 7.666227758007118
+      "x" : 3.008754448398578,
+      "y" : 7.483321470937129
     },
     "nextControl" : null,
     "isLocked" : false,
@@ -45,7 +45,7 @@
   "folder" : "Left Paths (auto generated)",
   "idealStartingState" : {
     "velocity" : 0,
-    "rotation" : -45.0
+    "rotation" : 135.0
   },
   "useDefaultConstraints" : true
 }

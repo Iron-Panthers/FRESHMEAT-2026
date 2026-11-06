@@ -17,6 +17,7 @@ public class IntakeController extends SubsystemBase {
   public enum IntakeState {
     IDLE(IntakePivotTarget.IDLE, IntakeRollersTarget.IDLE),
     STOW(IntakePivotTarget.STOW, IntakeRollersTarget.SLOW),
+    // ALL_IN(IntakePivotTarget.ALL_IN, IntakeRollersTarget.SLOW),
     INTAKE(IntakePivotTarget.INTAKE, IntakeRollersTarget.INTAKE),
     ZEROING(IntakePivotTarget.STOW, IntakeRollersTarget.IDLE),
     REVERSE(IntakePivotTarget.INTAKE, IntakeRollersTarget.REVERSE);
@@ -69,7 +70,7 @@ public class IntakeController extends SubsystemBase {
     //   intakeRollers.setVelocityTarget(IntakeRollersTarget.INTAKE);
     //   intakePivot.setPositionTarget(targetState.getIntakePivotTarget());
     // }
-     else {
+    else {
       Logger.recordOutput("Intake/Intake State Test", "other");
       // set target states to those in the current controller state
       intakePivot.setPositionTarget(targetState.getIntakePivotTarget());
