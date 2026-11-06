@@ -110,7 +110,7 @@ public class RobotContainer {
 
   private ElasticUpdater matchTimerUpdater = new ElasticUpdater();
 
-  private boolean defaultZeroing = false;
+  private boolean defaultZeroing = true;
 
   // private SendableChooser<Command> autoChooser;
   private LoggedDashboardChooser<Command> autoChooser;
