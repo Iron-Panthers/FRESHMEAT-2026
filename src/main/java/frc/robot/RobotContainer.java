@@ -298,11 +298,11 @@ public class RobotContainer {
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
-                ? new Pose2d(3.891, 0.823, new Rotation2d(77.005 * Math.PI / 180))
+                ? new Pose2d(2.901, 2.523, new Rotation2d(126.715 * Math.PI / 180))
                 : new Pose2d(
-                    3.891,
-                    FlippingUtil.fieldSizeY - 0.823,
-                    new Rotation2d((-77.005) * Math.PI / 180));
+                    2.901,
+                    FlippingUtil.fieldSizeY - 2.523,
+                    new Rotation2d((-126.715) * Math.PI / 180));
 
     NamedCommands.registerCommand(
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier));
