@@ -31,7 +31,6 @@ import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootStatorCommandFactory;
 import frc.robot.commands.VibrateHIDCommand;
@@ -261,8 +260,8 @@ public class RobotContainer {
             intakePivot,
             matchTimerUpdater,
             swerve::getShootingError,
-            1.3,
-            10,
+            1,
+            30,
             0.9);
 
     nameCommands();
@@ -403,7 +402,6 @@ public class RobotContainer {
             .withName("Drive Teleop"));
     // adjust this for x swerve
 
-
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     // TODO: Test this eventually...
@@ -423,27 +421,33 @@ public class RobotContainer {
 
   private void configureDriverAButtons() {
 
-    driverA.start().onTrue(swerve.zeroGyroCommand()
-    .alongWith(new InstantCommand(() -> defaultZeroing = true)));
-    //driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
-    //Trnech: 3.56
+    driverA
+        .start()
+        .onTrue(
+            swerve.zeroGyroCommand().alongWith(new InstantCommand(() -> defaultZeroing = true)));
+    // driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+    // Trnech: 3.56
     // 3.56 m = trench shot distance; update this value to change the fixed speed
     driverA
         .leftBumper()
         .whileTrue(
-            shooterController.setManualShooterDistanceCommand(3.56)
+            shooterController
+                .setManualShooterDistanceCommand(3.56)
                 .andThen(shootCommandFactory.whileHeld()))
         .onFalse(
-            shootCommandFactory.onRelease()
+            shootCommandFactory
+                .onRelease()
                 .andThen(shooterController.clearManualShooterDistanceCommand()));
-    
+
     driverA
         .rightBumper()
         .whileTrue(
-            shooterController.setManualShooterDistanceCommand(1.3)
+            shooterController
+                .setManualShooterDistanceCommand(1.3)
                 .andThen(shootCommandFactory.whileHeld()))
         .onFalse(
-            shootCommandFactory.onRelease()
+            shootCommandFactory
+                .onRelease()
                 .andThen(shooterController.clearManualShooterDistanceCommand()));
 
     driverA
