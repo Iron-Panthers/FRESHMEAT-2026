@@ -16,48 +16,80 @@
     },
     {
       "anchor": {
-        "x": 1.0183036773428242,
-        "y": 5.3422419928825615
+        "x": 1.9220759193431491,
+        "y": 4.772004744963835
       },
       "prevControl": {
-        "x": 1.4361151712912354,
-        "y": 4.506619004985742
+        "x": 2.040427046270788,
+        "y": 4.277081850539163
       },
       "nextControl": {
-        "x": 0.8353973902728358,
-        "y": 5.708054567022537
+        "x": 1.8542034517793196,
+        "y": 5.055835063867124
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2227283511269282,
-        "y": 6.837769869513641
+        "x": 1.599300118631405,
+        "y": 5.9339976275261135
       },
       "prevControl": {
-        "x": 0.4480664294187432,
-        "y": 6.848529062870699
+        "x": 2.5271559393918213,
+        "y": 5.824838119199876
       },
       "nextControl": {
-        "x": 2.6850858547941603,
-        "y": 6.817459348629375
+        "x": 1.0505812574288833,
+        "y": 5.998552787668463
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9328351126927648,
-        "y": 4.503024911032028
+        "x": 0.9214709371367431,
+        "y": 5.9339976275261135
       },
       "prevControl": {
-        "x": 1.3948754448398586,
-        "y": 5.062502965599051
+        "x": 1.6100593119884632,
+        "y": 5.998552787668462
       },
       "nextControl": {
-        "x": 2.280460059955747,
-        "y": 4.141494965878527
+        "x": 0.22484703348863877,
+        "y": 5.868689136559103
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.599300118631405,
+        "y": 5.9339976275261135
+      },
+      "prevControl": {
+        "x": 1.179691577713581,
+        "y": 6.020071174387932
+      },
+      "nextControl": {
+        "x": 2.0906145822405553,
+        "y": 5.833215173444385
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.9220759193431491,
+        "y": 4.772004744963835
+      },
+      "prevControl": {
+        "x": 2.1372597864843113,
+        "y": 5.385278766316149
+      },
+      "nextControl": {
+        "x": 1.7605619576799652,
+        "y": 4.31168995422376
       },
       "isLocked": false,
       "linkedName": null
@@ -78,17 +110,57 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -38.686454054701905
+      "waypointRelativePos": 1.7,
+      "rotationDegrees": -1.535244787228316
     },
     {
-      "waypointRelativePos": 1.4067495559502594,
-      "rotationDegrees": -38.65980825409003
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.6611810261374296,
+      "maxWaypointRelativePos": 4.40271055179089,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 6.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 0.44143272023232977,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Spin up shooter",
+      "waypointRelativePos": 4.971926427879942,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.75,
