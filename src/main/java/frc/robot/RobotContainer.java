@@ -423,12 +423,33 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons() {
-    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
-
+    //driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+    //Trnech: 3.56
+    // 3.56 m = trench shot distance; update this value to change the fixed speed
     driverA
         .leftBumper()
-        .whileTrue(shootCommandFactory.whileHeld())
-        .onFalse(shootCommandFactory.onRelease());
+        .whileTrue(
+            shooterController.setManualShooterDistanceCommand(3.56)
+                .andThen(shootCommandFactory.whileHeld()))
+        .onFalse(
+            shootCommandFactory.onRelease()
+                .andThen(shooterController.clearManualShooterDistanceCommand()));
+    
+    driverA
+        .rightBumper()
+        .whileTrue(
+            shooterController.setManualShooterDistanceCommand(1.3)
+                .andThen(shootCommandFactory.whileHeld()))
+        .onFalse(
+            shootCommandFactory.onRelease()
+                .andThen(shooterController.clearManualShooterDistanceCommand()));
+
+    driverA
+        .povUp()
+        .onTrue(
+            shooterController
+                .setStoppedCommand(true)
+                .alongWith(intakeController.setStoppedCommand(true)));
 
     driverA
         .rightBumper()
@@ -456,6 +477,7 @@ public class RobotContainer {
 
     driverA
         .a()
+        .onTrue(shooterController.clearManualShooterDistanceCommand())
         .whileTrue(shootCommandFactory.whileHeld().alongWith(new AlignToShootCommand(swerve)))
         .onFalse(shootCommandFactory.onRelease());
 
