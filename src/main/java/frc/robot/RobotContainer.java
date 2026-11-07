@@ -403,7 +403,6 @@ public class RobotContainer {
             .withName("Drive Teleop"));
     // adjust this for x swerve
 
-    driverA.start().onTrue(swerve.zeroGyroCommand());
 
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
@@ -423,6 +422,9 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons() {
+
+    driverA.start().onTrue(swerve.zeroGyroCommand()
+    .alongWith(new InstantCommand(() -> defaultZeroing = true)));
     //driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
     //Trnech: 3.56
     // 3.56 m = trench shot distance; update this value to change the fixed speed
@@ -455,7 +457,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+    driverA.x().onTrue(new InstantCommand(() -> defaultZeroing = false));
 
     driverA
         .b()
