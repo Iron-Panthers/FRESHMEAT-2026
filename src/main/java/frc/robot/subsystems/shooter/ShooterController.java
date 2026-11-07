@@ -137,8 +137,10 @@ public class ShooterController extends SubsystemBase {
                 RobotState.isAllianceRed()
                     ? DriveConstants.RED_HUB_ORIGIN.toTranslation2d()
                     : DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d());
-    double shooterSpeed = RobotState.getInstance().getShooterSpeed(
-        manualShooterDistance >= 0 ? manualShooterDistance : robotDistanceFromHub);
+    double shooterSpeed =
+        RobotState.getInstance()
+            .getShooterSpeed(
+                manualShooterDistance >= 0 ? manualShooterDistance : robotDistanceFromHub);
 
     if (targetState.rollersTarget == ShooterRollersTarget.SHOOT
         || targetState == ShooterState.TOTAL_SPIN_UP) {
@@ -169,6 +171,7 @@ public class ShooterController extends SubsystemBase {
   public void setStopped(boolean stopped) {
     this.stopped = stopped;
   }
+
   public Command setStoppedCommand(boolean stopped) {
     return new InstantCommand(() -> this.stopped = stopped);
   }

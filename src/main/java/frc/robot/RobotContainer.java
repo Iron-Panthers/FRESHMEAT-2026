@@ -260,7 +260,7 @@ public class RobotContainer {
             intakePivot,
             matchTimerUpdater,
             swerve::getShootingError,
-            1,
+            0.25,
             30,
             0.9);
 
@@ -491,7 +491,7 @@ public class RobotContainer {
     // Currently it functions similarily to the above command except it doesn't look at the hub.
     // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
-    driverA.povDown().onTrue(intakeController.zeroCommand());
+    driverA.povDown().onTrue(intakeController.zeroCommand(-0.03));
     driverA.povDown().onFalse(intakeController.stopZeroingCommand());
 
     driverA
@@ -520,7 +520,10 @@ public class RobotContainer {
     driverA
         .rightStick()
         .onTrue(
-            new InstantCommand(() -> intakeController.setIntakePivotActive(!intakeController.getIntakePivotActive())));
+            new InstantCommand(
+                () ->
+                    intakeController.setIntakePivotActive(
+                        !intakeController.getIntakePivotActive())));
   }
 
   private void configureAutos() {

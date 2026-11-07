@@ -71,11 +71,18 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
               IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
 
   private IntakePivotTarget lastTarget = null;
+  private double dynamicCruiseVelocity = -1;
+
+  @Override
+  public void setMaxCruiseVelocity(double cruiseVelocity) {
+    dynamicCruiseVelocity = cruiseVelocity;
+  }
 
   @Override
   public void setPositionTarget(IntakePivotTarget target) {
     if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
       pidController.reset(getPosition());
+      dynamicCruiseVelocity = -1;
     }
     lastTarget = target;
     super.setPositionTarget(target);
@@ -86,10 +93,12 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
     super.periodic();
     if (getPositionTarget().getMaxCruiseVelocity().isPresent()
         && getControlMode() != ControlMode.ZEROING) {
+      double velocity =
+          dynamicCruiseVelocity > 0
+              ? dynamicCruiseVelocity
+              : getPositionTarget().getMaxCruiseVelocity().get();
       pidController.setConstraints(
-          new Constraints(
-              getPositionTarget().getMaxCruiseVelocity().get(),
-              IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+          new Constraints(velocity, IntakePivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
       pidController.setGoal(getPositionTarget().getPosition());
       pidController.calculate(getPosition());
       superstructureIO.runPosition(pidController.getSetpoint().position);
@@ -168,5 +177,9 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
         .plus(
             new Transform3d(
                 new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));
+  }
+
+  public void setZeroingOffset(double zeroingOffset) {
+    setOffset(zeroingOffset);
   }
 }

@@ -119,6 +119,10 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
     superstructureIO.setOffset();
   }
 
+  public void setOffset(double zeroingOffset) {
+    superstructureIO.setOffset(zeroingOffset);
+  }
+
   public void endZeroing() {
     superstructureIO.setOffset();
     setControlMode(ControlMode.STOP);

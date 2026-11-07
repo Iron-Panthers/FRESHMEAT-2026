@@ -9,6 +9,7 @@ import frc.robot.lib.generic_subsystems.rollers.GenericRollers.ControlMode;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.subsystems.intake.intake_pivot.IntakePivot;
 import frc.robot.subsystems.intake.intake_pivot.IntakePivot.IntakePivotTarget;
+import frc.robot.subsystems.intake.intake_pivot.IntakePivotConstants;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollers.IntakeRollersTarget;
 import org.littletonrobotics.junction.Logger;
@@ -46,6 +47,7 @@ public class IntakeController extends SubsystemBase {
 
   private boolean stopped = false;
   private boolean intakePivotActive = true;
+  private double zeroingOffset = IntakePivotConstants.ZEROING_OFFSET;
 
   public IntakeController(IntakePivot intakePivot, IntakeRollers intakeRollers) {
     this.intakePivot = intakePivot;
@@ -111,6 +113,16 @@ public class IntakeController extends SubsystemBase {
   public Command zeroCommand() {
     return new InstantCommand(
             () -> intakePivot.setControlMode(GenericSuperstructure.ControlMode.ZEROING))
+        .alongWith(setTargetStateCommand(IntakeState.ZEROING).alongWith(setStoppedCommand(false)));
+  }
+
+  public Command zeroCommand(double zeroingOffset) {
+    this.zeroingOffset = zeroingOffset;
+    return new InstantCommand(
+            () -> {
+              intakePivot.setZeroingOffset(zeroingOffset);
+              intakePivot.setControlMode(GenericSuperstructure.ControlMode.ZEROING);
+            })
         .alongWith(setTargetStateCommand(IntakeState.ZEROING).alongWith(setStoppedCommand(false)));
   }
 
