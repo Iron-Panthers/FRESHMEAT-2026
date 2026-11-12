@@ -43,7 +43,7 @@ public class IntakeRollersConstants {
         case SIM -> 40;
         default -> 40;
       };
-  public static final double STATOR_CURRENT_LIMIT = 50;
+  public static final double STATOR_CURRENT_LIMIT = 55;
 
   public record IntakeRollersConfig(
       int motorID1,

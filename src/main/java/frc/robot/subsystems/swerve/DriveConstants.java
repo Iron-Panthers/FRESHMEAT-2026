@@ -220,7 +220,7 @@ public class DriveConstants {
       };
 
   public static final double STEER_CURRENT_LIMIT_AMPS = 15;
-  public static final double DRIVE_CURRENT_LIMIT_AMPS = 60;
+  public static final double DRIVE_CURRENT_LIMIT_AMPS = 50;
   public static final double LOW_POWER_CURRENT_LIMIT_AMPS = 20;
 
   /**

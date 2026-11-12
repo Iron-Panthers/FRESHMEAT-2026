@@ -11,7 +11,7 @@ public class IntakeRollers extends GenericRollers<IntakeRollers.IntakeRollersTar
   public enum IntakeRollersTarget implements GenericRollers.VelocityTarget {
     IDLE(0, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
     SLOW(60, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
-    INTAKE(60, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
+    INTAKE(70, IntakeRollersConstants.CURRENT_LIMIT_AMPS),
     REVERSE(-50, IntakeRollersConstants.CURRENT_LIMIT_AMPS);
 
     private double velocity;

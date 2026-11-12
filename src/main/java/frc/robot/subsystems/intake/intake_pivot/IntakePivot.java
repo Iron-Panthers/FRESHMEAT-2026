@@ -107,6 +107,7 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
         "Intake/Intake Pivot/Position Target Rotations", getPositionTarget().getPosition());
     Logger.recordOutput(
         "Intake/Intake Pivot/Position Target Rotations Pid", pidController.getSetpoint().position);
+    Logger.recordOutput("Intake/Intake Pivot/Max Cruise Velocity", dynamicCruiseVelocity);
   }
 
   @Override

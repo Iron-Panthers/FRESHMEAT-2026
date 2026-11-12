@@ -86,8 +86,7 @@ public class ShootStatorCommandFactory {
                         })
                     .until(() -> intakePivot.reachedTarget()));
 
-    return statorAdaptiveStow
-        .repeatedly()
+    return (new WaitUntilCommand(.5).andThen(statorAdaptiveStow.repeatedly()))
         .alongWith(
             new InstantCommand(
                     () -> {

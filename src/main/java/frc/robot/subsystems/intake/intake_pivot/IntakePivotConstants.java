@@ -30,7 +30,7 @@ public class IntakePivotConstants {
 
   public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
       switch (Constants.getRobotType()) {
-        case COMP -> new MotionMagicConfig(9, 9);
+        case COMP -> new MotionMagicConfig(9, 6);
         case SIM -> new MotionMagicConfig(400, 40);
         default -> new MotionMagicConfig(0, 0);
       };
