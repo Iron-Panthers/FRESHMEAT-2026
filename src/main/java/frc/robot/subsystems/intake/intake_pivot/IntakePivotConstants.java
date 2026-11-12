@@ -30,7 +30,7 @@ public class IntakePivotConstants {
 
   public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
       switch (Constants.getRobotType()) {
-        case COMP -> new MotionMagicConfig(9, 9);
+        case COMP -> new MotionMagicConfig(9, 6);
         case SIM -> new MotionMagicConfig(400, 40);
         default -> new MotionMagicConfig(0, 0);
       };
@@ -60,7 +60,7 @@ public class IntakePivotConstants {
         default -> 40;
       };
 
-  public static final double ZEROING_VOLTS = 3;
+  public static final double ZEROING_VOLTS = -3;
   public static final double ZEROING_OFFSET = 0.37;
 
   public static final Transform3d BASE_TO_INTAKE_PIVOT_TRANSFORM =

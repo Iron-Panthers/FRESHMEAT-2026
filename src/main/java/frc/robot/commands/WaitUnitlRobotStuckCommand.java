@@ -28,14 +28,16 @@ public class WaitUnitlRobotStuckCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new WaitUntilCommand(
-                () ->
-                    RobotState.getInstance()
-                                .getPathPlannerTargetPose()
-                                .getTranslation()
-                                .getDistance(
-                                    RobotState.getInstance().getEstimatedPose().getTranslation())
-                            > DriveConstants.ADAPTIVE_AUTO_ERROR
-                        && !swerve.isPIDAutoAlign())
+                () -> {
+                  Pose2d ppPose = RobotState.getInstance().getPathPlannerTargetPose();
+                  if (ppPose == null) return false;
+                  return ppPose
+                              .getTranslation()
+                              .getDistance(
+                                  RobotState.getInstance().getEstimatedPose().getTranslation())
+                          > DriveConstants.ADAPTIVE_AUTO_ERROR
+                      && !swerve.isPIDAutoAlign();
+                })
             .andThen(
                 new InstantCommand(
                     () -> {

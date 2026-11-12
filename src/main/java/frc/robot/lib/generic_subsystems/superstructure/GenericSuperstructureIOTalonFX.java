@@ -44,7 +44,7 @@ public abstract class GenericSuperstructureIOTalonFX implements GenericSuperstru
 
   // zeroing stuff
   private final double zeroingVolts;
-  protected final double zeroingOffset;
+  protected double zeroingOffset;
 
   protected final VoltageOut voltageOutput = new VoltageOut(0).withUpdateFreqHz(0);
   private final NeutralOut neutralOutput = new NeutralOut();
@@ -176,6 +176,12 @@ public abstract class GenericSuperstructureIOTalonFX implements GenericSuperstru
 
   @Override
   public void setOffset() {
+    talon.getConfigurator().setPosition(zeroingOffset);
+  }
+
+  @Override
+  public void setOffset(double zeroingOffset) {
+    this.zeroingOffset = zeroingOffset;
     talon.getConfigurator().setPosition(zeroingOffset);
   }
 

@@ -31,7 +31,6 @@ import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToPoseCommand;
 import frc.robot.commands.AlignToShootCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LowPowerModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootStatorCommandFactory;
 import frc.robot.commands.VibrateHIDCommand;
@@ -110,7 +109,7 @@ public class RobotContainer {
 
   private ElasticUpdater matchTimerUpdater = new ElasticUpdater();
 
-  private boolean defaultZeroing = false;
+  private boolean defaultZeroing = true;
 
   // private SendableChooser<Command> autoChooser;
   private LoggedDashboardChooser<Command> autoChooser;
@@ -152,9 +151,11 @@ public class RobotContainer {
           //   vision = new Vision(new VisionIOPhotonvision(4), new VisionIOPhotonvision(5));
           // rgb = new RGB(new RGBIOCANdle());
           // canWatchdog = new CANWatchdog(new CANWatchdogIOComp(), rgb);
-          vision = new Vision(new VisionIOPhotonvision("camB", 0));
-          //         new VisionIOPhotonvision("CamA", 1),
-          //         new VisionIOPhotonvision("CamB", 2));
+          vision =
+              new Vision(
+                  new VisionIOPhotonvision("camB", 0),
+                  new VisionIOPhotonvision("camA", 1),
+                  new VisionIOPhotonvision("camC", 2));
           serializer = new Serializer(new SerializerIOTalonFX());
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
           shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
@@ -259,8 +260,8 @@ public class RobotContainer {
             intakePivot,
             matchTimerUpdater,
             swerve::getShootingError,
-            1.3,
-            10,
+            0.25,
+            30,
             0.9);
 
     nameCommands();
@@ -304,11 +305,11 @@ public class RobotContainer {
     Supplier<Pose2d> shootingPoseSupplier =
         () ->
             ((autoChooser == null ? false : autoChooser.get().getName().contains("Right")))
-                ? new Pose2d(2.901, 2.523, new Rotation2d(-147.031 * Math.PI / 180))
+                ? new Pose2d(2.901, 2.523, new Rotation2d(-135.000 * Math.PI / 180))
                 : new Pose2d(
                     2.901,
                     FlippingUtil.fieldSizeY - 2.523,
-                    new Rotation2d((-147.031) * Math.PI / 180));
+                    new Rotation2d((135.000) * Math.PI / 180));
 
     NamedCommands.registerCommand(
         "Check If Off", new WaitUnitlRobotStuckCommand(swerve, shootingPoseSupplier));
@@ -401,8 +402,6 @@ public class RobotContainer {
             .withName("Drive Teleop"));
     // adjust this for x swerve
 
-    driverA.start().onTrue(swerve.zeroGyroCommand());
-
     // driverA.a().onTrue(new InstantCommand(() -> swerve.smartZeroGyro()));
 
     // TODO: Test this eventually...
@@ -421,18 +420,48 @@ public class RobotContainer {
   }
 
   private void configureDriverAButtons() {
-    driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA
+        .start()
+        .onTrue(
+            swerve.zeroGyroCommand().alongWith(new InstantCommand(() -> defaultZeroing = true)));
+    // driverA.povUp().onTrue(new LowPowerModeCommand(swerve));
+    // Trnech: 3.56
+    // 3.56 m = trench shot distance; update this value to change the fixed speed
+    driverA
         .leftBumper()
-        .whileTrue(shootCommandFactory.whileHeld())
-        .onFalse(shootCommandFactory.onRelease());
+        .whileTrue(
+            shooterController
+                .setManualShooterDistanceCommand(3.56)
+                .andThen(shootCommandFactory.whileHeld()))
+        .onFalse(
+            shootCommandFactory
+                .onRelease()
+                .andThen(shooterController.clearManualShooterDistanceCommand()));
+
+    driverA
+        .rightBumper()
+        .whileTrue(
+            shooterController
+                .setManualShooterDistanceCommand(1.3)
+                .andThen(shootCommandFactory.whileHeld()))
+        .onFalse(
+            shootCommandFactory
+                .onRelease()
+                .andThen(shooterController.clearManualShooterDistanceCommand()));
+
+    driverA
+        .povUp()
+        .onTrue(
+            shooterController
+                .setStoppedCommand(true)
+                .alongWith(intakeController.setStoppedCommand(true)));
 
     driverA
         .rightBumper()
         .whileTrue(new AlignToPoseCommand(swerve, () -> new Pose2d(12.9, 4, new Rotation2d(3.14))));
 
-    driverA.x().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+    driverA.x().onTrue(new InstantCommand(() -> defaultZeroing = false));
 
     driverA
         .b()
@@ -454,6 +483,7 @@ public class RobotContainer {
 
     driverA
         .a()
+        .onTrue(shooterController.clearManualShooterDistanceCommand())
         .whileTrue(shootCommandFactory.whileHeld().alongWith(new AlignToShootCommand(swerve)))
         .onFalse(shootCommandFactory.onRelease());
 
@@ -461,7 +491,7 @@ public class RobotContainer {
     // Currently it functions similarily to the above command except it doesn't look at the hub.
     // driverA.a().whileTrue(shootCommandFactory.whileHeld()).onFalse(shootCommandFactory.onRelease());
 
-    driverA.povDown().onTrue(intakeController.zeroCommand());
+    driverA.povDown().onTrue(intakeController.zeroCommand(-0.03));
     driverA.povDown().onFalse(intakeController.stopZeroingCommand());
 
     driverA
@@ -469,21 +499,31 @@ public class RobotContainer {
         .whileTrue(
             shootCommandFactory
                 .whileHeld()
-                .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
+                .alongWith(new AlignToPassCommand(swerve, new Translation2d(14.6, 0.7))))
         .onFalse(shootCommandFactory.onRelease());
 
     driverA
         .povRight()
-        .whileTrue(shootCommandFactory.whileHeld()
-        .andThen(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
+        .whileTrue(
+            shootCommandFactory
+                .whileHeld()
+                .alongWith(new AlignToPassCommand(swerve, new Translation2d(14.6, 7.2))))
         .onFalse(shootCommandFactory.onRelease());
 
-    driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+    // driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
 
     // Trench divider shoot
     // driverA.a().onTrue(new InstantCommand(() ->
     // shooterController.setTargetState(ShooterState.TRENCH_DIVIDER))).onFalse(new InstantCommand(()
     // -> shooterController.setTargetState(ShooterState.TOTAL_SPIN_UP)));
+
+    driverA
+        .rightStick()
+        .onTrue(
+            new InstantCommand(
+                () ->
+                    intakeController.setIntakePivotActive(
+                        !intakeController.getIntakePivotActive())));
   }
 
   private void configureAutos() {
@@ -497,17 +537,23 @@ public class RobotContainer {
 
     var passRobotConfig = robotConfig; // workaround TODO: is it necessary?
 
-    AutoBuilder.configure(
-        () -> RobotState.getInstance().getEstimatedPose(),
-        (pose) -> RobotState.getInstance().resetPose(pose),
-        () -> swerve.getRobotSpeeds(),
-        (speeds) -> {
-          swerve.setTrajectorySpeeds(speeds);
-        },
-        DriveConstants.HOLONOMIC_DRIVE_CONTROLLER,
-        passRobotConfig,
-        () -> RobotState.isAllianceRed(),
-        swerve);
+    if (passRobotConfig != null) {
+      AutoBuilder.configure(
+          () -> RobotState.getInstance().getEstimatedPose(),
+          (pose) -> RobotState.getInstance().resetPose(pose),
+          () -> swerve.getRobotSpeeds(),
+          (speeds) -> {
+            swerve.setTrajectorySpeeds(speeds);
+          },
+          DriveConstants.HOLONOMIC_DRIVE_CONTROLLER,
+          passRobotConfig,
+          () -> RobotState.isAllianceRed(),
+          swerve);
+    } else {
+      System.err.println(
+          "[RobotContainer] RobotConfig failed to load — AutoBuilder not configured, autos"
+              + " disabled.");
+    }
 
     autoChooser =
         new LoggedDashboardChooser<Command>("Auto Chooser", AutoBuilder.buildAutoChooser());

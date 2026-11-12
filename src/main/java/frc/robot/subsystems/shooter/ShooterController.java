@@ -91,6 +91,7 @@ public class ShooterController extends SubsystemBase {
   private boolean stopped = false;
   private boolean constantRollersVelocity = false;
   private boolean autoAim = false;
+  private double manualShooterDistance = -1;
 
   private final Serializer serializer;
   private final ShooterAccelerator shooterAccelerator;
@@ -136,7 +137,10 @@ public class ShooterController extends SubsystemBase {
                 RobotState.isAllianceRed()
                     ? DriveConstants.RED_HUB_ORIGIN.toTranslation2d()
                     : DriveConstants.BLUE_HUB_ORIGIN.toTranslation2d());
-    double shooterSpeed = RobotState.getInstance().getShooterSpeed(robotDistanceFromHub);
+    double shooterSpeed =
+        RobotState.getInstance()
+            .getShooterSpeed(
+                manualShooterDistance >= 0 ? manualShooterDistance : robotDistanceFromHub);
 
     if (targetState.rollersTarget == ShooterRollersTarget.SHOOT
         || targetState == ShooterState.TOTAL_SPIN_UP) {
@@ -168,6 +172,10 @@ public class ShooterController extends SubsystemBase {
     this.stopped = stopped;
   }
 
+  public Command setStoppedCommand(boolean stopped) {
+    return new InstantCommand(() -> this.stopped = stopped);
+  }
+
   public Command setTargetStateCommand(ShooterState targetState) {
     return new InstantCommand(() -> setTargetState(targetState));
   }
@@ -186,5 +194,13 @@ public class ShooterController extends SubsystemBase {
 
   public void setConstantRollersVelocity(boolean constantRollersVelocity) {
     this.constantRollersVelocity = constantRollersVelocity;
+  }
+
+  public Command setManualShooterDistanceCommand(double distance) {
+    return new InstantCommand(() -> manualShooterDistance = distance);
+  }
+
+  public Command clearManualShooterDistanceCommand() {
+    return new InstantCommand(() -> manualShooterDistance = -1);
   }
 }
