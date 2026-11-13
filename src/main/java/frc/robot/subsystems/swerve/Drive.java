@@ -17,8 +17,10 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swerve.controllers.heading.AutoAlignHeadingController;
@@ -36,7 +38,8 @@ public class Drive extends SubsystemBase {
     TRAJECTORY,
     AUTO_ALIGN,
     AXIS_ASSIST,
-    DEFENSE;
+    DEFENSE,
+    SYSID;
   }
 
   private DriveModes driveMode = DriveModes.TELEOP;
@@ -85,6 +88,125 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(br, 3);
 
     teleopController = new TeleopTranslationController(() -> fieldRelativeYaw);
+  }
+
+  // --- SysId ---
+
+  private final SysIdRoutine sysIdTranslation =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null,
+              null,
+              null,
+              (state) -> Logger.recordOutput("Swerve/SysId/TranslationState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (volts) -> {
+                for (Module module : modules) {
+                  module.lockSteer(0);
+                  module.runDriveVolts(volts.in(Units.Volts));
+                }
+              },
+              (log) -> {
+                for (int i = 0; i < modules.length; i++) {
+                  log.motor("drive-" + i)
+                      .voltage(Units.Volts.of(modules[i].getDriveAppliedVolts()))
+                      .linearVelocity(
+                          Units.MetersPerSecond.of(modules[i].getDriveVelocityMetersPerSec()))
+                      .linearPosition(Units.Meters.of(modules[i].getDrivePositionMeters()));
+                }
+              },
+              this));
+
+  private final SysIdRoutine sysIdRotation =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null,
+              null,
+              null,
+              (state) -> Logger.recordOutput("Swerve/SysId/RotationState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (volts) -> {
+                SwerveModuleState[] tangentialStates =
+                    DriveConstants.KINEMATICS.toSwerveModuleStates(new ChassisSpeeds(0, 0, 1.0));
+                for (int i = 0; i < modules.length; i++) {
+                  modules[i].lockSteer(tangentialStates[i].angle.getRadians());
+                  modules[i].runDriveVolts(volts.in(Units.Volts));
+                }
+              },
+              (log) -> {
+                log.motor("gyro")
+                    .voltage(
+                        Units.Volts.of(
+                            (modules[0].getDriveAppliedVolts()
+                                    + modules[1].getDriveAppliedVolts()
+                                    + modules[2].getDriveAppliedVolts()
+                                    + modules[3].getDriveAppliedVolts())
+                                / 4.0))
+                    .angularVelocity(
+                        Units.RadiansPerSecond.of(gyroInputs.yawVelocityRadPerSec))
+                    .angularPosition(Units.Radians.of(gyroInputs.yawPosition.getRadians()));
+              },
+              this));
+
+  private final SysIdRoutine sysIdSteer =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null,
+              null,
+              null,
+              (state) -> Logger.recordOutput("Swerve/SysId/SteerState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (volts) -> {
+                for (Module module : modules) {
+                  module.runDriveVolts(0);
+                  module.runSteerVolts(volts.in(Units.Volts));
+                }
+              },
+              (log) -> {
+                for (int i = 0; i < modules.length; i++) {
+                  log.motor("steer-" + i)
+                      .voltage(Units.Volts.of(modules[i].getSteerAppliedVolts()))
+                      .angularVelocity(
+                          Units.RadiansPerSecond.of(modules[i].getSteerVelocityRadsPerSec()))
+                      .angularPosition(Units.Radians.of(modules[i].getSteerPositionRads()));
+                }
+              },
+              this));
+
+  public Command sysIdTranslationQuasistatic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdTranslation.quasistatic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
+  }
+
+  public Command sysIdTranslationDynamic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdTranslation.dynamic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
+  }
+
+  public Command sysIdRotationQuasistatic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdRotation.quasistatic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
+  }
+
+  public Command sysIdRotationDynamic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdRotation.dynamic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
+  }
+
+  public Command sysIdSteerQuasistatic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdSteer.quasistatic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
+  }
+
+  public Command sysIdSteerDynamic(SysIdRoutine.Direction direction) {
+    return Commands.runOnce(() -> driveMode = DriveModes.SYSID)
+        .andThen(sysIdSteer.dynamic(direction))
+        .finallyDo(() -> driveMode = DriveModes.TELEOP);
   }
 
   @Override
@@ -204,6 +326,9 @@ public class Drive extends SubsystemBase {
           }
         }
       }
+      case SYSID -> {
+        // SysId routines directly control modules via their drive function
+      }
       case DEFENSE -> {
         targetSpeeds = teleopController.update();
         if (headingController != null) {
@@ -246,7 +371,7 @@ public class Drive extends SubsystemBase {
     RobotState.getInstance().addRobotSpeeds(getRobotSpeeds());
     // run modules
     /* use kinematics to get desired module states */
-    if (driveMode != DriveModes.DEFENSE) {
+    if (driveMode != DriveModes.DEFENSE && driveMode != DriveModes.SYSID) {
       ChassisSpeeds discretizedSpeeds =
           ChassisSpeeds.discretize(targetSpeeds, Constants.PERIODIC_LOOP_SEC);
 

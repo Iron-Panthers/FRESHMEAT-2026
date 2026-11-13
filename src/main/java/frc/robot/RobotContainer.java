@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AlignToPassCommand;
 import frc.robot.commands.AlignToPoseCommand;
@@ -558,6 +559,42 @@ public class RobotContainer {
     autoChooser =
         new LoggedDashboardChooser<Command>("Auto Chooser", AutoBuilder.buildAutoChooser());
     VisionTuningCommands.addTuningCommandsToAutoChooser(vision, autoChooser);
+
+    autoChooser.addOption(
+        "SysId Translation Quasistatic Fwd",
+        swerve.sysIdTranslationQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Translation Quasistatic Rev",
+        swerve.sysIdTranslationQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "SysId Translation Dynamic Fwd",
+        swerve.sysIdTranslationDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Translation Dynamic Rev",
+        swerve.sysIdTranslationDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "SysId Rotation Quasistatic Fwd",
+        swerve.sysIdRotationQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Rotation Quasistatic Rev",
+        swerve.sysIdRotationQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "SysId Rotation Dynamic Fwd",
+        swerve.sysIdRotationDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Rotation Dynamic Rev",
+        swerve.sysIdRotationDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "SysId Steer Quasistatic Fwd",
+        swerve.sysIdSteerQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Steer Quasistatic Rev",
+        swerve.sysIdSteerQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "SysId Steer Dynamic Fwd", swerve.sysIdSteerDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "SysId Steer Dynamic Rev", swerve.sysIdSteerDynamic(SysIdRoutine.Direction.kReverse));
+
     SmartDashboard.putData("Auto Chooser", autoChooser.getSendableChooser());
   }
 

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -53,6 +54,8 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0).withUpdateFreqHz(0);
   private final MotionMagicVoltage steerPositionControl =
       new MotionMagicVoltage(0).withUpdateFreqHz(0);
+  private final VoltageOut driveVoltageControl = new VoltageOut(0).withUpdateFreqHz(0);
+  private final VoltageOut steerVoltageControl = new VoltageOut(0).withUpdateFreqHz(0);
 
   public ModuleIOTalonFX(ModuleConfig config) {
     driveTalon = new TalonFX(config.driveID());
@@ -171,6 +174,16 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
     inputs.steerAppliedVolts = steerAppliedVolts.getValueAsDouble();
     inputs.steerSupplyCurrent = steerSupplyCurrent.getValueAsDouble();
     inputs.steerStatorCurrent = steerStatorCurrent.getValueAsDouble();
+  }
+
+  @Override
+  public void runDriveVolts(double volts) {
+    driveTalon.setControl(driveVoltageControl.withOutput(volts));
+  }
+
+  @Override
+  public void runSteerVolts(double volts) {
+    steerTalon.setControl(steerVoltageControl.withOutput(volts));
   }
 
   @Override
