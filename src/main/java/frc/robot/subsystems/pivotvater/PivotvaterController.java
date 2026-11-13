@@ -1,15 +1,15 @@
 package frc.robot.subsystems.pivotvater;
 
 public class PivotvaterController { // extends?
-  /*
-   * pivotvater state enum
-   */
+    /* 
+     * pivotvater state enum
+     */
 
-  // Constructor
+    // Constructor
 
-  // periodic -> logic for subsystem (hint: set our position targets!!)
+    // periodic -> logic for subsystem (hint: set our position targets!!)
 
-  /*
-   * Everything else you want to add
-   */
+    /*
+     * Everything else you want to add
+     */
 }
