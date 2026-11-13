@@ -389,6 +389,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Swerve/Is Scoped", isScoped);
     Logger.recordOutput("Swerve/Target Speeds", targetSpeeds);
     Logger.recordOutput("Swerve/Drive Mode", driveMode);
+    Logger.recordOutput("Swerve/SysId/IsRunning", driveMode == DriveModes.SYSID);
     Logger.recordOutput(
         "Swerve/Magnitude",
         Math.hypot(targetSpeeds.vxMetersPerSecond, targetSpeeds.vyMetersPerSecond));
