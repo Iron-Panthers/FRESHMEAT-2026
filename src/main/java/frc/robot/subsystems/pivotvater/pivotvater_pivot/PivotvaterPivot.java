@@ -16,13 +16,13 @@ import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIO;
 import frc.robot.utility.LoggableMechanism3d;
 
-public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.PivotvaterTarget> 
+public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.PivotvaterPivotTarget> 
     implements LoggableMechanism3d {
   private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
   private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = 
       new java.util.ArrayList<>();
-//TODO: TUNE
-  public enum PivotvaterTarget implements GenericSuperstructure.PositionTarget {
+
+  public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
     IDlE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
     STOW(0.1,PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
   
