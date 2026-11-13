@@ -1,13 +1,13 @@
 package frc.robot.subsystems.pivotvater.pivotvater_elevator;
 
 public class PivotvaterElevatorConstants {
-    // can (wire -> motor) id
+  // can (wire -> motor) id
 
-    // gains (pid)
-    
-    // motion magic (pid++)
+  // gains (pid)
 
-    /*
-     * Records
-     */
+  // motion magic (pid++)
+
+  /*
+   * Records
+   */
 }
