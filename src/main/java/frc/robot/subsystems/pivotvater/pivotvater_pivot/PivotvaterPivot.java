@@ -22,8 +22,8 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
   private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = 
       new java.util.ArrayList<>();
 //TODO: TUNE
-  public enum PivotvaterTarget implements GenericSuperstructure.PositionTarget {
-    IDlE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+  public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
+    IDLE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
     STOW(0.1,PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
   
     private static final double EPSILON = PivotvaterPivotConstants.POSITION_TARGET_EPSILON;
