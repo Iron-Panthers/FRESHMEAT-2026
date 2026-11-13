@@ -53,13 +53,13 @@ public class ShooterRollers extends GenericRollers<ShooterRollers.ShooterRollers
   public boolean reachedVelocityTarget() {
     if (super.useManualVelocity) {
       return Math.abs(
-              super.inputs.velocityRadsPerSec * SHOOTER_ROLLERS_CONFIG.reduction()
+              super.inputs.velocityRadsPerSec
                   - Units.rotationsToRadians(manualVelocityRPS))
           < 40;
     } else {
       if (velocityTarget == null) return false;
       return Math.abs(
-              super.inputs.velocityRadsPerSec * SHOOTER_ROLLERS_CONFIG.reduction()
+              super.inputs.velocityRadsPerSec
                   - Units.rotationsToRadians(velocityTarget.velocity))
           < 40;
     }

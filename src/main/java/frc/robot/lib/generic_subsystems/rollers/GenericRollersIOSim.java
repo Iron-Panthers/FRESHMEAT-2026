@@ -152,8 +152,8 @@ public abstract class GenericRollersIOSim implements GenericRollersIO {
   @Override
   public void runVelocity(double velocity) {
     coasting = false;
-    velocitySetpointRPS = velocity;
-    talon.setControl(velocityControl.withVelocity(velocity));
+    velocitySetpointRPS = velocity * reduction;
+    talon.setControl(velocityControl.withVelocity(velocity * reduction));
   }
 
   @Override

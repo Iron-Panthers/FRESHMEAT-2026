@@ -97,7 +97,7 @@ public abstract class GenericRollersIOTalonFX implements GenericRollersIO {
 
   @Override
   public void runVelocity(double velocity) {
-    talon.setControl(velocityControl.withVelocity(velocity));
+    talon.setControl(velocityControl.withVelocity(velocity * mechanismReduction));
   }
 
   @Override
