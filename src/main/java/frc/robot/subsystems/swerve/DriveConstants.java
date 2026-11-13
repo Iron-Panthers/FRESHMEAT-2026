@@ -311,56 +311,6 @@ public class DriveConstants {
   // BUFFER_X = .44 works decently, test more
   public static final double BUFFER_X = 0.387;
   public static final double BUFFER_Y = 0.28;
-  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_TRENCH_WALL =
-      List.of(
-          Pair.of(
-              new Translation2d(3.977 - BUFFER_X, 1.287 - BUFFER_Y),
-              new Translation2d(5.322 + BUFFER_X, 1.592 + BUFFER_Y)),
-          Pair.of(
-              new Translation2d(3.977 - BUFFER_X, 6.477 - BUFFER_Y),
-              new Translation2d(5.322 + BUFFER_X, 6.783 + BUFFER_Y)),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(3.977 - BUFFER_X, 1.287 - BUFFER_Y)),
-              FlippingUtil.flipFieldPosition(
-                  new Translation2d(5.322 + BUFFER_X, 1.592 + BUFFER_Y))),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(3.977 - BUFFER_X, 6.477 - BUFFER_Y)),
-              FlippingUtil.flipFieldPosition(
-                  new Translation2d(5.322 + BUFFER_X, 6.783 + BUFFER_Y))));
-
-  /*
-  List.of(
-      Pair.of(new Translation2d(3.977, 1.287), new Translation2d(5.172, 1.592)),
-      Pair.of(new Translation2d(3.977, 6.477), new Translation2d(5.172, 6.783)),
-      Pair.of(
-          FlippingUtil.flipFieldPosition(new Translation2d(3.977, 1.287)),
-          FlippingUtil.flipFieldPosition(new Translation2d(5.172, 1.592))),
-      Pair.of(
-          FlippingUtil.flipFieldPosition(new Translation2d(3.977, 6.477)),
-          FlippingUtil.flipFieldPosition(new Translation2d(5.172, 6.783))));
-  */
-
-  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_TRENCH_PATHFINDING =
-      List.of(
-          Pair.of(new Translation2d(4.039, 6.590), new Translation2d(5.216, 4.572)),
-          Pair.of(new Translation2d(4.039, 3.472), new Translation2d(5.216, 1.570)),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 6.590)),
-              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 4.572))),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 3.472)),
-              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 1.570))));
-
-  public static final List<Pair<Translation2d, Translation2d>> OBSTACLES_FOR_BUMP_PATHFINDING =
-      List.of(
-          Pair.of(new Translation2d(4.039, 8.117), new Translation2d(5.216, 6.746)),
-          Pair.of(new Translation2d(4.039, 1.337), new Translation2d(5.216, 0)),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 8.117)),
-              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 6.746))),
-          Pair.of(
-              FlippingUtil.flipFieldPosition(new Translation2d(4.039, 1.337)),
-              FlippingUtil.flipFieldPosition(new Translation2d(5.216, 0))));
 
   public static final Pair<Translation2d, Translation2d> FIELD_SPLITTING_LINE_RIGHT =
       Pair.of(
