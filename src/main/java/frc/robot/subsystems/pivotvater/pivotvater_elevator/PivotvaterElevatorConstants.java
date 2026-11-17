@@ -11,19 +11,22 @@ public class PivotvaterElevatorConstants {
       switch (Constants.getRobotType()) {
         case COMP -> new PivotvaterElevatorConfig(
             CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+            CAN.at(11, "Pivotvater"),
+            CAN.at(7,"Pivotvater"),
             1,
             InvertedValue.CounterClockwise_Positive,
             false);
         case SIM -> new PivotvaterElevatorConfig(
             CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+            CAN.at(11, "Pivotvater"),
+            CAN.at(7,"Pivotvater"),
             1,
             InvertedValue.CounterClockwise_Positive,
             false);
         default -> new PivotvaterElevatorConfig(
             CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+            CAN.at(11, "Pivotvater"),
+            CAN.at(7,"Pivotvater"),
             1,
             InvertedValue.CounterClockwise_Positive,
             false);
@@ -75,6 +78,7 @@ public class PivotvaterElevatorConstants {
   public record PivotvaterElevatorConfig(
       int motorID,
       int followerMotorID,
+      int followerMoterID2,
       double reduction,
       InvertedValue motorDirection,
       boolean opposeMotor) {}
