@@ -18,12 +18,12 @@ public class PivotvaterController extends SubsystemBase {
     IDLE(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     STOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     LOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.LOW),
-    MID(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.CENTER_POINT),
+    MID(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.CENTER_POINT), 
     HIGH(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.FULL_EXTEND),
     ZEROING(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE);
 
-    private final PivotvaterPivotTarget pivotTarget;
-    private final PivotvaterElevatorTarget elevatorTarget;
+    private PivotvaterPivotTarget pivotTarget;
+    private PivotvaterElevatorTarget elevatorTarget;
 
     private PivotvaterState(
         PivotvaterPivotTarget pivotTarget, PivotvaterElevatorTarget elevatorTarget) {
@@ -54,33 +54,28 @@ public class PivotvaterController extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.recordOutput("Pivotvater/State", targetState);
-    Logger.recordOutput("Pivotvater/Stopped", stopped);
 
     if (stopped) {
+      //TODO maybe there should be loggers here
       pivot.setControlMode(ControlMode.STOP);
       elevator.setControlMode(ControlMode.STOP);
     } else {
-      if (pivot.getControlMode() != ControlMode.ZEROING) {
         pivot.setPositionTarget(targetState.getPivotTarget());
-      }
-      if (elevator.getControlMode() != ControlMode.ZEROING) {
         elevator.setPositionTarget(targetState.getElevatorTarget());
-      }
     }
+
+    //TODO for the love of god fix the override thing above
+
 
     pivot.periodic();
     elevator.periodic();
 
-    Logger.recordOutput("Pivotvater/Reached Target", reachedTarget());
+    Logger.recordOutput("Pivotvater/Reached", reachedTarget());
   }
 
   public void setTargetState(PivotvaterState targetState) {
     setStopped(false);
     this.targetState = targetState;
-  }
-
-  public PivotvaterState getTargetState() {
-    return targetState;
   }
 
   public void setStopped(boolean stopped) {
@@ -111,8 +106,10 @@ public class PivotvaterController extends SubsystemBase {
   }
 
   public Command stopZeroingCommand() {
-    return new InstantCommand(this::stopZeroing);
+    return new InstantCommand(() -> this.endZeroing());
   }
+
+
 
   public void stopZeroing() {
     pivot.endZeroing();

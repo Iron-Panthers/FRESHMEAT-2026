@@ -9,11 +9,11 @@ public class PivotvaterPivotConstants {
     public static final PivotvaterConfig PIVOTVATER_CONFIG = 
         switch (Constants.getRobotType()) {
             case COMP -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
             case SIM -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
             default -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
         };
 
     public static final PIDGains GAINS = 
@@ -60,7 +60,7 @@ public class PivotvaterPivotConstants {
 
     
      public record PivotvaterConfig(
-        int motorID, double reduction, InvertedValue motorDirection, boolean opposeMotor) {}
+        int motorID, int followerMotorID, double reduction, InvertedValue motorDirection, boolean opposeMotor) {}
 
      public record PIDGains(
         double kP, double kI, double kD, double kS, double kV, double kA, double kG) {}

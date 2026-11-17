@@ -1,6 +1,7 @@
 package frc.robot.lib.generic_subsystems.superstructure;
 
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.lib.generic_subsystems.mechanism.GenericMechanismConfiguration;
 
@@ -182,6 +183,13 @@ public class GenericSuperstructureConfiguration extends GenericMechanismConfigur
   @Override
   public GenericSuperstructureConfiguration withLowerVoltageLimit(double lowerVoltLimit) {
     super.withLowerVoltageLimit(lowerVoltLimit);
+    return this;
+  }
+
+  @Override
+  public GenericSuperstructureConfiguration withAdditionalFollowerMotor(
+      int id, MotorAlignmentValue motorAlignmentValue) {
+    super.withAdditionalFollowerMotor(id, motorAlignmentValue);
     return this;
   }
 }

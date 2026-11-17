@@ -2,6 +2,7 @@ package frc.robot.subsystems.pivotvater.pivotvater_pivot;
 
 import static frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivotConstants.*;
 
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureConfiguration;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIOTalonFX;
 
@@ -17,7 +18,12 @@ public class PivotvaterPivotIOTalonFX extends GenericSuperstructureIOTalonFX
             .withUpperVoltageLimit(UPPER_VOLT_LIMIT)
             .withLowerVoltageLimit(LOWER_VOLT_LIMIT)
             .withZeroingVolts(ZEROING_VOLTS)
-            .withZeroingOffset(ZEROING_OFFSET));
+            .withZeroingOffset(ZEROING_OFFSET)
+            .withAdditionalFollowerMotor(
+                PIVOTVATER_CONFIG.followerMotorID(),
+                PIVOTVATER_CONFIG.opposeMotor()
+                    ? MotorAlignmentValue.Opposed
+                    : MotorAlignmentValue.Aligned));
 
     setSlot0(
         GAINS.kP(),
