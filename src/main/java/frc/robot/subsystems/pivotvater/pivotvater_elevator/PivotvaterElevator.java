@@ -14,12 +14,13 @@ import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 
 public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator.PivotvaterElevatorTarget> {
     public enum PivotvaterElevatorTarget implements GenericSuperstructure.PositionTarget {
+        //put values
         FULL_EXTEND(1),
         CENTER_POINT(0.5),
         LOW(0.25),
         NONE(0);
         private double position = 0;
-        private double supplyCurrentLimit;
+        private double supplyCurrentLimit = PivotvaterElevatorConstants.SUPPLY_CURRENT_LIMIT_AMPS;
 
         private static final double EPSILON = PivotvaterElevatorConstants.POSITION_TARGET_EPSILON;
 
@@ -52,6 +53,7 @@ public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator
         setControlMode(ControlMode.STOP);
         supplyCurrentFilter = LinearFilter.movingAverage(30);
     }
+    @Override
     public void periodic() {
         super.periodic();
 
@@ -66,9 +68,6 @@ public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator
     }
     public double getFilteredSupplyCurrentAmps() {
         return filteredSupplyCurrentAmps;
-    }
-    public double getSupplyCurrentAmps() {
-        return supplyCurrentFilter;
     }
     public void setZeroing(boolean zeroing) {
         this.zeroing = zeroing;

@@ -21,15 +21,10 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
   private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
   private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = 
       new java.util.ArrayList<>();
-<<<<<<< HEAD
 
   public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
-    IDlE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-=======
-//TODO: TUNE
-  public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
+    //put values
     IDLE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
->>>>>>> 770b0d377dad945f64ef40e5691e47d9b7031b73
     STOW(0.1,PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
   
     private static final double EPSILON = PivotvaterPivotConstants.POSITION_TARGET_EPSILON;
@@ -144,11 +139,19 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     return null;
   }
 
+  @Override
+  public Pose3d getParentPosition() {
+    if (loggableMechanism3dParent != null) {
+      return loggableMechanism3dParent.getDisplayPose3d();
+    }
+    return new Pose3d();
+  }
+
   @AutoLogOutput(key = "Pivotvater/Pivotvater Pivot/Display Pose3d")
   @Override
   public Pose3d getDisplayPose3d() {
     return getParentPosition()
-        .plus(PivotvaterPivot.BASE_TO_PIVOTVATER_PIVOT_TRANSFORM)
+        .plus(PivotvaterPivotConstants.BASE_TO_PIVOTVATER_PIVOT_TRANSFORM)
         .plus(
             new Transform3d(
                 new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));

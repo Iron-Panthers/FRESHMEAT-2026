@@ -4,34 +4,23 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
+import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivotConstants.PivotvaterConfig;
 
 public class PivotvaterElevatorConstants {
-  // TODO: set real CAN IDs (leader and follower must be different) and reduction
-  public static final PivotvaterElevatorConfig PIVOTVATER_ELEVATOR_CONFIG =
-      switch (Constants.getRobotType()) {
-        case COMP -> new PivotvaterElevatorConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(11, "Pivotvater"),
-            CAN.at(7,"Pivotvater"),
-            1,
-            InvertedValue.CounterClockwise_Positive,
-            false);
-        case SIM -> new PivotvaterElevatorConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(11, "Pivotvater"),
-            CAN.at(7,"Pivotvater"),
-            1,
-            InvertedValue.CounterClockwise_Positive,
-            false);
-        default -> new PivotvaterElevatorConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(11, "Pivotvater"),
-            CAN.at(7,"Pivotvater"),
-            1,
-            InvertedValue.CounterClockwise_Positive,
-            false);
-      };
 
+    //based on ppiconstants
+
+  public static final PivotvaterConfig PIVOTVATER_CONFIG = 
+        switch (Constants.getRobotType()) {
+            case COMP -> new PivotvaterConfig(
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+            case SIM -> new PivotvaterConfig(
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+            default -> new PivotvaterConfig(
+                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
+        };
+
+  //put values
   public static final PIDGains GAINS =
       switch (Constants.getRobotType()) {
         case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
@@ -39,6 +28,7 @@ public class PivotvaterElevatorConstants {
         default -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
       };
 
+  //put values
   public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
       switch (Constants.getRobotType()) {
         case COMP -> new MotionMagicConfig(0, 0);
@@ -59,7 +49,6 @@ public class PivotvaterElevatorConstants {
         default -> new PivotvaterElevatorPhysicalConstants(0, 0, 0, 0, false);
       };
 
-  // Elevator, not an arm
   public static final GravityTypeValue GRAVITY_TYPE = GravityTypeValue.Elevator_Static;
 
   public static final double POSITION_TARGET_EPSILON = 0.001;
@@ -78,7 +67,6 @@ public class PivotvaterElevatorConstants {
   public record PivotvaterElevatorConfig(
       int motorID,
       int followerMotorID,
-      int followerMoterID2,
       double reduction,
       InvertedValue motorDirection,
       boolean opposeMotor) {}
