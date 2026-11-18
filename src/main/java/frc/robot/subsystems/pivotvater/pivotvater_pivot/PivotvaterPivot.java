@@ -1,10 +1,5 @@
 package frc.robot.subsystems.pivotvater.pivotvater_pivot;
 
-import java.util.Optional;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -15,18 +10,21 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIO;
 import frc.robot.utility.LoggableMechanism3d;
+import java.util.Optional;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
-public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.PivotvaterPivotTarget> 
+public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.PivotvaterPivotTarget>
     implements LoggableMechanism3d {
   private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
-  private final java.util.ArrayList<Double> supplyCurrentIntervalReadings = 
+  private final java.util.ArrayList<Double> supplyCurrentIntervalReadings =
       new java.util.ArrayList<>();
 
   public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
-    //put values
+    // put values
     IDLE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-    STOW(0.1,PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
-  
+    STOW(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
+
     private static final double EPSILON = PivotvaterPivotConstants.POSITION_TARGET_EPSILON;
     private double position;
     private double supplyCurrentLimit;
@@ -35,22 +33,27 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     public double getEpsilon() {
       return EPSILON;
     }
+
     public double getPosition() {
       return position;
     }
+
     public double getSupplyCurrentLimit() {
       return supplyCurrentLimit;
     }
+
     public Optional<Double> getMaxCruiseVelocity() {
       return maxCruiseVelocity;
     }
+
     private PivotvaterPivotTarget(
-      double position, double supplyCurrentLimit, Optional<Double> maxCruiseVelocity) {
+        double position, double supplyCurrentLimit, Optional<Double> maxCruiseVelocity) {
       this.position = position;
       this.supplyCurrentLimit = supplyCurrentLimit;
       this.maxCruiseVelocity = maxCruiseVelocity;
     }
   }
+
   public PivotvaterPivot(GenericSuperstructureIO io) {
     super("Pivotvater/Pivotvater Pivot", io);
     setPositionTarget(PivotvaterPivotTarget.STOW);
@@ -60,14 +63,15 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
   public LoggableMechanism3d loggableMechanism3dParent = null;
   public ProfiledPIDController pidController =
       new ProfiledPIDController(
-        PivotvaterPivotConstants.GAINS.kP(),
-        PivotvaterPivotConstants.GAINS.kI(),
-        PivotvaterPivotConstants.GAINS.kD(),
-        new Constraints(
-            PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
-            PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
-  
+          PivotvaterPivotConstants.GAINS.kP(),
+          PivotvaterPivotConstants.GAINS.kI(),
+          PivotvaterPivotConstants.GAINS.kD(),
+          new Constraints(
+              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
+              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+
   private PivotvaterPivotTarget lastTarget = null;
+
   @Override
   public void setPositionTarget(PivotvaterPivotTarget target) {
     if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
@@ -76,10 +80,12 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     lastTarget = target;
     super.setPositionTarget(target);
   }
+
   @Override
   public void periodic() {
     super.periodic();
-    if (getPositionTarget().getMaxCruiseVelocity().isPresent() && getControlMode() != ControlMode.ZEROING) {
+    if (getPositionTarget().getMaxCruiseVelocity().isPresent()
+        && getControlMode() != ControlMode.ZEROING) {
       pidController.setConstraints(
           new Constraints(
               getPositionTarget().getMaxCruiseVelocity().get(),
@@ -91,23 +97,26 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     Logger.recordOutput(
         "Pivotvater/Pivotvater Pivot/Position Target Rotations", getPositionTarget().getPosition());
     Logger.recordOutput(
-        "Pivotvater/Pivotvater Pivot/Position Target Rotations Pid", pidController.getSetpoint().position);
+        "Pivotvater/Pivotvater Pivot/Position Target Rotations Pid",
+        pidController.getSetpoint().position);
   }
+
   @Override
   public void setParent(LoggableMechanism3d parent) {
-    if(parent == null) {
+    if (parent == null) {
       throw new IllegalArgumentException("parent cannot be null");
     }
-    if(parent == this) {
+    if (parent == this) {
       throw new IllegalArgumentException("parent cannot be itself");
     }
     this.loggableMechanism3dParent = parent;
   }
 
-  public void resetTestState(){
+  public void resetTestState() {
     speedIntervalReadings.clear();
     supplyCurrentIntervalReadings.clear();
   }
+
   public String runTestLogger(double testStartTime, double currentTime, boolean isNextTransition) {
     if (testStartTime == -1) {
       testStartTime = currentTime;
@@ -130,7 +139,9 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
       double avgSpeed =
           speedIntervalReadings.isEmpty() ? 0 : sumSpeed / speedIntervalReadings.size();
       double avgSupplyCurrent =
-          supplyCurrentIntervalReadings.isEmpty() ? 0 : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
+          supplyCurrentIntervalReadings.isEmpty()
+              ? 0
+              : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
       speedIntervalReadings.clear();
       supplyCurrentIntervalReadings.clear();
 

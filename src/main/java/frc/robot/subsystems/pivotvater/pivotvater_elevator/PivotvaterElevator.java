@@ -12,69 +12,71 @@ import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
  *
  */
 
-public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator.PivotvaterElevatorTarget> {
-    public enum PivotvaterElevatorTarget implements GenericSuperstructure.PositionTarget {
-        //put values
-        FULL_EXTEND(1),
-        CENTER_POINT(0.5),
-        LOW(0.25),
-        NONE(0);
-        private double position = 0;
-        private double supplyCurrentLimit = PivotvaterElevatorConstants.SUPPLY_CURRENT_LIMIT_AMPS;
+public class PivotvaterElevator
+    extends GenericSuperstructure<PivotvaterElevator.PivotvaterElevatorTarget> {
+  public enum PivotvaterElevatorTarget implements GenericSuperstructure.PositionTarget {
+    // put values
+    FULL_EXTEND(1),
+    CENTER_POINT(0.5),
+    LOW(0.25),
+    NONE(0);
+    private double position = 0;
+    private double supplyCurrentLimit = PivotvaterElevatorConstants.SUPPLY_CURRENT_LIMIT_AMPS;
 
-        private static final double EPSILON = PivotvaterElevatorConstants.POSITION_TARGET_EPSILON;
+    private static final double EPSILON = PivotvaterElevatorConstants.POSITION_TARGET_EPSILON;
 
-        private PivotvaterElevatorTarget(double position) {
-            this.position = position;
-        }
-        
-        public double getPosition() {
-            return position;
-        }
-
-        public double getEpsilon() {
-            return EPSILON;
-        }
-
-        public double getSupplyCurrentLimit() {
-            return supplyCurrentLimit;
-        }
-
-
+    private PivotvaterElevatorTarget(double position) {
+      this.position = position;
     }
-    private boolean zeroing = false;
-    private double filteredSupplyCurrentAmps = 0;
-    private final LinearFilter supplyCurrentFilter;
-    //private GenericSuperstructureIOInputsMotorAuroLogged inputs = new GenericSuperstructureIOInputsMotorAuroLogged();
 
-    public PivotvaterElevator(PivotvaterElevatorIO io) {
-        super("PivotvaterElevator", io);
-        setPositionTarget(PivotvaterElevatorTarget.NONE);
-        setControlMode(ControlMode.STOP);
-        supplyCurrentFilter = LinearFilter.movingAverage(30);
+    public double getPosition() {
+      return position;
     }
-    @Override
-    public void periodic() {
-        super.periodic();
 
-        if (zeroing)  {
-            superstructureIO.runCharacterization();
-            
-        }
-        filteredSupplyCurrentAmps = supplyCurrentFilter.calculate(getSupplyCurrentAmps());
+    public double getEpsilon() {
+      return EPSILON;
+    }
 
+    public double getSupplyCurrentLimit() {
+      return supplyCurrentLimit;
+    }
+  }
 
+  private boolean zeroing = false;
+  private double filteredSupplyCurrentAmps = 0;
+  private final LinearFilter supplyCurrentFilter;
 
+  // private GenericSuperstructureIOInputsMotorAuroLogged inputs = new
+  // GenericSuperstructureIOInputsMotorAuroLogged();
+
+  public PivotvaterElevator(PivotvaterElevatorIO io) {
+    super("PivotvaterElevator", io);
+    setPositionTarget(PivotvaterElevatorTarget.NONE);
+    setControlMode(ControlMode.STOP);
+    supplyCurrentFilter = LinearFilter.movingAverage(30);
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    if (zeroing) {
+      superstructureIO.runCharacterization();
     }
-    public double getFilteredSupplyCurrentAmps() {
-        return filteredSupplyCurrentAmps;
-    }
-    public void setZeroing(boolean zeroing) {
-        this.zeroing = zeroing;
-    }
-    public boolean isZeroing() {
-        return zeroing;
-    }
+    filteredSupplyCurrentAmps = supplyCurrentFilter.calculate(getSupplyCurrentAmps());
+  }
+
+  public double getFilteredSupplyCurrentAmps() {
+    return filteredSupplyCurrentAmps;
+  }
+
+  public void setZeroing(boolean zeroing) {
+    this.zeroing = zeroing;
+  }
+
+  public boolean isZeroing() {
+    return zeroing;
+  }
 }
     /*
      * Position target enum
@@ -85,4 +87,3 @@ public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator
   // setPositionTarget (to reset pid)
 
      // periodic
-
