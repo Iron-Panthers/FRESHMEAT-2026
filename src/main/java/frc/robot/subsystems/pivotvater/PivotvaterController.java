@@ -13,7 +13,7 @@ import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot.Pivotvat
 import org.littletonrobotics.junction.Logger;
 
 public class PivotvaterController extends SubsystemBase {
-
+// testing a merge conflict, liam pls change
   public enum PivotvaterState {
     IDLE(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     STOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
