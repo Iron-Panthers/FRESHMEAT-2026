@@ -106,7 +106,7 @@ public class PivotvaterController extends SubsystemBase {
   }
 
   public Command stopZeroingCommand() {
-    return new InstantCommand(() -> this.endZeroing());
+    return new InstantCommand(() -> this.stopZeroing());
   }
 
 
