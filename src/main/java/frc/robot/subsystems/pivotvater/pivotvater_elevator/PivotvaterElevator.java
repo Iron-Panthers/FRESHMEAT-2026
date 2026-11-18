@@ -4,12 +4,12 @@ import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 
 /*
- * 
+ *
  * For freshmen: look at OFFSEASON-2025 code ->
  * https://github.com/Iron-Panthers/FRC-2025-Sprint/blob/dev/src/main/java/frc/robot/subsystems/superstructure/elevator/Elevator.java
- * 
+ *
  * Some things will be a little different, but we believe you can do it. Try your best!
- * 
+ *
  */
 
 public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator.PivotvaterElevatorTarget> {
@@ -81,9 +81,9 @@ public class PivotvaterElevator extends GenericSuperstructure<PivotvaterElevator
      * Position target enum
      */
 
-     // Constructor
+  // Constructor
 
-     // setPositionTarget (to reset pid)
+  // setPositionTarget (to reset pid)
 
      // periodic
 
