@@ -1,7 +1,10 @@
 package frc.robot.subsystems.pivotvater.pivotvater_elevator;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
+import frc.robot.subsystems.intake.IntakeController.IntakeState;
 
 /*
  *
@@ -42,7 +45,6 @@ public class PivotvaterElevator
     }
   }
 
-  private boolean zeroing = false;
   private double filteredSupplyCurrentAmps = 0;
   private final LinearFilter supplyCurrentFilter;
 
@@ -60,9 +62,7 @@ public class PivotvaterElevator
   public void periodic() {
     super.periodic();
 
-    if (zeroing) {
-      superstructureIO.runCharacterization();
-    }
+   
     filteredSupplyCurrentAmps = supplyCurrentFilter.calculate(getSupplyCurrentAmps());
   }
 
@@ -70,13 +70,7 @@ public class PivotvaterElevator
     return filteredSupplyCurrentAmps;
   }
 
-  public void setZeroing(boolean zeroing) {
-    this.zeroing = zeroing;
-  }
-
-  public boolean isZeroing() {
-    return zeroing;
-  }
+ 
 }
     /*
      * Position target enum

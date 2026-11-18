@@ -7,8 +7,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIO;
+import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator;
+import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator.PivotvaterElevatorTarget;
 import frc.robot.utility.LoggableMechanism3d;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -23,12 +27,14 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
   public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
     // put values
     IDLE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-    STOW(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
+    STOW(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1)),
+    ZEROING(0, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty());
 
     private static final double EPSILON = PivotvaterPivotConstants.POSITION_TARGET_EPSILON;
     private double position;
     private double supplyCurrentLimit;
     private Optional<Double> maxCruiseVelocity;
+    private PivotvaterPivot pivotvaterPivot;
 
     public double getEpsilon() {
       return EPSILON;
@@ -71,100 +77,119 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
               PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
 
   private PivotvaterPivotTarget lastTarget = null;
-
-  @Override
-  public void setPositionTarget(PivotvaterPivotTarget target) {
-    if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
-      pidController.reset(getPosition());
-    }
-    lastTarget = target;
-    super.setPositionTarget(target);
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-    if (getPositionTarget().getMaxCruiseVelocity().isPresent()
-        && getControlMode() != ControlMode.ZEROING) {
-      pidController.setConstraints(
-          new Constraints(
-              getPositionTarget().getMaxCruiseVelocity().get(),
-              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
-      pidController.setGoal(getPositionTarget().getPosition());
-      pidController.calculate(getPosition());
-      superstructureIO.runPosition(pidController.getSetpoint().position);
-    }
-    Logger.recordOutput(
-        "Pivotvater/Pivotvater Pivot/Position Target Rotations", getPositionTarget().getPosition());
-    Logger.recordOutput(
-        "Pivotvater/Pivotvater Pivot/Position Target Rotations Pid",
-        pidController.getSetpoint().position);
-  }
-
-  @Override
-  public void setParent(LoggableMechanism3d parent) {
-    if (parent == null) {
-      throw new IllegalArgumentException("parent cannot be null");
-    }
-    if (parent == this) {
-      throw new IllegalArgumentException("parent cannot be itself");
-    }
-    this.loggableMechanism3dParent = parent;
-  }
-
-  public void resetTestState() {
-    speedIntervalReadings.clear();
-    supplyCurrentIntervalReadings.clear();
-  }
-
-  public String runTestLogger(double testStartTime, double currentTime, boolean isNextTransition) {
-    if (testStartTime == -1) {
-      testStartTime = currentTime;
-    }
-    double currentSpeed = inputs.velocityRotPerSec;
-    double currentSupplyCurrent = inputs.supplyCurrentAmps;
-    speedIntervalReadings.add(currentSpeed);
-    supplyCurrentIntervalReadings.add(currentSupplyCurrent);
-
-    if (isNextTransition) {
-      double sumSpeed = 0;
-      double sumSupplyCurrent = 0;
-      for (double val : speedIntervalReadings) {
-        sumSpeed += val;
+  
+    @Override
+    public void setPositionTarget(PivotvaterPivotTarget target) {
+      if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
+        pidController.reset(getPosition());
       }
-      for (double val : supplyCurrentIntervalReadings) {
-        sumSupplyCurrent += val;
+      lastTarget = target;
+      super.setPositionTarget(target);
+    }
+  
+    @Override
+    public void periodic() {
+      super.periodic();
+      if (getPositionTarget().getMaxCruiseVelocity().isPresent()
+          && getControlMode() != ControlMode.ZEROING) {
+        pidController.setConstraints(
+            new Constraints(
+                getPositionTarget().getMaxCruiseVelocity().get(),
+                PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+        pidController.setGoal(getPositionTarget().getPosition());
+        pidController.calculate(getPosition());
+        superstructureIO.runPosition(pidController.getSetpoint().position);
       }
-
-      double avgSpeed =
-          speedIntervalReadings.isEmpty() ? 0 : sumSpeed / speedIntervalReadings.size();
-      double avgSupplyCurrent =
-          supplyCurrentIntervalReadings.isEmpty()
-              ? 0
-              : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
+      Logger.recordOutput(
+          "Pivotvater/Pivotvater Pivot/Position Target Rotations", getPositionTarget().getPosition());
+      Logger.recordOutput(
+          "Pivotvater/Pivotvater Pivot/Position Target Rotations Pid",
+          pidController.getSetpoint().position);
+    }
+  
+    @Override
+    public void setParent(LoggableMechanism3d parent) {
+      if (parent == null) {
+        throw new IllegalArgumentException("parent cannot be null");
+      }
+      if (parent == this) {
+        throw new IllegalArgumentException("parent cannot be itself");
+      }
+      this.loggableMechanism3dParent = parent;
+    }
+  
+    public void resetTestState() {
       speedIntervalReadings.clear();
       supplyCurrentIntervalReadings.clear();
-
-      return String.format("%.2f", avgSpeed) + "," + String.format("%.2f", avgSupplyCurrent);
     }
-    return null;
+  
+    public String runTestLogger(double testStartTime, double currentTime, boolean isNextTransition) {
+      if (testStartTime == -1) {
+        testStartTime = currentTime;
+      }
+      double currentSpeed = inputs.velocityRotPerSec;
+      double currentSupplyCurrent = inputs.supplyCurrentAmps;
+      speedIntervalReadings.add(currentSpeed);
+      supplyCurrentIntervalReadings.add(currentSupplyCurrent);
+  
+      if (isNextTransition) {
+        double sumSpeed = 0;
+        double sumSupplyCurrent = 0;
+        for (double val : speedIntervalReadings) {
+          sumSpeed += val;
+        }
+        for (double val : supplyCurrentIntervalReadings) {
+          sumSupplyCurrent += val;
+        }
+  
+        double avgSpeed =
+            speedIntervalReadings.isEmpty() ? 0 : sumSpeed / speedIntervalReadings.size();
+        double avgSupplyCurrent =
+            supplyCurrentIntervalReadings.isEmpty()
+                ? 0
+                : sumSupplyCurrent / supplyCurrentIntervalReadings.size();
+        speedIntervalReadings.clear();
+        supplyCurrentIntervalReadings.clear();
+  
+        return String.format("%.2f", avgSpeed) + "," + String.format("%.2f", avgSupplyCurrent);
+      }
+      return null;
+    }
+  
+    @Override
+    public Pose3d getParentPosition() {
+      if (loggableMechanism3dParent != null) {
+        return loggableMechanism3dParent.getDisplayPose3d();
+      }
+      return new Pose3d();
+    }
+  
+    @AutoLogOutput(key = "Pivotvater/Pivotvater Pivot/Display Pose3d")
+    @Override
+    public Pose3d getDisplayPose3d() {
+      return getParentPosition()
+          .plus(PivotvaterPivotConstants.BASE_TO_PIVOTVATER_PIVOT_TRANSFORM)
+          .plus(
+              new Transform3d(
+                  new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));
+    }
+      private boolean zeroing = false;
+
+     public void setZeroing(boolean zeroing) {
+      this.zeroing = zeroing;
   }
 
-  @Override
-  public Pose3d getParentPosition() {
-    if (loggableMechanism3dParent != null) {
-      return loggableMechanism3dParent.getDisplayPose3d();
-    }
-    return new Pose3d();
+  public boolean isZeroing() {
+    return zeroing;
   }
-
-  @AutoLogOutput(key = "Pivotvater/Pivotvater Pivot/Display Pose3d")
-  @Override
-  public Pose3d getDisplayPose3d() {
-    return getParentPosition()
-        .plus(PivotvaterPivotConstants.BASE_TO_PIVOTVATER_PIVOT_TRANSFORM)
-        .plus(
-            new Transform3d(
-                new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));
+               
+                
+            
+        
+                  public Command stopZeroingCommand() {
+    return new InstantCommand(() -> PivotvaterPivot.endZeroing(PivotvaterPivot.this));
+  }
+  public void stopZeroing() {
+    PivotvaterPivot.endZeroing(PivotvaterPivot.this);
   }
 }

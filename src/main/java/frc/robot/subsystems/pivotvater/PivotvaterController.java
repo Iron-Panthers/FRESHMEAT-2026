@@ -10,10 +10,12 @@ import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator;
 import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator.PivotvaterElevatorTarget;
 import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot;
 import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot.PivotvaterPivotTarget;
+import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivotConstants.PivotvaterConfig;
+
 import org.littletonrobotics.junction.Logger;
 
 public class PivotvaterController extends SubsystemBase {
-  // testing a merge conflict, liam pls change
+  //TODO testing a merge conflict, liam pls change
   public enum PivotvaterState {
     IDLE(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     STOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
@@ -103,13 +105,14 @@ public class PivotvaterController extends SubsystemBase {
         },
         this);
   }
+  
 
   public Command stopZeroingCommand() {
     return new InstantCommand(() -> this.stopZeroing());
   }
 
   public void stopZeroing() {
-    pivot.endZeroing();
-    elevator.endZeroing();
+    pivot.endZeroing(pivot);
+    elevator.endZeroing(elevator);
   }
 }

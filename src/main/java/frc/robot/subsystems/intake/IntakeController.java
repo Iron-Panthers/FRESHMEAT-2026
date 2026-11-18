@@ -115,7 +115,7 @@ public class IntakeController extends SubsystemBase {
   }
 
   public Command stopZeroingCommand() {
-    return new InstantCommand(() -> intakePivot.endZeroing());
+    return new InstantCommand(() -> intakePivot.endZeroing(intakePivot));
   }
 
   public void setIntakePivotActive(boolean isActive) {
@@ -127,6 +127,6 @@ public class IntakeController extends SubsystemBase {
   }
 
   public void stopZeroing() {
-    intakePivot.endZeroing();
+    intakePivot.endZeroing(intakePivot);
   }
 }
