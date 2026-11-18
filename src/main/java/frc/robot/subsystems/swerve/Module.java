@@ -66,4 +66,40 @@ public class Module {
   public void setNeutralMode(NeutralModeValue value) {
     moduleIO.setNeutralMode(value);
   }
+
+  public void runDriveVolts(double volts) {
+    moduleIO.runDriveVolts(volts);
+  }
+
+  public void runSteerVolts(double volts) {
+    moduleIO.runSteerVolts(volts);
+  }
+
+  public void lockSteer(double angleRads) {
+    moduleIO.runSteerPositionSetpoint(angleRads);
+  }
+
+  public double getDriveAppliedVolts() {
+    return inputs.driveAppliedVolts;
+  }
+
+  public double getDriveVelocityMetersPerSec() {
+    return inputs.driveVelocityMetersPerSec;
+  }
+
+  public double getDrivePositionMeters() {
+    return inputs.drivePositionMeters;
+  }
+
+  public double getSteerAppliedVolts() {
+    return inputs.steerAppliedVolts;
+  }
+
+  public double getSteerVelocityRadsPerSec() {
+    return inputs.steerVelocityRadsPerSec;
+  }
+
+  public double getSteerPositionRads() {
+    return inputs.steerPosition.getRadians();
+  }
 }
