@@ -1,5 +1,5 @@
 package frc.robot.subsystems.pivotvater.pivotvater_elevator;
 
-public interface PivotvaterElevatorIO { // extends? (notice this is an interface)
-  // nothing here...
-}
+import frc.robot.lib.generic_subsystems.superstructure.*;
+
+public interface PivotvaterElevatorIO extends GenericSuperstructureIO {} 
