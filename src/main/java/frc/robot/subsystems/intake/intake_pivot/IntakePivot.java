@@ -167,6 +167,6 @@ public class IntakePivot extends GenericSuperstructure<IntakePivot.IntakePivotTa
         .plus(IntakePivotConstants.BASE_TO_INTAKE_PIVOT_TRANSFORM)
         .plus(
             new Transform3d(
-                new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));
+                new Translation3d(0, Units.inchesToMeters(getPosition()), 0), new Rotation3d(-positionTarget.getPosition(), 0, 0)));
   }
 }

@@ -419,7 +419,7 @@ public class RobotContainer {
     //     intakeController.setTargetState(IntakeState.IDLE);
     //   }
     // }));
-    driverA.x().onTrue(intakeController.setTargetStateCommand(IntakeState.STOW));
+    driverA.x().onTrue(new InstantCommand(() -> intakeController.setTargetState(IntakeState.STOW)));
     driverB.povUp().onTrue(new LowPowerModeCommand(swerve));
 
     driverA.povUp().onTrue(new LowPowerModeCommand(swerve));

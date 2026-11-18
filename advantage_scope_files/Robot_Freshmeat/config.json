@@ -38,5 +38,22 @@
     }
   ],
   "components": [
+    {
+      "zeroedRotations": [ 
+        {
+          "axis": "x",
+          "degrees": 90
+        },
+        {
+          "axis": "z",
+          "degrees": 0
+        }
+      ],
+      "zeroedPosition": [
+        0,
+        0.168,
+        -0.148
+      ]
+    }
   ]
 }
