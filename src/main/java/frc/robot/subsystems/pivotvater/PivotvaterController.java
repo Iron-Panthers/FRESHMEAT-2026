@@ -13,12 +13,12 @@ import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot.Pivotvat
 import org.littletonrobotics.junction.Logger;
 
 public class PivotvaterController extends SubsystemBase {
-  // testing a merge conflict, liam pls change
+
   public enum PivotvaterState {
     IDLE(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     STOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE),
     LOW(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.LOW),
-    MID(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.CENTER_POINT),
+    MID(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.CENTER_POINT), 
     HIGH(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.FULL_EXTEND),
     ZEROING(PivotvaterPivotTarget.STOW, PivotvaterElevatorTarget.NONE);
 
@@ -56,15 +56,16 @@ public class PivotvaterController extends SubsystemBase {
     Logger.recordOutput("Pivotvater/State", targetState);
 
     if (stopped) {
-      // TODO maybe there should be loggers here
+      //TODO maybe there should be loggers here
       pivot.setControlMode(ControlMode.STOP);
       elevator.setControlMode(ControlMode.STOP);
     } else {
-      pivot.setPositionTarget(targetState.getPivotTarget());
-      elevator.setPositionTarget(targetState.getElevatorTarget());
+        pivot.setPositionTarget(targetState.getPivotTarget());
+        elevator.setPositionTarget(targetState.getElevatorTarget());
     }
 
-    // TODO for the love of god fix the override thing above
+    //TODO for the love of god fix the override thing above
+
 
     pivot.periodic();
     elevator.periodic();
@@ -96,20 +97,21 @@ public class PivotvaterController extends SubsystemBase {
 
   public Command zeroCommand() {
     return new InstantCommand(
-        () -> {
-          setTargetState(PivotvaterState.ZEROING);
-          pivot.setControlMode(ControlMode.ZEROING);
-          elevator.setControlMode(ControlMode.ZEROING);
-        },
-        this);
+            () -> {
+              setTargetState(PivotvaterState.ZEROING);
+              pivot.setControlMode(ControlMode.ZEROING);
+              elevator.setControlMode(ControlMode.ZEROING);
+            },
+            this);
   }
 
-  public Command stopZeroingCommand() {
-    return new InstantCommand(() -> this.stopZeroing());
-  }
+  // public Command stopZeroingCommand() {
+  //   return new InstantCommand(() -> this.endZeroing());
+  // }
 
   public void stopZeroing() {
     pivot.endZeroing();
     elevator.endZeroing();
   }
+  
 }
