@@ -8,19 +8,34 @@ import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivotConstants
 
 public class PivotvaterElevatorConstants {
 
-    //based on ppiconstants
+  // based on ppiconstants
 
-  public static final PivotvaterConfig PIVOTVATER_CONFIG = 
-        switch (Constants.getRobotType()) {
-            case COMP -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
-            case SIM -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
-            default -> new PivotvaterConfig(
-                CAN.at(0, "Pivotvater"), CAN.at(0, "Pivotvater"), 0, InvertedValue.CounterClockwise_Positive, false);
-        };
+  public static final PivotvaterConfig PIVOTVATER_ELEVATOR_CONFIG =
+      switch (Constants.getRobotType()) {
+        case COMP -> new PivotvaterConfig(
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            0,
+            InvertedValue.CounterClockwise_Positive,
+            false);
+        case SIM -> new PivotvaterConfig(
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            0,
+            InvertedValue.CounterClockwise_Positive,
+            false);
+        default -> new PivotvaterConfig(
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            CAN.at(0, "Pivotvater"),
+            0,
+            InvertedValue.CounterClockwise_Positive,
+            false);
+      };
 
-  //put values
+  // put values
   public static final PIDGains GAINS =
       switch (Constants.getRobotType()) {
         case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
@@ -28,7 +43,7 @@ public class PivotvaterElevatorConstants {
         default -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
       };
 
-  //put values
+  // put values
   public static final MotionMagicConfig MOTION_MAGIC_CONFIG =
       switch (Constants.getRobotType()) {
         case COMP -> new MotionMagicConfig(0, 0);
@@ -67,6 +82,7 @@ public class PivotvaterElevatorConstants {
   public record PivotvaterElevatorConfig(
       int motorID,
       int followerMotorID,
+      int followerMotorID2,
       double reduction,
       InvertedValue motorDirection,
       boolean opposeMotor) {}
