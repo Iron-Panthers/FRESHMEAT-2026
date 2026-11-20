@@ -2,6 +2,7 @@ package frc.robot.subsystems.pivotvater.pivotvater_elevator;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure;
+import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot.PivotvaterPivotTarget;
 
 /*
  *
@@ -20,7 +21,9 @@ public class PivotvaterElevator
     CENTER_POINT(0.5),
     LOW(0.25),
     NONE(0);
+
     private double position = 0;
+    private double goToPointPosition;
     private double supplyCurrentLimit = PivotvaterElevatorConstants.SUPPLY_CURRENT_LIMIT_AMPS;
 
     private static final double EPSILON = PivotvaterElevatorConstants.POSITION_TARGET_EPSILON;
@@ -42,6 +45,7 @@ public class PivotvaterElevator
     }
   }
 
+
   private boolean zeroing = false;
   private double filteredSupplyCurrentAmps = 0;
   private final LinearFilter supplyCurrentFilter;
@@ -55,6 +59,7 @@ public class PivotvaterElevator
     setControlMode(ControlMode.STOP);
     supplyCurrentFilter = LinearFilter.movingAverage(30);
   }
+ 
 
   @Override
   public void periodic() {
@@ -76,6 +81,9 @@ public class PivotvaterElevator
 
   public boolean isZeroing() {
     return zeroing;
+  }
+  public PivotvaterElevatorTarget getPivotvaterElevatorTarget() {
+    return this.positionTarget;
   }
 }
     /*

@@ -7,23 +7,27 @@ import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
 
 public class PivotvaterPivotConstants {
-  public static final PivotvaterConfig PIVOTVATER_CONFIG =
+  public static final PivotvaterPivotConfig PIVOTVATER_CONFIG =
       switch (Constants.getRobotType()) {
-        case COMP -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+        case COMP -> new PivotvaterPivotConfig(
+            
+            CAN.at(17, "Pivot 1"),
+            CAN.at(10, "Pivot 2"),
+            CAN.at(12, "Pivot 3"),
             0,
             InvertedValue.CounterClockwise_Positive,
             false);
-        case SIM -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+        case SIM -> new PivotvaterPivotConfig(
+            CAN.at(17, "Pivot 1"),
+            CAN.at(10, "Pivot 2"),
+            CAN.at(12, "Pivot 3"),
             0,
             InvertedValue.CounterClockwise_Positive,
             false);
-        default -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+        default -> new PivotvaterPivotConfig(
+            CAN.at(17, "Pivot 1"),
+            CAN.at(10, "Pivot 2"),
+            CAN.at(12, "Pivot 3"),
             0,
             InvertedValue.CounterClockwise_Positive,
             false);
@@ -70,12 +74,15 @@ public class PivotvaterPivotConstants {
         default -> 40;
       };
 
-  public static final double ZEROING_VOLTS = 3;
-  public static final double ZEROING_OFFSET = 0.37;
+  //Bruce and Nora told me I don't need Zeroing for Pivot
 
-  public record PivotvaterConfig(
+  //public static final double ZEROING_VOLTS = 3;
+  //public static final double ZEROING_OFFSET = 0.37;
+
+  public record PivotvaterPivotConfig(
       int motorID,
       int followerMotorID,
+      int followerMotorID2,
       double reduction,
       InvertedValue motorDirection,
       boolean opposeMotor) {}

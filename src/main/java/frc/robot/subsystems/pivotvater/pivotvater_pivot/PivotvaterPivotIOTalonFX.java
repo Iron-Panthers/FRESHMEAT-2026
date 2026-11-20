@@ -17,8 +17,6 @@ public class PivotvaterPivotIOTalonFX extends GenericSuperstructureIOTalonFX
             .withMotorDirection(PIVOTVATER_CONFIG.motorDirection())
             .withUpperVoltageLimit(UPPER_VOLT_LIMIT)
             .withLowerVoltageLimit(LOWER_VOLT_LIMIT)
-            .withZeroingVolts(ZEROING_VOLTS)
-            .withZeroingOffset(ZEROING_OFFSET)
             .withAdditionalFollowerMotor(
                 PIVOTVATER_CONFIG.followerMotorID(),
                 PIVOTVATER_CONFIG.opposeMotor()
