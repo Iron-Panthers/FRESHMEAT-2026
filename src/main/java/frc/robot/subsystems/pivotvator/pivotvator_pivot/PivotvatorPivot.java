@@ -1,4 +1,4 @@
-package frc.robot.subsystems.pivotvater.pivotvater_pivot;
+package frc.robot.subsystems.pivotvator.pivotvator_pivot;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -14,18 +14,18 @@ import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.PivotvaterPivotTarget>
+public class PivotvatorPivot extends GenericSuperstructure<PivotvatorPivot.PivotvatorPivotTarget>
     implements LoggableMechanism3d {
   private final java.util.ArrayList<Double> speedIntervalReadings = new java.util.ArrayList<>();
   private final java.util.ArrayList<Double> supplyCurrentIntervalReadings =
       new java.util.ArrayList<>();
 
-  public enum PivotvaterPivotTarget implements GenericSuperstructure.PositionTarget {
+  public enum PivotvatorPivotTarget implements GenericSuperstructure.PositionTarget {
     // put values
-    IDLE(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
-    STOW(0.1, PivotvaterPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
+    IDLE(0.1, PivotvatorPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.empty()),
+    STOW(0.1, PivotvatorPivotConstants.SUPPLY_CURRENT_LIMIT_AMPS, Optional.of(0.1));
 
-    private static final double EPSILON = PivotvaterPivotConstants.POSITION_TARGET_EPSILON;
+    private static final double EPSILON = PivotvatorPivotConstants.POSITION_TARGET_EPSILON;
     private double position;
     private double supplyCurrentLimit;
     private Optional<Double> maxCruiseVelocity;
@@ -46,7 +46,7 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
       return maxCruiseVelocity;
     }
 
-    private PivotvaterPivotTarget(
+    private PivotvatorPivotTarget(
         double position, double supplyCurrentLimit, Optional<Double> maxCruiseVelocity) {
       this.position = position;
       this.supplyCurrentLimit = supplyCurrentLimit;
@@ -54,26 +54,26 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     }
   }
 
-  public PivotvaterPivot(GenericSuperstructureIO io) {
-    super("Pivotvater/Pivotvater Pivot", io);
-    setPositionTarget(PivotvaterPivotTarget.STOW);
+  public PivotvatorPivot(GenericSuperstructureIO io) {
+    super("Pivotvator/Pivotvator Pivot", io);
+    setPositionTarget(PivotvatorPivotTarget.STOW);
     setControlMode(ControlMode.STOP);
   }
 
   public LoggableMechanism3d loggableMechanism3dParent = null;
   public ProfiledPIDController pidController =
       new ProfiledPIDController(
-          PivotvaterPivotConstants.GAINS.kP(),
-          PivotvaterPivotConstants.GAINS.kI(),
-          PivotvaterPivotConstants.GAINS.kD(),
+          PivotvatorPivotConstants.GAINS.kP(),
+          PivotvatorPivotConstants.GAINS.kI(),
+          PivotvatorPivotConstants.GAINS.kD(),
           new Constraints(
-              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
-              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+              PivotvatorPivotConstants.MOTION_MAGIC_CONFIG.cruiseVelocity(),
+              PivotvatorPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
 
-  private PivotvaterPivotTarget lastTarget = null;
+  private PivotvatorPivotTarget lastTarget = null;
 
   @Override
-  public void setPositionTarget(PivotvaterPivotTarget target) {
+  public void setPositionTarget(PivotvatorPivotTarget target) {
     if (target != lastTarget && target.getMaxCruiseVelocity().isPresent()) {
       pidController.reset(getPosition());
     }
@@ -89,15 +89,15 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
       pidController.setConstraints(
           new Constraints(
               getPositionTarget().getMaxCruiseVelocity().get(),
-              PivotvaterPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
+              PivotvatorPivotConstants.MOTION_MAGIC_CONFIG.acceleration()));
       pidController.setGoal(getPositionTarget().getPosition());
       pidController.calculate(getPosition());
       superstructureIO.runPosition(pidController.getSetpoint().position);
     }
     Logger.recordOutput(
-        "Pivotvater/Pivotvater Pivot/Position Target Rotations", getPositionTarget().getPosition());
+        "Pivotvator/Pivotvator Pivot/Position Target Rotations", getPositionTarget().getPosition());
     Logger.recordOutput(
-        "Pivotvater/Pivotvater Pivot/Position Target Rotations Pid",
+        "Pivotvator/Pivotvator Pivot/Position Target Rotations Pid",
         pidController.getSetpoint().position);
   }
 
@@ -158,11 +158,11 @@ public class PivotvaterPivot extends GenericSuperstructure<PivotvaterPivot.Pivot
     return new Pose3d();
   }
 
-  @AutoLogOutput(key = "Pivotvater/Pivotvater Pivot/Display Pose3d")
+  @AutoLogOutput(key = "Pivotvator/Pivotvator Pivot/Display Pose3d")
   @Override
   public Pose3d getDisplayPose3d() {
     return getParentPosition()
-        .plus(PivotvaterPivotConstants.BASE_TO_PIVOTVATER_PIVOT_TRANSFORM)
+        .plus(PivotvatorPivotConstants.BASE_TO_PIVOTVATOR_PIVOT_TRANSFORM)
         .plus(
             new Transform3d(
                 new Translation3d(0, Units.inchesToMeters(getPosition()), 0), Rotation3d.kZero));

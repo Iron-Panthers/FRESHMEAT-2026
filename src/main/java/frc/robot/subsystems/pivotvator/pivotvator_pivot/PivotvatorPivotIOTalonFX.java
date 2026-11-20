@@ -1,27 +1,27 @@
-package frc.robot.subsystems.pivotvater.pivotvater_pivot;
+package frc.robot.subsystems.pivotvator.pivotvator_pivot;
 
-import static frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivotConstants.*;
+import static frc.robot.subsystems.pivotvator.pivotvator_pivot.PivotvatorPivotConstants.*;
 
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureConfiguration;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructureIOTalonFX;
 
-public class PivotvaterPivotIOTalonFX extends GenericSuperstructureIOTalonFX
-    implements PivotvaterPivotIO {
-  public PivotvaterPivotIOTalonFX() {
+public class PivotvatorPivotIOTalonFX extends GenericSuperstructureIOTalonFX
+    implements PivotvatorPivotIO {
+  public PivotvatorPivotIOTalonFX() {
     super(
         new GenericSuperstructureConfiguration()
-            .withID(PIVOTVATER_CONFIG.motorID())
-            .withReduction(PIVOTVATER_CONFIG.reduction())
+            .withID(PIVOTVATOR_PIVOT_CONFIG.motorID())
+            .withReduction(PIVOTVATOR_PIVOT_CONFIG.reduction())
             .withSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_AMPS)
-            .withMotorDirection(PIVOTVATER_CONFIG.motorDirection())
+            .withMotorDirection(PIVOTVATOR_PIVOT_CONFIG.motorDirection())
             .withUpperVoltageLimit(UPPER_VOLT_LIMIT)
             .withLowerVoltageLimit(LOWER_VOLT_LIMIT)
             .withZeroingVolts(ZEROING_VOLTS)
             .withZeroingOffset(ZEROING_OFFSET)
             .withAdditionalFollowerMotor(
-                PIVOTVATER_CONFIG.followerMotorID(),
-                PIVOTVATER_CONFIG.opposeMotor()
+                PIVOTVATOR_PIVOT_CONFIG.followerMotorID(),
+                PIVOTVATOR_PIVOT_CONFIG.opposeMotor()
                     ? MotorAlignmentValue.Opposed
                     : MotorAlignmentValue.Aligned));
 

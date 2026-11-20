@@ -50,6 +50,16 @@ import frc.robot.subsystems.intake.intake_rollers.IntakeRollers;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIO;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOSim;
 import frc.robot.subsystems.intake.intake_rollers.IntakeRollersIOTalonFX;
+import frc.robot.subsystems.pivotvator.PivotvatorController;
+import frc.robot.subsystems.pivotvator.PivotvatorController.PivotvatorState;
+import frc.robot.subsystems.pivotvator.pivotvator_elevator.PivotvatorElevator;
+import frc.robot.subsystems.pivotvator.pivotvator_elevator.PivotvatorElevatorIO;
+import frc.robot.subsystems.pivotvator.pivotvator_elevator.PivotvatorElevatorIOSim;
+import frc.robot.subsystems.pivotvator.pivotvator_elevator.PivotvatorElevatorIOTalonFX;
+import frc.robot.subsystems.pivotvator.pivotvator_pivot.PivotvatorPivot;
+import frc.robot.subsystems.pivotvator.pivotvator_pivot.PivotvatorPivotIO;
+import frc.robot.subsystems.pivotvator.pivotvator_pivot.PivotvatorPivotIOSim;
+import frc.robot.subsystems.pivotvator.pivotvator_pivot.PivotvatorPivotIOTalonFX;
 import frc.robot.subsystems.rgb.RGB;
 import frc.robot.subsystems.rgb.RGBIO;
 import frc.robot.subsystems.shooter.ShooterController;
@@ -133,6 +143,10 @@ public class RobotContainer {
   private ShootCommand shootCommand;
   private ShootStatorCommandFactory shootCommandFactory;
 
+  private PivotvatorController pivotvatorController;
+  private PivotvatorElevator pivotvatorElevator;
+  private PivotvatorPivot pivotvatorPivot;
+
   private SwerveDriveSimulation driveSimulation = null;
 
   public RobotContainer() {
@@ -159,6 +173,9 @@ public class RobotContainer {
           shooterRollers = new ShooterRollers(new ShooterRollersIOTalonFX());
           shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOTalonFX());
           shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOTalonFX());
+
+          pivotvatorElevator = new PivotvatorElevator(new PivotvatorElevatorIOTalonFX());
+          pivotvatorPivot = new PivotvatorPivot(new PivotvatorPivotIOTalonFX());
         }
         case VISION -> {
           swerve =
@@ -200,6 +217,9 @@ public class RobotContainer {
           shooterRollers = new ShooterRollers(new ShooterRollersIOSim());
           shooterAccelerator = new ShooterAccelerator(new ShooterAcceleratorIOSim());
           shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIOSim());
+
+          pivotvatorElevator = new PivotvatorElevator(new PivotvatorElevatorIOSim());
+          pivotvatorPivot = new PivotvatorPivot(new PivotvatorPivotIOSim());
         }
       }
     }
@@ -248,9 +268,19 @@ public class RobotContainer {
       shooterOmniwheels = new ShooterOmniwheels(new ShooterOmniwheelsIO() {});
     }
 
+    if (pivotvatorElevator == null) {
+      pivotvatorElevator = new PivotvatorElevator(new PivotvatorElevatorIO() {});
+    }
+
+    if (pivotvatorPivot == null) {
+      pivotvatorPivot = new PivotvatorPivot(new PivotvatorPivotIO() {});
+    }
+
     intakeController = new IntakeController(intakePivot, intakeRollers);
     shooterController =
         new ShooterController(serializer, shooterAccelerator, shooterOmniwheels, shooterRollers);
+
+    pivotvatorController = new PivotvatorController(pivotvatorPivot, pivotvatorElevator);
 
     shootCommandFactory =
         new ShootStatorCommandFactory(
@@ -481,6 +511,14 @@ public class RobotContainer {
         .onFalse(shootCommandFactory.onRelease());
 
     driverA.start().onTrue(new InstantCommand(() -> defaultZeroing = !defaultZeroing));
+
+    driverA
+        .b()
+        .onTrue(
+            new InstantCommand(() -> pivotvatorController.setTargetState(PivotvatorState.HIGH)));
+    driverA
+        .x()
+        .onTrue(new InstantCommand(() -> pivotvatorController.setTargetState(PivotvatorState.LOW)));
 
     // Trench divider shoot
     // driverA.a().onTrue(new InstantCommand(() ->

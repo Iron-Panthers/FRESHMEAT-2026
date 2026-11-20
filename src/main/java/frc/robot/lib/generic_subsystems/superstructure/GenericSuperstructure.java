@@ -33,7 +33,6 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
 
   protected final GenericSuperstructureIO superstructureIO;
 
-
   protected Optional<Double> positionTargetManual = Optional.empty();
   protected double manualSupplyCurrentAmps = 0;
 
@@ -157,7 +156,7 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
     return Math.abs(inputs.positionRotations - targetPosition) <= positionTarget.getEpsilon();
   }
 
-  public void setPositionOffset(double positionOffset){
+  public void setPositionOffset(double positionOffset) {
     inputs.positionRotations += positionOffset;
   }
 }

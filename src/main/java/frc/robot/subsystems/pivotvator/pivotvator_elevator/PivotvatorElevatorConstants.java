@@ -1,29 +1,31 @@
-package frc.robot.subsystems.pivotvater.pivotvater_pivot;
+package frc.robot.subsystems.pivotvator.pivotvator_elevator;
 
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.can_watchdog.CANWatchdogConstants.CAN;
 
-public class PivotvaterPivotConstants {
-  public static final PivotvaterConfig PIVOTVATER_CONFIG =
+public class PivotvatorElevatorConstants {
+
+  // based on ppiconstants
+
+  public static final PivotvatorElevatorConfig PIVOTVATOR_ELEVATOR_CONFIG =
       switch (Constants.getRobotType()) {
-        case COMP -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+        case COMP -> new PivotvatorElevatorConfig(
+            CAN.at(0, "Pivotvator Elevator"),
+            CAN.at(0, "Pivotvator Elevator"),
             0,
             InvertedValue.CounterClockwise_Positive,
             false);
-        case SIM -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
-            0,
+        case SIM -> new PivotvatorElevatorConfig(
+            CAN.at(74, "Pivotvator Elevator"),
+            CAN.at(75, "Pivotvator Elevator"),
+            1,
             InvertedValue.CounterClockwise_Positive,
             false);
-        default -> new PivotvaterConfig(
-            CAN.at(0, "Pivotvater"),
-            CAN.at(0, "Pivotvater"),
+        default -> new PivotvatorElevatorConfig(
+            CAN.at(0, "Pivotvator Elevator"),
+            CAN.at(0, "Pivotvator Elevator"),
             0,
             InvertedValue.CounterClockwise_Positive,
             false);
@@ -33,7 +35,7 @@ public class PivotvaterPivotConstants {
   public static final PIDGains GAINS =
       switch (Constants.getRobotType()) {
         case COMP -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
-        case SIM -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
+        case SIM -> new PIDGains(0.4, 0, 0, 0.2, 0.137, 0, 0.61);
         default -> new PIDGains(0, 0, 0, 0, 0, 0, 0);
       };
 
@@ -45,20 +47,24 @@ public class PivotvaterPivotConstants {
         default -> new MotionMagicConfig(0, 0);
       };
 
-  public static final double PIVOTVATER_HARD_STOP_ROTATIONS = 13.0;
+  public static final double PIVOTVATOR_HARD_STOP_ROTATIONS = 13.0;
 
-  public static final double PIVOTVATER_HARD_STOP_METERS =
-      PIVOTVATER_HARD_STOP_ROTATIONS * 2.0 * Math.PI * 0.1;
-  public static final PivotvaterPhysicalConstants PHYSICAL_CONSTANTS =
+  public static final double PIVOTVATOR_HARD_STOP_METERS =
+      PIVOTVATOR_HARD_STOP_ROTATIONS * 2.0 * Math.PI * 0.1;
+
+  public static final PivotvatorElevatorPhysicalConstants PHYSICAL_CONSTANTS =
       switch (Constants.getRobotType()) {
-        case SIM -> new PivotvaterPhysicalConstants(0, 0, 0, PIVOTVATER_HARD_STOP_METERS, false);
-        case COMP -> new PivotvaterPhysicalConstants(0, 0, 0, 0, false);
-        default -> new PivotvaterPhysicalConstants(0, 0, 0, 0, false);
+        case SIM -> new PivotvatorElevatorPhysicalConstants(
+            1,
+            1,
+            1,
+            PIVOTVATOR_HARD_STOP_METERS,
+            false); // TODO: Change constant values! All of them
+        case COMP -> new PivotvatorElevatorPhysicalConstants(0, 0, 0, 0, false);
+        default -> new PivotvatorElevatorPhysicalConstants(0, 0, 0, 0, false);
       };
 
-  public static final GravityTypeValue GRAVITY_TYPE = GravityTypeValue.Arm_Cosine;
-
-  public static final Transform3d BASE_TO_PIVOTVATER_PIVOT_TRANSFORM = new Transform3d();
+  public static final GravityTypeValue GRAVITY_TYPE = GravityTypeValue.Elevator_Static;
 
   public static final double POSITION_TARGET_EPSILON = 0.001;
 
@@ -73,7 +79,7 @@ public class PivotvaterPivotConstants {
   public static final double ZEROING_VOLTS = 3;
   public static final double ZEROING_OFFSET = 0.37;
 
-  public record PivotvaterConfig(
+  public record PivotvatorElevatorConfig(
       int motorID,
       int followerMotorID,
       double reduction,
@@ -85,7 +91,7 @@ public class PivotvaterPivotConstants {
 
   public record MotionMagicConfig(double acceleration, double cruiseVelocity) {}
 
-  public static record PivotvaterPhysicalConstants(
+  public static record PivotvatorElevatorPhysicalConstants(
       double massInKilograms,
       double drumRadiusMeters,
       double minExtensionMeters,
