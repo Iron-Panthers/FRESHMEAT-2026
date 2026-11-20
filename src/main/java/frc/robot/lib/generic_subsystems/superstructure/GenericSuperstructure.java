@@ -158,6 +158,6 @@ public abstract class GenericSuperstructure<G extends GenericSuperstructure.Posi
   }
 
   public void setPositionOffset(double positionOffset){
-    inputs.positionRotations += positionOffset;
+    superstructureIO.setPosition(positionOffset);
   }
 }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.lib.generic_subsystems.superstructure.GenericSuperstructure.ControlMode;
 import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator;
+import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevatorConstants;
 import frc.robot.subsystems.pivotvater.pivotvater_elevator.PivotvaterElevator.PivotvaterElevatorTarget;
 import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot;
 import frc.robot.subsystems.pivotvater.pivotvater_pivot.PivotvaterPivot.PivotvaterPivotTarget;
@@ -46,6 +47,9 @@ public class PivotvaterController extends SubsystemBase {
   private PivotvaterState targetState = PivotvaterState.IDLE;
   private boolean stopped = false;
 
+  private double position;
+  private double totalOffset;
+
   public PivotvaterController(PivotvaterPivot pivot, PivotvaterElevator elevator) {
     this.pivot = pivot;
     this.elevator = elevator;
@@ -69,6 +73,11 @@ public class PivotvaterController extends SubsystemBase {
 
     pivot.periodic();
     elevator.periodic();
+    position = elevator.getPosition() - totalOffset;
+    totalOffset = pivot.getPosition() * PivotvaterElevatorConstants.ELEVATOR_PIVOT_GEAR_RATIO; 
+    position += totalOffset;
+    
+    elevator.setPositionOffset(position);
 
     Logger.recordOutput("Pivotvater/Reached", reachedTarget());
   }

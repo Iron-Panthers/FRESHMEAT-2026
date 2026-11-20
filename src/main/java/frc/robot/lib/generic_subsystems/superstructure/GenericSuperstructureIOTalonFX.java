@@ -179,6 +179,11 @@ public abstract class GenericSuperstructureIOTalonFX implements GenericSuperstru
     talon.getConfigurator().setPosition(zeroingOffset);
   }
 
+  @Override
+  public void setPosition(double rotations) {
+    talon.getConfigurator().setPosition(rotations);
+  }
+
   /**
    * Sets all of the PID and motion magic gains.
    *

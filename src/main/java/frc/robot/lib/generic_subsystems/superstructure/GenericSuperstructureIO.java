@@ -36,6 +36,8 @@ public interface GenericSuperstructureIO {
 
   default void setOffset() {}
 
+  default void setPosition(double rotations) {}
+
   default void setSupplyCurrentLimit(double amps) {}
 
   default void setMaxCruiseVelocity(double cruiseVelocity) {}
